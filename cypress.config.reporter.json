@@ -1,0 +1,12 @@
+{
+  "reporterEnabled": "spec, junit",
+  "reporterOptions": {
+    "spec": {
+      "showSkipped": true
+    },
+    "junit": {
+      "mochaFile": "cypress/results/junit/results-[hash].xml",
+      "toConsole": false
+    }
+  }
+}
