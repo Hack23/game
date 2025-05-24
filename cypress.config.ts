@@ -1,7 +1,7 @@
 import { defineConfig } from "cypress";
 
 // Centralize report directories with proper typing
-const REPORTS_BASE_DIR = "docs/cypress";
+const REPORTS_BASE_DIR = "cypress";
 const REPORTS = {
   junit: `${REPORTS_BASE_DIR}/junit`,
   mochawesome: `${REPORTS_BASE_DIR}/mochawesome`,
@@ -39,6 +39,12 @@ export default defineConfig({
     },
     defaultCommandTimeout: 8000,
     chromeWebSecurity: false,
+    video: true,
+    videosFolder: "cypress/videos",
+    screenshotsFolder: "cypress/screenshots",
+    downloadsFolder: "cypress/downloads",
+    fixturesFolder: "cypress/fixtures",
+    responseTimeout: 10000,
     setupNodeEvents(
       on: Cypress.PluginEvents,
       config: Cypress.PluginConfigOptions
@@ -54,5 +60,25 @@ export default defineConfig({
     },
     specPattern: "src/**/*.cy.{js,jsx,ts,tsx}",
     supportFile: "cypress/support/component.ts",
+    setupNodeEvents(on, config) {
+      // implement node event listeners here
+      on("before:browser:launch", (browser, launchOptions) => {
+        if (browser.family === "chromium" && browser.name !== "electron") {
+          // Add flags to suppress WebGL warnings and enable software rendering
+          launchOptions.args.push("--enable-unsafe-swiftshader");
+          launchOptions.args.push("--disable-web-security");
+          launchOptions.args.push("--disable-features=VizDisplayCompositor");
+          launchOptions.args.push("--disable-gpu");
+          launchOptions.args.push("--no-sandbox");
+          launchOptions.args.push("--disable-dev-shm-usage");
+          // Suppress specific WebGL warnings
+          launchOptions.args.push("--disable-logging");
+          launchOptions.args.push("--silent");
+          launchOptions.args.push("--log-level=3");
+        }
+        return launchOptions;
+      });
+    },
+    indexHtmlFile: "cypress/support/component-index.html",
   },
 });
