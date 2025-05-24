@@ -20,10 +20,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedIndexedAccess": true,
-
-    /* Vitest */
-    "types": ["vitest/globals"]
+    "noUncheckedIndexedAccess": true
   },
   "include": ["src"]
 }

@@ -10,9 +10,11 @@
     "preview": "vite preview",
     "test": "vitest",
     "test:ci": "vitest run --coverage --reporter=junit --outputFile=coverage/junit.xml",
-    "test:e2e": "start-server-and-test dev http://localhost:5173 'cypress run --reporter cypress-multi-reporters --reporter-options configFile=cypress.config.reporter.json'"
+    "test:e2e": "mkdir -p cypress/results && start-server-and-test dev http://localhost:5173 'cypress run --reporter cypress-multi-reporters --reporter-options configFile=cypress.config.reporter.json'",
+    "test:e2e:ci": "mkdir -p cypress/results && start-server-and-test dev http://localhost:5173 'cypress run --headless --reporter cypress-multi-reporters --reporter-options configFile=cypress.config.reporter.json'"
   },
   "dependencies": {
+    "@pixi/react": "^8.0.2",
     "howler": "^2.2.4",
     "pixi.js": "^8.9.2",
     "@pixi/sound": "^6.0.1",

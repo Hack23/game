@@ -4,9 +4,25 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
+  resolve: {
+    alias: {
+      // Fix react-reconciler module resolution
+      "react-reconciler/constants": "react-reconciler/constants.js",
+    },
+  },
+  optimizeDeps: {
+    include: ["@pixi/react", "pixi.js", "react-reconciler"],
+  },
   build: {
-    target: "ES2020",
-    minify: "esbuild",
+    target: "esnext",
+    rollupOptions: {
+      external: [],
+      output: {
+        manualChunks: {
+          pixi: ["pixi.js", "@pixi/react"],
+        },
+      },
+    },
   },
   esbuild: {
     target: "ES2020",
