@@ -1,6 +1,17 @@
 # Game Template
 
-A clean, minimal template for building games with React, TypeScript, and Vite.
+A clean, minimal template for building games with React, TypeScript, and Vite - built with **security-first principles**.
+
+## 🔒 Security Features
+
+This template implements comprehensive security measures:
+
+- **🛡️ Supply Chain Security** - OSSF Scorecard analysis and dependency review
+- **🔍 Static Analysis** - CodeQL scanning for vulnerabilities
+- **📦 Dependency Protection** - Automated dependency vulnerability checks
+- **🔐 Runner Hardening** - All CI/CD runners are hardened with audit logging
+- **📋 Security Policies** - GitHub security advisories and vulnerability reporting
+- **🏷️ Pinned Dependencies** - All GitHub Actions pinned to specific SHA hashes
 
 ## Features
 
@@ -11,6 +22,41 @@ A clean, minimal template for building games with React, TypeScript, and Vite.
 - 🌲 **Cypress** - Reliable E2E testing
 - 📦 **ESLint** - Code linting with TypeScript rules
 - 🔄 **GitHub Actions** - Automated testing and reporting
+
+## Security Workflows
+
+```mermaid
+graph TD
+    A[🔒 Code Push/PR] --> B{🛡️ Security Gates}
+
+    B --> |🔍 Code Analysis| C[CodeQL Scanning]
+    B --> |📦 Dependencies| D[Dependency Review]
+    B --> |🏗️ Supply Chain| E[OSSF Scorecard]
+
+    C --> |🚨 Vulnerabilities| F[Security Alerts]
+    D --> |⚠️ Known CVEs| F
+    E --> |📊 Security Score| G[Security Dashboard]
+
+    F --> H[🚫 Block Merge]
+    G --> I[✅ Security Badge]
+
+    subgraph "🔐 Protection Layers"
+        J[Runner Hardening]
+        K[Pinned Actions]
+        L[Audit Logging]
+    end
+
+    %% Styling
+    classDef security fill:#ffebee,stroke:#c62828,stroke-width:2px,color:#000
+    classDef analysis fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px,color:#000
+    classDef protection fill:#e3f2fd,stroke:#1565c0,stroke-width:2px,color:#000
+    classDef alert fill:#fff3e0,stroke:#ef6c00,stroke-width:2px,color:#000
+
+    class A,B,H security
+    class C,D,E analysis
+    class J,K,L protection
+    class F,G,I alert
+```
 
 ## Test & Report Workflow
 
@@ -63,7 +109,7 @@ npm run build
 npm run test
 
 # Run E2E tests
-npm run test:e2e
+npm run test:e2e:open
 ```
 
 ## Testing
@@ -93,6 +139,13 @@ flowchart LR
         A4 --> A5[📊 Report]
     end
 
+    subgraph "🔒 Security Pipeline"
+        S1[🛡️ CodeQL Analysis]
+        S2[📦 Dependency Review]
+        S3[🏆 OSSF Scorecard]
+        S4[🔐 Runner Hardening]
+    end
+
     subgraph "📈 Test Coverage"
         B1[Unit Tests<br/>80%+ Coverage]
         B2[E2E Tests<br/>Critical Flows]
@@ -104,34 +157,44 @@ flowchart LR
         C2[🎬 Test Videos]
         C3[📸 Screenshots]
         C4[📋 JUnit XML]
+        C5[🛡️ Security Reports]
     end
 
     A4 --> B1
     A4 --> B2
     A4 --> B3
 
+    A1 --> S1
+    A1 --> S2
+    A1 --> S3
+    A1 --> S4
+
     A5 --> C1
     A5 --> C2
     A5 --> C3
     A5 --> C4
+    S1 --> C5
+    S2 --> C5
+    S3 --> C5
 
     %% Styling
     classDef pipeline fill:#e3f2fd,stroke:#1565c0,stroke-width:2px
+    classDef security fill:#ffebee,stroke:#c62828,stroke-width:2px
     classDef testing fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px
     classDef output fill:#fff8e1,stroke:#f57c00,stroke-width:2px
 
     class A1,A2,A3,A4,A5 pipeline
+    class S1,S2,S3,S4 security
     class B1,B2,B3 testing
-    class C1,C2,C3,C4 output
+    class C1,C2,C3,C4,C5 output
 ```
 
-### GitHub Actions Workflow
+### Security Workflows
 
-- **Prepare**: Sets up Node.js, caches dependencies, verifies Cypress
-- **Build Validation**: Ensures code compiles and builds successfully
-- **Unit Tests**: Runs Vitest with coverage reporting (80%+ threshold)
-- **E2E Tests**: Executes Cypress tests with video/screenshot capture
-- **Report**: Combines all artifacts and generates unified test reports
+- **CodeQL Analysis**: Automated vulnerability scanning on push/PR
+- **Dependency Review**: Checks for known vulnerabilities in dependencies
+- **OSSF Scorecard**: Supply chain security assessment with public scoring
+- **Runner Hardening**: All CI/CD runners use hardened security policies
 
 ## Project Structure
 
@@ -148,7 +211,12 @@ cypress/
 └── support/       # Cypress support files
 
 .github/
-└── workflows/     # GitHub Actions workflows
+├── workflows/     # GitHub Actions workflows
+│   ├── test-and-report.yml    # Main CI/CD pipeline
+│   ├── codeql.yml            # Security code analysis
+│   ├── dependency-review.yml  # Dependency vulnerability checks
+│   └── scorecards.yml        # Supply chain security assessment
+└── SECURITY.md    # Security policy and reporting
 ```
 
 ## Development Guidelines
@@ -157,16 +225,29 @@ cypress/
 - **Test Coverage** - Aim for 80%+ coverage
 - **Component Testing** - Test critical user flows
 - **Type Safety** - Avoid `any`, use explicit types
+- **Security First** - All dependencies reviewed for vulnerabilities
+- **Pinned Actions** - GitHub Actions pinned to specific SHA hashes
+
+## Security Policy
+
+This project follows responsible disclosure practices:
+
+- **Vulnerability Reporting**: Use GitHub Security Advisories
+- **Response Time**: Critical issues addressed within 24-48 hours
+- **Dependencies**: Automatically monitored for known vulnerabilities
+- **Supply Chain**: OSSF Scorecard provides transparency on security practices
 
 ## Building Your Game
 
-This template provides a solid foundation for game development:
+This template provides a **secure foundation** for game development:
 
 1. Replace the counter example with your game logic
 2. Add game-specific components in `src/components/`
 3. Create game state management (Context API, Zustand, etc.)
 4. Add unit tests for game logic
 5. Create E2E tests for game flows
-6. Deploy using the included GitHub Actions
+6. Deploy using the included **security-hardened** GitHub Actions
 
-Happy gaming! 🎮
+All security workflows will automatically protect your game from common vulnerabilities and supply chain attacks.
+
+Happy gaming! 🎮🔒
