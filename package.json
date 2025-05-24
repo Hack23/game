@@ -13,6 +13,9 @@
     "test:e2e": "start-server-and-test dev http://localhost:5173 'cypress run --reporter cypress-multi-reporters --reporter-options configFile=cypress.config.reporter.json'"
   },
   "dependencies": {
+    "howler": "^2.2.4",
+    "pixi.js": "^8.9.2",
+    "@pixi/sound": "^6.0.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },
@@ -21,6 +24,7 @@
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
+    "@types/howler": "^2.2.12",
     "@types/react": "^19.1.5",
     "@types/react-dom": "^19.1.5",
     "@typescript-eslint/eslint-plugin": "^8.32.1",
