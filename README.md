@@ -175,7 +175,7 @@ npm run build
 npm run test
 
 # Run E2E tests
-npm run test:e2e:open
+npm run test:e2e
 ```
 
 ## PixiJS 8.x Integration
@@ -303,7 +303,7 @@ flowchart LR
 - **OSSF Scorecard**: Supply chain security assessment with public scoring
 - **Runner Hardening**: All CI/CD runners use hardened security policies
 
-## Project Structure
+## Possible Future Project Structure
 
 ```
 src/
@@ -344,15 +344,6 @@ cypress/
 - **Security First** - All dependencies reviewed for vulnerabilities
 - **Pinned Actions** - GitHub Actions pinned to specific SHA hashes
 - **AI-Assisted** - Leverage GitHub Copilot for code generation and debugging
-
-## Security Policy
-
-This project follows responsible disclosure practices:
-
-- **Vulnerability Reporting**: Use GitHub Security Advisories
-- **Response Time**: Critical issues addressed within 24-48 hours
-- **Dependencies**: Automatically monitored for known vulnerabilities
-- **Supply Chain**: OSSF Scorecard provides transparency on security practices
 
 ## Building Your Game
 
