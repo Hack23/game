@@ -5642,3 +5642,15 @@ dist/assets/index-9_sxcfan.js
 dist/assets/index-D8b4DHJx.css
 dist/assets/react-CHdo91hT.svg
 node_modules
+coverage/junit.xml
+coverage/lcov.info
+coverage/lcov-report/App.tsx.html
+coverage/lcov-report/base.css
+coverage/lcov-report/block-navigation.js
+coverage/lcov-report/favicon.png
+coverage/lcov-report/index.html
+coverage/lcov-report/main.tsx.html
+coverage/lcov-report/prettify.css
+coverage/lcov-report/prettify.js
+coverage/lcov-report/sort-arrow-sprite.png
+coverage/lcov-report/sorter.js
