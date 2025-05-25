@@ -20,6 +20,8 @@ This template implements comprehensive security measures:
 - **📄 SBOM Generation** - Software Bill of Materials for transparency
 - **🔏 Build Attestations** - Cryptographic proof of build integrity
 - **🏆 Artifact Verification** - SLSA-compliant build provenance
+- **🕷️ ZAP Security Scanning** - OWASP ZAP dynamic application security testing
+- **⚡ Lighthouse Performance** - Automated performance and accessibility audits
 
 ## Features
 
@@ -111,16 +113,28 @@ graph TD
         L[Audit Logging]
     end
 
+    subgraph "🧪 Runtime Security Testing"
+        M[🕷️ ZAP DAST Scan]
+        N[⚡ Lighthouse Audit]
+        O[🌐 Live Site Testing]
+    end
+
+    I --> M
+    M --> |🔍 Dynamic Scan| N
+    N --> |📊 Performance Report| O
+
     %% Styling
     classDef security fill:#ffebee,stroke:#c62828,stroke-width:2px,color:#000
     classDef analysis fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px,color:#000
     classDef protection fill:#e3f2fd,stroke:#1565c0,stroke-width:2px,color:#000
     classDef alert fill:#fff3e0,stroke:#ef6c00,stroke-width:2px,color:#000
+    classDef runtime fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000
 
     class A,B,H security
     class C,D,E analysis
     class J,K,L protection
     class F,G,I alert
+    class M,N,O runtime
 ```
 
 ## Test & Report Workflow
