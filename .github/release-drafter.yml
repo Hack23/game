@@ -88,6 +88,9 @@ template: |
   ## Security & Quality
   [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/Hack23/game/badge)](https://scorecard.dev/viewer/?uri=github.com/Hack23/game)
 
+  ## Security Compliance
+  [![SLSA 3](https://slsa.dev/images/gh-badge-level3.svg)](https://github.com/Hack23/game/attestations/)
+
   ## Game Development Stack
   - ⚡ **Vite** - Fast build tool and dev server
   - ⚛️ **React 19** - Modern React with hooks  
