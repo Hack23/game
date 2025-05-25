@@ -17,6 +17,9 @@ This template implements comprehensive security measures:
 - **🔐 Runner Hardening** - All CI/CD runners are hardened with audit logging
 - **📋 Security Policies** - GitHub security advisories and vulnerability reporting
 - **🏷️ Pinned Dependencies** - All GitHub Actions pinned to specific SHA hashes
+- **📄 SBOM Generation** - Software Bill of Materials for transparency
+- **🔏 Build Attestations** - Cryptographic proof of build integrity
+- **🏆 Artifact Verification** - SLSA-compliant build provenance
 
 ## Features
 
@@ -57,26 +60,26 @@ graph LR
     C -->|Provides| D[VS Code + Extensions]
     C -->|Initializes| E[Node.js Environment]
     C -->|Configures| F[Testing Tools]
-    
+
     D -->|Includes| G[GitHub Copilot]
     D -->|Includes| H[ESLint Integration]
     D -->|Includes| I[Debug Tools]
-    
+
     E -->|Installs| J[PixiJS 8.x]
     E -->|Installs| K[React 19]
     E -->|Installs| L[TypeScript]
-    
+
     F -->|Prepares| M[Cypress E2E]
     F -->|Prepares| N[Vitest Unit Tests]
-    
+
     G -->|Assists with| O[Game Logic]
     G -->|Suggests| P[Game Components]
-    
+
     classDef primary fill:#e3f2fd,stroke:#1565c0,stroke-width:2px,color:#000
     classDef tools fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px,color:#000
     classDef ai fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000
     classDef testing fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000
-    
+
     class A,B,C primary
     class D,E,F tools
     class G,O,P ai
@@ -192,26 +195,26 @@ This template uses PixiJS 8.x for high-performance 2D game rendering:
 Example game component:
 
 ```tsx
-import { Stage, Sprite, useTick } from '@pixi/react';
-import { useState } from 'react';
+import { Stage, Sprite, useTick } from "@pixi/react";
+import { useState } from "react";
 
 export function Game() {
   const [position, setPosition] = useState({ x: 100, y: 100 });
-  
+
   useTick((delta) => {
     // Game logic here
-    setPosition(prev => ({
+    setPosition((prev) => ({
       x: prev.x + delta,
-      y: prev.y
+      y: prev.y,
     }));
   });
-  
+
   return (
     <Stage width={800} height={600} options={{ backgroundColor: 0x1d2230 }}>
-      <Sprite 
-        image="/assets/character.png" 
-        x={position.x} 
-        y={position.y} 
+      <Sprite
+        image="/assets/character.png"
+        x={position.x}
+        y={position.y}
         anchor={{ x: 0.5, y: 0.5 }}
       />
     </Stage>
@@ -303,47 +306,246 @@ flowchart LR
 - **OSSF Scorecard**: Supply chain security assessment with public scoring
 - **Runner Hardening**: All CI/CD runners use hardened security policies
 
-## Possible Future Project Structure
+## 🚀 Release Management
+
+This template includes a comprehensive, security-first release workflow with automated versioning, security attestations, and deployment.
+
+### Release Flow
+
+```mermaid
+flowchart TD
+    A[🚀 Release Trigger] --> B{📋 Release Type}
+
+    B -->|🏷️ Tag Push| C[🔄 Automatic Release]
+    B -->|⚡ Manual Dispatch| D[📝 Manual Release]
+
+    C --> E[📦 Prepare Phase]
+    D --> E
+
+    E --> F[🏗️ Build & Test]
+    F --> G[🔒 Security Validation]
+
+    G --> H[📄 Generate SBOM]
+    H --> I[🔏 Create Attestations]
+    I --> J[📋 Draft Release Notes]
+
+    J --> K[🌐 Deploy to Pages]
+    K --> L[📢 Publish Release]
+
+    subgraph "🔒 Security Layers"
+        M[SLSA Build Provenance]
+        N[SBOM Attestation]
+        O[Artifact Signing]
+        P[Supply Chain Verification]
+    end
+
+    I --> M
+    I --> N
+    I --> O
+    G --> P
+
+    %% Styling
+    classDef trigger fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    classDef process fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    classDef security fill:#ffebee,stroke:#c62828,stroke-width:2px
+    classDef deploy fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px
+
+    class A,B,C,D trigger
+    class E,F,J,K,L process
+    class G,H,I,M,N,O,P security
+```
+
+### 🏷️ Release Types
+
+#### Automatic Releases (Tag-based)
+
+```bash
+# Create and push a tag to trigger automatic release
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+#### Manual Releases (Workflow Dispatch)
+
+- Navigate to **Actions** → **Build, Attest and Release**
+- Click **Run workflow**
+- Specify version (e.g., `v1.0.1`) and pre-release status
+- The workflow handles version bumping and tagging automatically
+
+### 📋 Automated Release Notes
+
+Release notes are automatically generated using semantic labeling:
+
+```mermaid
+graph LR
+    A[🔄 PR Labels] --> B[📝 Release Drafter]
+    B --> C[📊 Categorized Notes]
+
+    subgraph "🏷️ Label Categories"
+        D[🚀 New Features]
+        E[🎮 Game Development]
+        F[🔒 Security & Compliance]
+        G[🐛 Bug Fixes]
+        H[📦 Dependencies]
+        I[🧪 Test Coverage]
+    end
+
+    A --> D
+    A --> E
+    A --> F
+    A --> G
+    A --> H
+    A --> I
+
+    C --> J[📢 GitHub Release]
+
+    classDef labels fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef process fill:#e3f2fd,stroke:#1565c0,stroke-width:2px
+    classDef output fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px
+
+    class D,E,F,G,H,I labels
+    class A,B,C process
+    class J output
+```
+
+#### Release Note Categories
+
+- **🚀 New Features** - Major feature additions
+- **🎮 Game Development** - Game logic, graphics, audio improvements
+- **🎨 UI/UX Improvements** - Interface and design updates
+- **🏗️ Infrastructure & Performance** - Build and performance optimizations
+- **🔄 Code Quality & Refactoring** - Code improvements and testing
+- **🔒 Security & Compliance** - Security updates and fixes
+- **📝 Documentation** - Documentation improvements
+- **📦 Dependencies** - Dependency updates
+- **🐛 Bug Fixes** - Bug fixes and patches
+
+### 🔒 Security Attestations & SBOM
+
+#### Software Bill of Materials (SBOM)
+
+Every release includes a comprehensive SBOM in SPDX format:
+
+```json
+{
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "name": "game-v1.0.0",
+  "packages": [
+    {
+      "SPDXID": "SPDXRef-Package-react",
+      "name": "react",
+      "versionInfo": "19.1.0",
+      "licenseConcluded": "MIT"
+    }
+  ]
+}
+```
+
+#### Build Provenance Attestations
+
+SLSA-compliant build attestations provide cryptographic proof:
+
+```json
+{
+  "_type": "https://in-toto.io/Statement/v0.1",
+  "predicateType": "https://slsa.dev/provenance/v0.2",
+  "subject": [
+    {
+      "name": "game-v1.0.0.zip",
+      "digest": {
+        "sha256": "abc123..."
+      }
+    }
+  ],
+  "predicate": {
+    "builder": {
+      "id": "https://github.com/actions/runner"
+    },
+    "buildType": "https://github.com/actions/workflow@v1"
+  }
+}
+```
+
+#### Verification Commands
+
+```bash
+# Verify build provenance
+gh attestation verify game-v1.0.0.zip \
+  --owner Hack23 --repo game
+
+# Verify SBOM attestation
+gh attestation verify game-v1.0.0.zip \
+  --owner Hack23 --repo game \
+  --predicate-type https://spdx.dev/Document
+```
+
+### 📦 Release Artifacts
+
+Each release includes multiple artifacts with full traceability:
 
 ```
-src/
-├── test/           # Test setup and utilities
-├── App.tsx         # Main application component
-├── App.test.tsx    # Unit tests for App
-├── main.tsx        # Application entry point
-├── components/     # Game components
-│   ├── Game.tsx    # Main game component with PixiJS Stage
-│   └── UI/         # Game UI components
-├── hooks/          # Custom React hooks
-├── assets/         # Game assets (sprites, sounds)
-└── index.css       # Global styles
-
-cypress/
-├── e2e/           # End-to-end test specs
-└── support/       # Cypress support files
-
-.devcontainer/     # GitHub Codespaces configuration
-├── devcontainer.json  # Development container config
-└── init-xvfb.sh      # Display server for Cypress
-
-.github/
-├── workflows/     # GitHub Actions workflows
-│   ├── test-and-report.yml    # Main CI/CD pipeline
-│   ├── codeql.yml            # Security code analysis
-│   ├── dependency-review.yml  # Dependency vulnerability checks
-│   └── scorecards.yml        # Supply chain security assessment
-└── SECURITY.md    # Security policy and reporting
+📦 Release v1.0.0
+├── 🎮 game-v1.0.0.zip                    # Built application
+├── 📄 game-v1.0.0.spdx.json             # Software Bill of Materials
+├── 🔏 game-v1.0.0.zip.intoto.jsonl      # Build provenance attestation
+└── 📋 game-v1.0.0.spdx.json.intoto.jsonl # SBOM attestation
 ```
 
-## Development Guidelines
+### 🌐 Deployment Pipeline
 
-- **Strict TypeScript** - Enable all strict options
-- **Test Coverage** - Aim for 80%+ coverage
-- **Component Testing** - Test critical user flows
-- **Type Safety** - Avoid `any`, use explicit types
-- **Security First** - All dependencies reviewed for vulnerabilities
-- **Pinned Actions** - GitHub Actions pinned to specific SHA hashes
-- **AI-Assisted** - Leverage GitHub Copilot for code generation and debugging
+```mermaid
+sequenceDiagram
+    participant Dev as 👨‍💻 Developer
+    participant GH as 🐙 GitHub
+    participant CI as 🔄 CI/CD
+    participant Sec as 🔒 Security
+    participant Pages as 🌐 GitHub Pages
+
+    Dev->>GH: 🏷️ Push Tag/Manual Trigger
+    GH->>CI: 🚀 Start Release Workflow
+
+    CI->>CI: 🧪 Run Tests & Build
+    CI->>Sec: 🔍 Security Scans
+    Sec-->>CI: ✅ Security Validated
+
+    CI->>Sec: 📄 Generate SBOM
+    CI->>Sec: 🔏 Create Attestations
+    Sec-->>CI: 📋 Security Artifacts Ready
+
+    CI->>GH: 📝 Draft Release Notes
+    CI->>GH: 📦 Upload Artifacts
+
+    CI->>Pages: 🌐 Deploy Application
+    Pages-->>CI: ✅ Deployment Success
+
+    CI->>GH: 📢 Publish Release
+    GH-->>Dev: 🎉 Release Complete
+```
+
+### 🔐 Security Compliance
+
+#### OSSF Scorecard Integration
+
+- **Automated scoring** of supply chain security practices
+- **Public transparency** with security badge
+- **Continuous monitoring** of security posture
+
+#### Supply Chain Protection
+
+- **Pinned dependencies** - All GitHub Actions pinned to SHA hashes
+- **Dependency scanning** - Automated vulnerability detection
+- **SLSA compliance** - Build integrity and provenance
+- **Signed artifacts** - Cryptographic verification of releases
+
+### 📊 Release Metrics
+
+Track release quality and security with built-in metrics:
+
+- **🔒 Security Score** - OSSF Scorecard rating
+- **📈 Test Coverage** - Unit and E2E test coverage
+- **🏷️ Vulnerability Count** - Known security issues
+- **📦 Dependency Health** - Outdated/vulnerable dependencies
+- **🚀 Build Success Rate** - CI/CD pipeline reliability
 
 ## Building Your Game
 
@@ -354,8 +556,10 @@ This template provides a **secure foundation** for game development:
 3. Create game state management (Context API, Zustand, etc.)
 4. Add unit tests for game logic
 5. Create E2E tests for game flows
-6. Deploy using the included **security-hardened** GitHub Actions
+6. **Create releases** using the automated workflow
+7. **Monitor security** through OSSF Scorecard and attestations
+8. Deploy using the included **security-hardened** GitHub Actions
 
-All security workflows will automatically protect your game from common vulnerabilities and supply chain attacks.
+All security workflows will automatically protect your game from common vulnerabilities and supply chain attacks, while providing full transparency through SBOM and attestations.
 
 Happy gaming! 🎮🔒
