@@ -1,0 +1,278 @@
+# Label definitions aligned with PixiJS game development
+
+# 🚀 Features and Enhancements
+feature:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file:
+              - "src/**/feature/**"
+              - "src/**/feat/**"
+              - "src/**/game/**"
+      - title: "feat:*"
+      - title: "feature:*"
+      - title: "add:*"
+      - body: "- [x] 🚀 New Feature/Enhancement"
+
+enhancement:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file:
+              - "src/**/enhance/**"
+              - "src/**/improvement/**"
+      - title: "enhance:*"
+      - title: "improvement:*"
+      - body: "- [x] 🚀 New Feature/Enhancement"
+
+# 🐛 Bug Fixes
+bug:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file:
+              - "src/**/fix/**"
+              - "src/**/bug/**"
+      - title: "fix:*"
+      - title: "bug:*"
+      - body: "- [x] 🐛 Bug Fix"
+
+# 🎮 Game Development
+game-logic:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file:
+              - "src/**/game/**"
+              - "src/**/logic/**"
+              - "src/**/mechanics/**"
+      - title: "game:*"
+      - title: "logic:*"
+      - body: "- [x] 🎮 Game Logic"
+
+graphics:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file:
+              - "src/**/graphics/**"
+              - "src/**/pixi/**"
+              - "src/**/render/**"
+              - "src/**/*pixi*"
+      - title: "graphics:*"
+      - title: "pixi:*"
+      - title: "render:*"
+      - body: "- [x] 🎨 Graphics & Rendering"
+
+audio:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file:
+              - "src/**/audio/**"
+              - "src/**/sound/**"
+              - "src/**/*howler*"
+              - "src/assets/**/*.mp3"
+              - "src/assets/**/*.wav"
+              - "src/assets/**/*.ogg"
+      - title: "audio:*"
+      - title: "sound:*"
+      - body: "- [x] 🔊 Audio & Sound"
+
+# 🎨 UI/UX Improvements
+ui:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file:
+              - "src/**/components/**"
+              - "src/**/ui/**"
+              - "src/**/*.css"
+              - "src/**/*.scss"
+              - "src/**/*.less"
+              - "src/**/*.styles.*"
+              - "src/**/theme/**"
+              - "public/**/*.svg"
+              - "public/**/*.png"
+              - "public/**/*.jpg"
+      - title: "ui:*"
+      - title: "style:*"
+      - title: "design:*"
+      - body: "- [x] 🎨 UI/UX Improvements"
+
+# 🏗️ Infrastructure & Performance
+infrastructure:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file:
+              - ".github/**"
+              - "configs/**"
+              - "scripts/**"
+              - "docker/**"
+              - "**/*.json"
+              - "**/vite.config.*"
+              - "**/vitest.config.*"
+              - "**/cypress.config.*"
+              - "**/tsconfig.json"
+              - ".env*"
+      - title: "infra:*"
+      - title: "ci:*"
+      - title: "cd:*"
+      - body: "- [x] 🏗️ Infrastructure & Performance"
+
+performance:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file:
+              - "src/**/perf/**"
+              - "src/**/performance/**"
+              - "src/**/optimize/**"
+      - title: "perf:*"
+      - title: "optimize:*"
+      - body: "- [x] 🏗️ Infrastructure & Performance"
+
+# 🔄 Code Quality & Refactoring
+refactor:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file:
+              - "src/**/refactor/**"
+      - title: "refactor:*"
+      - body: "- [x] 🔄 Code Quality & Refactoring"
+
+testing:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file:
+              - "src/**/*.test.*"
+              - "src/**/*.spec.*"
+              - "cypress/**"
+              - "test/**"
+              - "__tests__/**"
+              - "src/**/__tests__/**"
+              - "src/**/*.cy.*"
+      - title: "test:*"
+      - body: "- [x] 🔄 Code Quality & Refactoring"
+
+# 🔒 Security & Compliance
+security:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file:
+              - "src/**/security/**"
+              - "src/**/auth/**"
+              - ".github/workflows/codeql.yml"
+              - ".github/workflows/scorecards.yml"
+              - "security/**"
+      - title: "security:*"
+      - title: "auth:*"
+      - title: "fix-vuln:*"
+      - body: "- [x] 🔒 Security & Compliance"
+
+# 📝 Documentation
+documentation:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file:
+              - "**/*.md"
+              - "docs/**"
+              - "LICENSE"
+              - "**/*.mdx"
+      - title: "docs:*"
+      - title: "doc:*"
+      - body: "- [x] 📝 Documentation"
+
+# 📦 Dependencies
+dependencies:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file:
+              - "package.json"
+              - "package-lock.json"
+              - "yarn.lock"
+              - "pnpm-lock.yaml"
+      - title: "build(deps):*"
+      - title: "deps:*"
+      - title: "dependency:*"
+      - title: "dependencies:*"
+      - body: "- [x] 📦 Dependencies Update"
+
+# Component-specific labels for targeted reviews
+component-app:
+  - changed-files:
+      - any-glob-to-any-file: "src/App.tsx"
+
+component-main:
+  - changed-files:
+      - any-glob-to-any-file: "src/main.tsx"
+
+component-game:
+  - changed-files:
+      - any-glob-to-any-file: "src/components/Game.tsx"
+
+component-ui:
+  - changed-files:
+      - any-glob-to-any-file: "src/components/UI/**"
+
+# PixiJS-specific labels
+pixi-components:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "src/**/*pixi*"
+          - "src/**/*Pixi*"
+
+# Game assets
+assets:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "src/assets/**"
+          - "public/**/*.png"
+          - "public/**/*.jpg"
+          - "public/**/*.svg"
+          - "public/**/*.mp3"
+          - "public/**/*.wav"
+          - "public/**/*.ogg"
+
+# Coverage-driven labels (based on current test coverage)
+needs-tests:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "src/components/**"
+          - "src/hooks/**"
+
+high-coverage:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "src/App.tsx"
+          - "src/main.tsx"
+
+test-coverage-impact:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file:
+              - "**/*.test.{ts,tsx}"
+              - "**/__tests__/**"
+
+# Configuration files
+config:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "**/vite.config.*"
+          - "**/vitest.config.*"
+          - "**/cypress.config.*"
+          - "**/eslint.config.*"
+          - "**/tsconfig*.json"
+
+# Development environment
+devcontainer:
+  - changed-files:
+      - any-glob-to-any-file:
+          - ".devcontainer/**"
+          - ".codespaces/**"
+
+# E2E testing
+e2e:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "cypress/**"
+          - "**/*.cy.*"
+
+# Type definitions
+types:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "src/types/**"
+          - "**/*.d.ts"
