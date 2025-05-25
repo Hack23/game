@@ -154,12 +154,12 @@ jobs:
         env:
           VITE_APP_VERSION: ${{ needs.prepare.outputs.version }}
 
-      - name: Create artifacts directory
+      - name: Create release artifacts
         run: |
-          mkdir -p release-artifacts
-          # Use build directory instead of dist to match vite config
+          # Create the zip file from the dist directory
           cd dist
           zip -r ../game-${{ needs.prepare.outputs.version }}.zip .
+          cd ..
 
       - name: Upload build artifact
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
@@ -271,19 +271,18 @@ jobs:
             artifacts/security/game-${{ needs.prepare.outputs.version }}.spdx.json.intoto.jsonl
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      # Selectively clean only application files
-      - name: Clean application files
+      # Prepare docs directory for GitHub Pages
+      - name: Prepare docs directory
         run: |
-          # Only remove specific application files, preserving documentation
-          rm -rf docs/index.html docs/assets
-          # Log the cleanup for debugging
-          echo "Application files cleaned at $(date)" > docs/app-update-info.txt
+          mkdir -p docs
+          # Clean only application files, preserve documentation
+          rm -rf docs/index.html docs/assets docs/*.js docs/*.css
 
       # Deploy new application version
       - name: Deploy new version
         run: |
-          mkdir -p docs
-          unzip -o artifacts/dist/game-${{ needs.prepare.outputs.version }}.zip -d docs/
+          # Extract the built application to docs
+          unzip -o artifacts/build/game-${{ needs.prepare.outputs.version }}.zip -d docs/
           # Create version marker for traceability
           echo "Version ${{ needs.prepare.outputs.version }} deployed at $(date)" > docs/version.txt
 
