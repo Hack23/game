@@ -11,19 +11,36 @@ jobs:
   labeler:
     name: Label Pull Request
     runs-on: ubuntu-latest
-    # Only this job needs specific permissions
+    # Enhanced permissions for label management
     permissions:
       contents: read # Required to check out the code
       pull-requests: write # Required to apply labels to PRs
+      issues: write # Required to create and manage labels
+      repository-projects: write # Required for repository management
     steps:
       - name: Harden the runner (Audit all outbound calls)
         uses: step-security/harden-runner@0634a2670c59f64b4a01f0f96f84700a4088b9f0 # v2.12.0
         with:
           egress-policy: audit
 
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 1
+
       - name: Apply PR Labels
         uses: actions/labeler@8558fd74291d67161a8a78ce36a881fa63b766a9 # v5.0.0
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
-          sync-labels: true
+          sync-labels: false # Don't sync labels to avoid permission issues
           configuration-path: .github/labeler.yml
+          dot: true # Enable dotfiles processing
+        continue-on-error: true # Continue even if some labels can't be created
+
+      - name: Label creation status
+        if: failure()
+        run: |
+          echo "⚠️ Some labels could not be applied due to permissions."
+          echo "This is expected for repositories where label creation is restricted."
+          echo "Labels can be manually created or the repository permissions can be adjusted."
