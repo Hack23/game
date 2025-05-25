@@ -1,6 +1,6 @@
 # Game Template
 
-A clean, minimal template for building games with React, TypeScript, and Vite - built with **security-first principles**.
+A clean, minimal template for building games with React, TypeScript, PixiJS, and Vite - built with **security-first principles**.
 
 ## Badges
 
