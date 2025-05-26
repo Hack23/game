@@ -1,0 +1,297 @@
+name: Build, Attest and Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to release (vX.Y.Z format)"
+        required: true
+        default: "v0.1.0"
+      prerelease:
+        description: "Is this a pre-release?"
+        type: boolean
+        default: false
+  push:
+    tags:
+      - "v*"
+
+# Restrict top-level permissions to minimum required defaults
+permissions: read-all
+
+jobs:
+  prepare:
+    name: Prepare Release
+    runs-on: ubuntu-latest
+    # Only prepare job needs write permissions for commit and tagging
+    permissions:
+      contents: write # Required for git auto-commit
+    outputs:
+      version: ${{ steps.get-version.outputs.version }}
+      is_prerelease: ${{ github.event.inputs.prerelease || 'false' }}
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@0634a2670c59f64b4a01f0f96f84700a4088b9f0 # v2.12.0
+        with:
+          egress-policy: audit
+
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+
+      - name: Get version
+        id: get-version
+        run: |
+          if [[ "${{ github.event_name }}" == "push" ]]; then
+            VERSION=${GITHUB_REF#refs/tags/}
+          else
+            VERSION=${{ github.event.inputs.version }}
+          fi
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "Version: ${VERSION}"
+
+      - name: Setup display and dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libnss3 libxss1 libasound2t64 libxtst6 xauth
+          sudo mkdir -p /var/run/dbus
+          sudo dbus-daemon --system --fork
+
+      - name: Setup Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: "24"
+          cache: "npm"
+
+      - name: Cache dependencies
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Cache Cypress binary
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: ~/.cache/Cypress
+          key: cypress-${{ runner.os }}-${{ hashFiles('**/package.json') }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: build
+        run: npm run build
+
+      - name: Verify Cypress
+        run: npx cypress verify
+
+      - name: Start app and run Cypress tests
+        run: |
+          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" npm run test:e2e
+        env:
+          CYPRESS_VIDEO: false
+
+      # Run tests with coverage
+      - name: Run tests with coverage
+        run: npm run coverage
+
+      - name: Set Version for release
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          PLAIN_VERSION="${{ github.event.inputs.version }}"
+          # Remove 'v' prefix if present
+          PLAIN_VERSION="${PLAIN_VERSION#v}"
+          npm version $PLAIN_VERSION --no-git-tag-version
+
+      - uses: stefanzweifel/git-auto-commit-action@b863ae1933cb653a53c021fe36dbb774e1fb9403 # v5.2.0
+        if: github.event_name == 'workflow_dispatch'
+        with:
+          commit_message: "chore(release): bump version to ${{ github.event.inputs.version }}"
+          tagging_message: "${{ github.event.inputs.version }}"
+
+  build:
+    name: Build Release Package
+    needs: [prepare]
+    runs-on: ubuntu-latest
+    # Build job needs specific permissions for attestations
+    permissions:
+      contents: read
+      id-token: write # Required for OIDC
+      attestations: write # Required for SBOM and build attestations
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@0634a2670c59f64b4a01f0f96f84700a4088b9f0 # v2.12.0
+        with:
+          egress-policy: audit
+
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+          # Use GITHUB_REF directly for tag events
+          ref: ${{ github.event_name == 'push' && github.ref || github.event_name == 'workflow_dispatch' && github.event.inputs.version || '' }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: "24"
+          cache: "npm"
+
+      - name: Cache dependencies
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+        env:
+          VITE_APP_VERSION: ${{ needs.prepare.outputs.version }}
+
+      - name: Create release artifacts
+        run: |
+          # Create the zip file from the dist directory
+          cd dist
+          zip -r ../game-${{ needs.prepare.outputs.version }}.zip .
+          cd ..
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: build-artifacts
+          path: |
+            dist/
+            game-${{ needs.prepare.outputs.version }}.zip
+          if-no-files-found: error
+
+      - name: Generate SBOM
+        uses: anchore/sbom-action@e11c554f704a0b820cbf8c51673f6945e0731532 # v0.20.0
+        id: sbom
+        with:
+          format: spdx-json
+          output-file: game-${{ needs.prepare.outputs.version }}.spdx.json
+          artifact-name: game-${{ needs.prepare.outputs.version }}
+
+      - name: Generate artifact attestation
+        uses: actions/attest-build-provenance@db473fddc028af60658334401dc6fa3ffd8669fd # v2.3.0
+        id: attest
+        with:
+          subject-path: game-${{ needs.prepare.outputs.version }}.zip
+          subject-digest-algorithm: sha256
+          bundle-path: game-${{ needs.prepare.outputs.version }}.zip.intoto.jsonl
+
+      - name: Copy artifact attestation for zip
+        run: cp ${{ steps.attest.outputs.bundle-path }} game-${{ needs.prepare.outputs.version }}.zip.intoto.jsonl
+
+      - name: Generate SBOM attestation
+        id: attestsbom
+        uses: actions/attest-sbom@115c3be05ff3974bcbd596578934b3f9ce39bf68 # v2.2.0
+        with:
+          subject-path: game-${{ needs.prepare.outputs.version }}.zip
+          sbom-path: game-${{ needs.prepare.outputs.version }}.spdx.json
+
+      - name: Copy SBOM attestation for zip
+        run: cp ${{ steps.attestsbom.outputs.bundle-path }} game-${{ needs.prepare.outputs.version }}.spdx.json.intoto.jsonl
+
+      - name: Upload security artifacts
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: security-artifacts
+          path: |
+            game-${{ needs.prepare.outputs.version }}.spdx.json
+            game-${{ needs.prepare.outputs.version }}.zip.intoto.jsonl
+            game-${{ needs.prepare.outputs.version }}.spdx.json.intoto.jsonl
+          if-no-files-found: error
+
+  release:
+    name: Create Release
+    needs: [prepare, build]
+    runs-on: ubuntu-latest
+    # Release job needs specific permissions to create GitHub releases
+    permissions:
+      contents: write # Required to create releases
+      id-token: write # Required for OIDC
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@0634a2670c59f64b4a01f0f96f84700a4088b9f0 # v2.12.0
+        with:
+          egress-policy: audit
+
+      # Checkout main branch to get latest documentation
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+          ref: main # Always use main branch for deployment
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4.2.1
+        with:
+          name: build-artifacts
+          path: artifacts/build
+
+      - name: Download security artifacts
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4.2.1
+        with:
+          name: security-artifacts
+          path: artifacts/security
+
+      - name: Draft Release Notes
+        id: release-drafter
+        uses: release-drafter/release-drafter@b1476f6e6eb133afa41ed8589daba6dc69b4d3f5 # v6.1.0
+        with:
+          version: ${{ needs.prepare.outputs.version }}
+          tag: ${{ needs.prepare.outputs.version }}
+          name: Game ${{ needs.prepare.outputs.version }}
+          publish: false
+          prerelease: ${{ needs.prepare.outputs.is_prerelease }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Create GitHub Release with all artifacts
+      - name: Create GitHub Release
+        uses: ncipollo/release-action@440c8c1cb0ed28b9f43e4d1d670870f059653174 # v1.16.0
+        with:
+          tag: ${{ needs.prepare.outputs.version }}
+          name: Game ${{ needs.prepare.outputs.version }}
+          body: ${{ steps.release-drafter.outputs.body }}
+          generateReleaseNotes: true
+          draft: false
+          prerelease: ${{ needs.prepare.outputs.is_prerelease }}
+          artifacts: |
+            artifacts/build/game-${{ needs.prepare.outputs.version }}.zip
+            artifacts/security/game-${{ needs.prepare.outputs.version }}.spdx.json
+            artifacts/security/game-${{ needs.prepare.outputs.version }}.zip.intoto.jsonl
+            artifacts/security/game-${{ needs.prepare.outputs.version }}.spdx.json.intoto.jsonl
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      # Prepare docs directory for GitHub Pages
+      - name: Prepare docs directory
+        run: |
+          mkdir -p docs
+          # Clean only application files, preserve documentation
+          rm -rf docs/index.html docs/assets docs/*.js docs/*.css
+
+      # Deploy new application version
+      - name: Deploy new version
+        run: |
+          # Extract the built application to docs
+          unzip -o artifacts/build/game-${{ needs.prepare.outputs.version }}.zip -d docs/
+          # Create version marker for traceability
+          echo "Version ${{ needs.prepare.outputs.version }} deployed at $(date)" > docs/version.txt
+
+      # Final deployment with all components
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@6c2d9db40f9296374acc17b90404b6e8864128c8 # v4.7.3
+        with:
+          folder: docs
+          target-folder: docs
+          branch: main
+          clean: false
+          commit-message: "chore(release): deploy version ${{ needs.prepare.outputs.version }}"

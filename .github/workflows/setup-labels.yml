@@ -1,0 +1,175 @@
+name: Setup Repository Labels
+
+on:
+  workflow_dispatch:
+    inputs:
+      recreate_all:
+        description: "Recreate all labels (deletes existing)"
+        type: boolean
+        default: false
+
+# Enhanced permissions for label management
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  setup-labels:
+    name: Create Repository Labels
+    runs-on: ubuntu-latest
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@0634a2670c59f64b4a01f0f96f84700a4088b9f0 # v2.12.0
+        with:
+          egress-policy: audit
+
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Setup GitHub CLI
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
+
+      - name: Remove existing labels (if requested)
+        if: github.event.inputs.recreate_all == 'true'
+        run: |
+          echo "🗑️ Removing existing labels..."
+          gh label list --json name --jq '.[].name' | while read label; do
+            echo "Deleting: $label"
+            gh label delete "$label" --confirm || echo "Failed to delete: $label"
+          done
+
+      - name: Create Labels
+        run: |
+          # Function to create or update label
+          create_or_update_label() {
+            local name="$1"
+            local color="$2"
+            local description="$3"
+            
+            if gh label list --search "$name" --limit 1 | grep -q "^$name"; then
+              echo "📝 Updating label: $name"
+              gh label edit "$name" --color "$color" --description "$description" || echo "❌ Failed to update: $name"
+            else
+              echo "✨ Creating label: $name"
+              gh label create "$name" --color "$color" --description "$description" || echo "❌ Failed to create: $name"
+            fi
+          }
+
+          echo "🚀 Setting up repository labels..."
+
+          # 🚀 Features and Enhancements
+          create_or_update_label "feature" "0052cc" "New feature or request"
+          create_or_update_label "enhancement" "a2eeef" "Enhancement to existing functionality"
+
+          # 🐛 Bug Fixes
+          create_or_update_label "bug" "d73a4a" "Something isn't working"
+
+          # 🎮 Game Development
+          create_or_update_label "game-logic" "ff6b6b" "Game logic and mechanics"
+          create_or_update_label "graphics" "ffa726" "Graphics and rendering (PixiJS)"
+          create_or_update_label "audio" "ab47bc" "Audio and sound effects"
+          create_or_update_label "pixi-components" "ff8a65" "PixiJS component updates"
+
+          # 🎨 UI/UX
+          create_or_update_label "ui" "e1bee7" "User interface improvements"
+          create_or_update_label "design" "f48fb1" "Design and styling updates"
+
+          # 🏗️ Infrastructure
+          create_or_update_label "infrastructure" "1976d2" "CI/CD and build infrastructure"
+          create_or_update_label "performance" "00897b" "Performance improvements"
+          create_or_update_label "config" "607d8b" "Configuration changes"
+
+          # 🔄 Code Quality
+          create_or_update_label "refactor" "ffb74d" "Code refactoring"
+          create_or_update_label "testing" "26c6da" "Testing improvements"
+          create_or_update_label "types" "5c6bc0" "TypeScript type improvements"
+
+          # 🔒 Security
+          create_or_update_label "security" "b71c1c" "Security improvements"
+
+          # 📝 Documentation
+          create_or_update_label "documentation" "0075ca" "Documentation updates"
+
+          # 📦 Dependencies
+          create_or_update_label "dependencies" "0366d6" "Dependency updates"
+
+          # 🧪 Testing
+          create_or_update_label "test-coverage-impact" "00e676" "Impacts test coverage"
+          create_or_update_label "needs-tests" "ff5722" "Needs test coverage"
+          create_or_update_label "e2e" "9c27b0" "End-to-end testing"
+
+          # 🎨 Assets
+          create_or_update_label "assets" "795548" "Game assets and resources"
+
+          # 🔧 Development
+          create_or_update_label "devcontainer" "3f51b5" "Development container updates"
+
+          # Component labels
+          create_or_update_label "component-app" "e0e0e0" "App component changes"
+          create_or_update_label "component-main" "e0e0e0" "Main component changes"
+          create_or_update_label "component-game" "e0e0e0" "Game component changes"
+          create_or_update_label "component-ui" "e0e0e0" "UI component changes"
+
+          # Coverage labels
+          create_or_update_label "high-coverage" "4caf50" "High test coverage areas"
+
+          # Priority labels
+          create_or_update_label "priority-high" "d73027" "High priority"
+          create_or_update_label "priority-medium" "fb9a99" "Medium priority"
+          create_or_update_label "priority-low" "fee08b" "Low priority"
+
+          # Size labels
+          create_or_update_label "size-xs" "3cbf00" "Extra small change"
+          create_or_update_label "size-s" "5d9801" "Small change"
+          create_or_update_label "size-m" "7f7f00" "Medium change"
+          create_or_update_label "size-l" "a67c00" "Large change"
+          create_or_update_label "size-xl" "d04437" "Extra large change"
+
+          # Workflow labels
+          create_or_update_label "good first issue" "7057ff" "Good for newcomers"
+          create_or_update_label "help wanted" "008672" "Extra attention is needed"
+          create_or_update_label "wontfix" "ffffff" "This will not be worked on"
+          create_or_update_label "duplicate" "cfd3d7" "This issue or pull request already exists"
+          create_or_update_label "invalid" "e4e669" "This doesn't seem right"
+          create_or_update_label "question" "d876e3" "Further information is requested"
+
+          echo "✅ Label setup complete!"
+
+      - name: Verify Labels
+        run: |
+          echo "📋 Current repository labels:"
+          gh label list --limit 100
+
+      - name: Test Labeler Configuration
+        run: |
+          echo "🔍 Validating labeler configuration..."
+          if [[ -f ".github/labeler.yml" ]]; then
+            echo "✅ Labeler configuration file exists"
+            # Count labels in config
+            label_count=$(grep -E "^[a-z].*:" .github/labeler.yml | wc -l)
+            echo "📊 Found $label_count label definitions in config"
+          else
+            echo "❌ Labeler configuration file not found"
+            exit 1
+          fi
+
+          # Verify key labels exist
+          key_labels=("infrastructure" "documentation" "security" "testing" "bug" "feature")
+          for label in "${key_labels[@]}"; do
+            if gh label list --search "$label" --limit 1 | grep -q "^$label"; then
+              echo "✅ Key label exists: $label"
+            else
+              echo "❌ Missing key label: $label"
+            fi
+          done
+
+      - name: Summary
+        run: |
+          total_labels=$(gh label list --limit 100 | wc -l)
+          echo "🎉 Setup complete!"
+          echo "📊 Total labels in repository: $total_labels"
+          echo ""
+          echo "🔗 The labeler workflow should now work correctly."
+          echo "📝 Labels will be automatically applied to PRs based on file changes."

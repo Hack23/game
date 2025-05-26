@@ -1,0 +1,178 @@
+name-template: "Release $RESOLVED_VERSION"
+tag-template: "$RESOLVED_VERSION"
+categories:
+  - title: "🚀 New Features"
+    labels:
+      - "feature"
+      - "enhancement"
+
+  - title: "🎮 Game Development"
+    labels:
+      - "game-logic"
+      - "graphics"
+      - "audio"
+      - "pixi-components"
+
+  - title: "🎨 UI/UX Improvements"
+    labels:
+      - "ui"
+      - "design"
+      - "style"
+
+  - title: "🏗️ Infrastructure & Performance"
+    labels:
+      - "infrastructure"
+      - "performance"
+      - "build"
+      - "config"
+
+  - title: "🔄 Code Quality & Refactoring"
+    labels:
+      - "refactor"
+      - "testing"
+      - "types"
+
+  - title: "🔒 Security & Compliance"
+    labels:
+      - "security"
+
+  - title: "📝 Documentation"
+    labels:
+      - "documentation"
+
+  - title: "📦 Dependencies"
+    labels:
+      - "dependencies"
+
+  - title: "🐛 Bug Fixes"
+    labels:
+      - "bug"
+      - "fix"
+
+  - title: "🧪 Test Coverage Improvements"
+    labels:
+      - "test-coverage-impact"
+      - "needs-tests"
+      - "e2e"
+
+  - title: "🎨 Assets & Resources"
+    labels:
+      - "assets"
+
+  - title: "🔧 Development Environment"
+    labels:
+      - "devcontainer"
+
+  - title: "⚙️ Component Updates"
+    labels:
+      - "component-app"
+      - "component-main"
+      - "component-game"
+      - "component-ui"
+
+change-template: "- $TITLE @$AUTHOR (#$NUMBER)"
+exclude-labels:
+  - "skip-changelog"
+
+include-paths:
+  - "src"
+  - "public"
+  - "docs"
+  - ".github"
+  - ".devcontainer"
+
+template: |
+  # Highlights
+  $CHANGES
+
+  ## Security & Quality
+  [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/Hack23/game/badge)](https://scorecard.dev/viewer/?uri=github.com/Hack23/game)
+
+  ## Security Compliance
+  [![SLSA 3](https://slsa.dev/images/gh-badge-level3.svg)](https://github.com/Hack23/game/attestations/)
+
+  ## Game Development Stack
+  - ⚡ **Vite** - Fast build tool and dev server
+  - ⚛️ **React 19** - Modern React with hooks  
+  - 🔷 **TypeScript** - Strict typing with latest standards
+  - 🎮 **PixiJS 8.x** - High-performance WebGL renderer
+  - 🎵 **Howler.js** - Audio library for games
+  - 🧪 **Vitest** - Fast unit testing with coverage
+  - 🌲 **Cypress** - Reliable E2E testing
+
+  ## Contributors
+  Thanks to $CONTRIBUTORS for their contributions to this release!
+
+  **Full Changelog**: https://github.com/Hack23/game/compare/$PREVIOUS_TAG...$RESOLVED_VERSION
+
+version-resolver:
+  major:
+    labels:
+      - "major"
+      - "breaking"
+  minor:
+    labels:
+      - "feature"
+      - "enhancement"
+      - "game-logic"
+      - "graphics"
+      - "audio"
+  patch:
+    labels:
+      - "bug"
+      - "security"
+      - "dependencies"
+      - "documentation"
+      - "performance"
+      - "refactor"
+    # Detect patch version from conventional commit messages
+    pattern: '^(fix|refactor|perf|security|build\(deps\)|docs|chore)(\([^)]+\))?:'
+  default: patch
+
+autolabeler:
+  - label: "feature"
+    title:
+      - '/^feat(\([^)]+\))?:/i'
+  - label: "bug"
+    title:
+      - '/^fix(\([^)]+\))?:/i'
+  - label: "documentation"
+    title:
+      - '/^docs(\([^)]+\))?:/i'
+  - label: "enhancement"
+    title:
+      - '/^enhance(\([^)]+\))?:/i'
+  - label: "ui"
+    title:
+      - '/^style(\([^)]+\))?:/i'
+      - '/^ui(\([^)]+\))?:/i'
+      - '/^design(\([^)]+\))?:/i'
+  - label: "dependencies"
+    title:
+      - '/^build\(deps\):/i'
+      - '/^deps(\([^)]+\))?:/i'
+  - label: "security"
+    title:
+      - '/^security(\([^)]+\))?:/i'
+  - label: "performance"
+    title:
+      - '/^perf(\([^)]+\))?:/i'
+  - label: "refactor"
+    title:
+      - '/^refactor(\([^)]+\))?:/i'
+  - label: "game-logic"
+    title:
+      - '/^game(\([^)]+\))?:/i'
+      - '/^logic(\([^)]+\))?:/i'
+  - label: "graphics"
+    title:
+      - '/^graphics(\([^)]+\))?:/i'
+      - '/^pixi(\([^)]+\))?:/i'
+      - '/^render(\([^)]+\))?:/i'
+  - label: "audio"
+    title:
+      - '/^audio(\([^)]+\))?:/i'
+      - '/^sound(\([^)]+\))?:/i'
+  - label: "testing"
+    title:
+      - '/^test(\([^)]+\))?:/i'

@@ -1,0 +1,17 @@
+{
+  "reporterEnabled": "cypress-junit-reporter, spec",
+  "cypressJunitReporterReporterOptions": {
+    "mochaFile": "cypress/results/junit-[hash].xml",
+    "toConsole": true,
+    "attachments": true,
+    "includePending": true,
+    "testCaseSwitchClassnameAndName": false
+  },
+  "specReporterOptions": {
+    "displayStacktrace": "all",
+    "displaySuccessfullSpec": true,
+    "displayFailureSpec": true,
+    "displayPendingSpec": true,
+    "displayDuration": true
+  }
+}

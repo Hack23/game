@@ -1,0 +1,78 @@
+name: "Pull Request Automatic Labeler"
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened, edited]
+
+# Set default permissions to read-only
+permissions: read-all
+
+jobs:
+  labeler:
+    name: Label Pull Request
+    runs-on: ubuntu-latest
+    # Enhanced permissions for label management
+    permissions:
+      contents: read # Required to check out the code
+      pull-requests: write # Required to apply labels to PRs
+      issues: write # Required to create and manage labels
+      repository-projects: write # Required for repository management
+    steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@0634a2670c59f64b4a01f0f96f84700a4088b9f0 # v2.12.0
+        with:
+          egress-policy: audit
+
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 1
+
+      - name: Check if labels exist
+        id: check-labels
+        run: |
+          echo "Checking if required labels exist..."
+          missing_labels=()
+
+          # Key labels that should exist
+          key_labels=("infrastructure" "documentation" "security" "testing" "bug" "feature" "enhancement")
+
+          for label in "${key_labels[@]}"; do
+            if ! gh label list --search "$label" --limit 1 | grep -q "^$label"; then
+              missing_labels+=("$label")
+            fi
+          done
+
+          if [ ${#missing_labels[@]} -gt 0 ]; then
+            echo "⚠️ Missing labels: ${missing_labels[*]}"
+            echo "missing_labels=true" >> $GITHUB_OUTPUT
+            echo "Run the 'Setup Repository Labels' workflow first to create all required labels."
+          else
+            echo "✅ All key labels exist"
+            echo "missing_labels=false" >> $GITHUB_OUTPUT
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Apply PR Labels
+        uses: actions/labeler@8558fd74291d67161a8a78ce36a881fa63b766a9 # v5.0.0
+        with:
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"
+          sync-labels: false # Don't sync labels to avoid permission issues
+          configuration-path: .github/labeler.yml
+          dot: true # Enable dotfiles processing
+        continue-on-error: true # Continue even if some labels can't be created
+
+      - name: Label application status
+        run: |
+          if [ "${{ steps.check-labels.outputs.missing_labels }}" = "true" ]; then
+            echo "⚠️ Some labels could not be applied because they don't exist yet."
+            echo "📝 To fix this:"
+            echo "   1. Go to Actions → Setup Repository Labels"
+            echo "   2. Click 'Run workflow'"
+            echo "   3. Wait for completion"
+            echo "   4. Re-run this labeler workflow"
+          else
+            echo "✅ Labeler completed successfully"
+          fi

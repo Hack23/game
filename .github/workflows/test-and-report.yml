@@ -1,0 +1,201 @@
+name: Test and Report
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+# Set default permissions to read-only
+permissions: read-all
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    # Only needs read permissions
+    permissions:
+      contents: read # Required to check out code
+    steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@0634a2670c59f64b4a01f0f96f84700a4088b9f0 # v2.12.0
+        with:
+          egress-policy: audit
+
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: "24"
+          cache: "npm"
+
+      - name: Setup display and dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libnss3 libxss1 libasound2t64 libxtst6 xauth
+          sudo mkdir -p /var/run/dbus
+          sudo dbus-daemon --system --fork
+
+      - name: Cache dependencies
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Cache Cypress binary
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: ~/.cache/Cypress
+          key: cypress-${{ runner.os }}-${{ hashFiles('**/package.json') }}
+
+      - name: Verify Cypress
+        run: npx cypress verify
+
+  build-validation:
+    needs: prepare
+    runs-on: ubuntu-latest
+    # Needs write permissions to upload artifacts
+    permissions:
+      contents: write # Required to check out code
+      actions: read # Required to use GitHub actions
+      id-token: write # Required for attestation
+      pull-requests: write # Required to upload artifacts (implicit permission)
+    steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@0634a2670c59f64b4a01f0f96f84700a4088b9f0 # v2.12.0
+        with:
+          egress-policy: audit
+
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: "24"
+          cache: "npm"
+
+      - name: Cache dependencies
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: build-output
+          path: dist
+          if-no-files-found: error
+
+  unit-tests:
+    needs: [prepare, build-validation]
+    runs-on: ubuntu-latest
+    # Needs write permissions to upload artifacts
+    permissions:
+      contents: write # Required to check out code
+      actions: read # Required to use GitHub actions
+      checks: write # Required to upload artifacts (implicit permission)
+    steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@0634a2670c59f64b4a01f0f96f84700a4088b9f0 # v2.12.0
+        with:
+          egress-policy: audit
+
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: "24"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run unit tests with coverage
+        run: npm run test:ci
+        env:
+          JEST_JUNIT_OUTPUT_DIR: "coverage"
+          JEST_JUNIT_OUTPUT_NAME: "junit.xml"
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: coverage-report
+          path: coverage
+          if-no-files-found: error
+
+  e2e-tests:
+    needs: [prepare, build-validation]
+    runs-on: ubuntu-latest
+    # Needs write permissions to upload artifacts
+    permissions:
+      contents: write # Required to check out code
+      actions: read # Required to use GitHub actions
+      checks: write # Required to upload artifacts (implicit permission)
+      pull-requests: write
+    steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@0634a2670c59f64b4a01f0f96f84700a4088b9f0 # v2.12.0
+        with:
+          egress-policy: audit
+
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: "24"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Start app and run Cypress tests
+        run: |
+          xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" npm run test:e2e
+        env:
+          CYPRESS_VIDEO: true
+
+      - name: Upload Cypress results
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: cypress-results
+          path: |
+            cypress/videos
+            cypress/screenshots
+            cypress/results
+
+  report:
+    needs: [unit-tests, e2e-tests]
+    runs-on: ubuntu-latest
+    if: always()
+    # Needs write permissions to upload artifacts
+    permissions:
+      contents: write # Required to check out code
+      actions: read # Required to use GitHub actions
+      checks: write # Required to upload artifacts (implicit permission)
+    steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@0634a2670c59f64b4a01f0f96f84700a4088b9f0 # v2.12.0
+        with:
+          egress-policy: audit
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          path: artifacts
+
+      - name: Upload combined reports
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: test-reports
+          path: |
+            coverage
+            artifacts/cypress-results
