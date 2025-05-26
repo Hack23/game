@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { extendSpy } from "./test/setup";
 
-describe("PixiJS Game App", () => {
+describe("Rubik's Cube App", () => {
   let App: React.ComponentType;
 
   beforeEach(async () => {
@@ -22,50 +22,89 @@ describe("PixiJS Game App", () => {
 
   it("renders the game title", () => {
     render(<App />);
-    const heading = screen.getByRole("heading", { name: /PixiJS React Game/i });
+    const heading = screen.getByRole("heading", { name: /Rubik's Cube/i });
     expect(heading).toBeInTheDocument();
   });
 
   it("displays the game instructions", () => {
     render(<App />);
     const instructions = screen.getByText(
-      /A minimal PixiJS game built with @pixi\/react/i
+      /Standard Rubik's Cube with notation/i
     );
     expect(instructions).toBeInTheDocument();
   });
 
-  it("renders the PixiJS Application component", () => {
+  it("renders the PixiJS Application component with correct dimensions", () => {
     render(<App />);
     const pixiApp = screen.getByTestId("pixi-application");
     expect(pixiApp).toBeInTheDocument();
-    expect(pixiApp).toHaveAttribute("data-width", "800");
-    expect(pixiApp).toHaveAttribute("data-height", "600");
+
+    const canvas = pixiApp.querySelector("canvas");
+    expect(canvas).toBeInTheDocument();
+    // Canvas dimensions are calculated based on cube layout
+    expect(canvas).toHaveAttribute("width");
+    expect(canvas).toHaveAttribute("height");
   });
 
-  it("has the correct page structure", () => {
+  it("renders all cube move buttons", () => {
     render(<App />);
 
-    // Check for main container
-    const container = document.querySelector(".app-container");
-    expect(container).toBeInTheDocument();
+    const fButton = screen.getByRole("button", { name: "F" });
+    const rButton = screen.getByRole("button", { name: "R" });
+    const uButton = screen.getByRole("button", { name: "U" });
 
-    // Check for heading
-    const heading = screen.getByRole("heading", { level: 1 });
-    expect(heading).toHaveTextContent("PixiJS React Game");
-
-    // Check for instructions paragraph
-    const instructions = screen.getByText(/minimal PixiJS game/i);
-    expect(instructions).toBeInTheDocument();
+    expect(fButton).toBeInTheDocument();
+    expect(rButton).toBeInTheDocument();
+    expect(uButton).toBeInTheDocument();
   });
 
-  it("calls extend function on module load", () => {
-    // The extend function should have been called when App.tsx was imported
-    // in the beforeEach hook
+  it("renders shuffle and reset buttons", () => {
+    render(<App />);
+
+    const shuffleButton = screen.getByRole("button", { name: "Shuffle" });
+    const resetButton = screen.getByRole("button", { name: "Reset" });
+
+    expect(shuffleButton).toBeInTheDocument();
+    expect(resetButton).toBeInTheDocument();
+  });
+
+  it("renders the color legend", () => {
+    render(<App />);
+
+    expect(screen.getByText("White (Up)")).toBeInTheDocument();
+    expect(screen.getByText("Yellow (Down)")).toBeInTheDocument();
+    expect(screen.getByText("Green (Front)")).toBeInTheDocument();
+    expect(screen.getByText("Blue (Right)")).toBeInTheDocument();
+    expect(screen.getByText("Orange (Left)")).toBeInTheDocument();
+    expect(screen.getByText("Red (Back)")).toBeInTheDocument();
+  });
+
+  it("calls extend function with correct components", () => {
     expect(extendSpy).toHaveBeenCalled();
     expect(extendSpy).toHaveBeenCalledWith({
       Container: expect.any(Function),
       Graphics: expect.any(Function),
-      Text: expect.any(Function),
     });
+  });
+
+  it("handles move button clicks without errors", () => {
+    render(<App />);
+
+    const fButton = screen.getByRole("button", { name: "F" });
+    expect(() => fireEvent.click(fButton)).not.toThrow();
+  });
+
+  it("handles shuffle button click without errors", () => {
+    render(<App />);
+
+    const shuffleButton = screen.getByRole("button", { name: "Shuffle" });
+    expect(() => fireEvent.click(shuffleButton)).not.toThrow();
+  });
+
+  it("handles reset button click without errors", () => {
+    render(<App />);
+
+    const resetButton = screen.getByRole("button", { name: "Reset" });
+    expect(() => fireEvent.click(resetButton)).not.toThrow();
   });
 });

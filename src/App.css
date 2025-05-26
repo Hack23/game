@@ -49,35 +49,178 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
+  gap: 1.5rem;
 }
 
 .app-container h1 {
-  font-size: 2.5em;
+  font-size: 2.8em;
   line-height: 1.1;
   margin: 0;
   color: #646cff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .app-container canvas {
-  border: 2px solid #646cff;
+  border: 3px solid #646cff;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  background: #1a1a1a;
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+}
+
+.move-buttons {
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.move-buttons button {
+  padding: 0.8em 1.2em;
+  min-width: 60px;
+  font-size: 1.1em;
+  font-weight: bold;
+  background: linear-gradient(135deg, #646cff, #535bf2);
+  color: white;
+  border: none;
   border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(100, 108, 255, 0.3);
+}
+
+.move-buttons button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(100, 108, 255, 0.4);
+  background: linear-gradient(135deg, #535bf2, #646cff);
+}
+
+.move-buttons button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(100, 108, 255, 0.3);
+}
+
+.action-buttons {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.shuffle-btn {
+  background: linear-gradient(135deg, #ff6b6b, #ee5a5a);
+  color: white;
+  border: none;
+  padding: 0.8em 1.5em;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
+}
+
+.shuffle-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
+  background: linear-gradient(135deg, #ee5a5a, #ff6b6b);
+}
+
+.reset-btn {
+  background: linear-gradient(135deg, #51cf66, #40c057);
+  color: white;
+  border: none;
+  padding: 0.8em 1.5em;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(81, 207, 102, 0.3);
+}
+
+.reset-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(81, 207, 102, 0.4);
+  background: linear-gradient(135deg, #40c057, #51cf66);
+}
+
+.cube-legend {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.8rem;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9em;
+  color: #ccc;
+}
+
+.color-box {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  border: 2px solid #333;
+  flex-shrink: 0;
 }
 
 .instructions {
   color: #888;
   font-style: italic;
   margin: 0;
+  max-width: 600px;
+  line-height: 1.5;
 }
 
 @media (max-width: 900px) {
   .app-container {
     padding: 1rem;
+    gap: 1rem;
+  }
+
+  .app-container h1 {
+    font-size: 2.2em;
   }
 
   .app-container canvas {
     max-width: 100%;
     height: auto;
+  }
+
+  .cube-legend {
+    grid-template-columns: repeat(2, 1fr);
+    font-size: 0.8em;
+  }
+
+  .move-buttons {
+    gap: 0.6rem;
+  }
+
+  .action-buttons {
+    gap: 0.8rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .cube-legend {
+    grid-template-columns: 1fr;
+  }
+
+  .move-buttons button {
+    min-width: 50px;
+    padding: 0.6em 1em;
   }
 }
