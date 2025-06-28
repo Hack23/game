@@ -156,9 +156,8 @@ function GameContent(): JSX.Element {
         {/* Game card container */}
         <layoutContainer
           layout={{
-            width: "90%",
-            maxWidth: 800,
-            height: "90%",
+            width: "100%", // Use full width
+            height: "100%", // Use full height
             backgroundColor: "#161b22",
             borderRadius: 16,
             flexDirection: "column",
@@ -528,11 +527,14 @@ function App(): JSX.Element {
     <div className="app-container">
       <h1>PixiJS React Game</h1>
       <Application
-        width={800}
-        height={600}
+        width={window.innerWidth}
+        height={window.innerHeight - 100} // Account for header/footer
         backgroundColor={0x242424}
         antialias={true}
-        resizeTo={window}
+        resizeTo={window} // This ensures automatic resizing
+        autoDensity={true}
+        resolution={window.devicePixelRatio || 1}
+        powerPreference="high-performance"
       >
         <GameContent />
       </Application>
