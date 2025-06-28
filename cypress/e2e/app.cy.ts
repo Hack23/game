@@ -20,8 +20,10 @@ describe("App E2E", () => {
   });
 
   it("has a functional reset button", () => {
-    // First, get the score to make sure we're starting at zero
-    cy.contains("Score: 0").should("exist");
+    // Assert score starts at 0 using data-score
+    cy.get("[data-testid=score-value]")
+      .invoke("attr", "data-score")
+      .should("eq", "0");
 
     // Click on the target a few times to increase score
     cy.get("[data-testid=target-circle]").click({ force: true });
@@ -29,13 +31,17 @@ describe("App E2E", () => {
     cy.get("[data-testid=target-circle]").click({ force: true });
 
     // Verify the score increased
-    cy.contains("Score: 0").should("not.exist");
+    cy.get("[data-testid=score-value]")
+      .invoke("attr", "data-score")
+      .should("not.eq", "0");
 
     // Now click reset
     cy.get("[data-testid=reset-button]").click({ force: true });
 
     // Verify score is reset to 0
-    cy.contains("Score: 0").should("exist");
+    cy.get("[data-testid=score-value]")
+      .invoke("attr", "data-score")
+      .should("eq", "0");
   });
 
   it("has a functional pause button", () => {
@@ -73,33 +79,33 @@ describe("App E2E", () => {
   });
 
   it("should have interactive target that increases score", () => {
-    // Get initial score
-    let initialScore: string;
-    cy.get("[data-testid=score-display]").then(($score) => {
-      initialScore = $score.text();
+    // Get initial score as string
+    cy.get("[data-testid=score-value]")
+      .invoke("attr", "data-score")
+      .then((initialScore) => {
+        // Click on the target
+        cy.get("[data-testid=target-circle]").click({ force: true });
 
-      // Click on the target
-      cy.get("[data-testid=target-circle]").click({ force: true });
+        // Verify score increased
+        cy.get("[data-testid=score-value]")
+          .invoke("attr", "data-score")
+          .should("not.eq", initialScore);
+      });
 
-      // Verify score increased
-      cy.get("[data-testid=score-display]").should(
-        "not.have.text",
-        initialScore
-      );
-    });
-
-    // Click multiple times and verify position changes
+    // Click multiple times and verify position changes using data-x/data-y
     cy.get("[data-testid=target-circle]").then(($target) => {
-      const initialPosition = $target.position();
+      const initialX = $target.attr("data-x");
+      const initialY = $target.attr("data-y");
 
       // Click the target
       cy.get("[data-testid=target-circle]").click({ force: true });
 
       // Get new position and verify it changed
       cy.get("[data-testid=target-circle]").then(($newTarget) => {
-        const newPosition = $newTarget.position();
-        // Position should change after clicking
-        expect(newPosition).not.to.deep.equal(initialPosition);
+        const newX = $newTarget.attr("data-x");
+        const newY = $newTarget.attr("data-y");
+        expect(newX).not.to.eq(initialX);
+        expect(newY).not.to.eq(initialY);
       });
     });
   });

@@ -367,6 +367,7 @@ function GameContent(): JSX.Element {
                 marginBottom: 20,
               }}
               data-testid="score-display"
+              data-score={gameState.score.toString()}
             >
               <pixiText
                 text="SCORE"
@@ -389,6 +390,7 @@ function GameContent(): JSX.Element {
                 }}
                 data-testid="score-value"
                 data-text={gameState.score.toString()}
+                data-score={gameState.score.toString()}
               />
             </layoutContainer>
 
@@ -485,6 +487,14 @@ function GameContent(): JSX.Element {
                 aria-label="Clickable target"
                 scale={gameState.isPlaying ? 1 : 0.6}
                 alpha={gameState.isPlaying ? 1 : 0.3}
+                data-x={(
+                  (gameState.playerX / 100) *
+                  Math.max(gameAreaWidth * 0.5, 300)
+                ).toString()}
+                data-y={(
+                  (gameState.playerY / 100) *
+                  Math.max(200, 200)
+                ).toString()}
               >
                 <pixiGraphics
                   draw={(g: Graphics) => {
@@ -693,19 +703,20 @@ function App(): JSX.Element {
   return (
     <div className="app-container" data-testid="app-container">
       <h1 data-testid="app-title">PixiJS React Game</h1>
-      <Application
-        width={dimensions.width}
-        height={dimensions.height}
-        backgroundColor={0x242424}
-        antialias={true}
-        resizeTo={window} // This ensures automatic resizing
-        autoDensity={true}
-        resolution={window.devicePixelRatio || 1}
-        powerPreference="high-performance"
-        data-testid="pixi-application"
-      >
-        <GameContent />
-      </Application>
+      <div data-testid="pixi-application">
+        <Application
+          width={dimensions.width}
+          height={dimensions.height}
+          backgroundColor={0x242424}
+          antialias={true}
+          resizeTo={window} // This ensures automatic resizing
+          autoDensity={true}
+          resolution={window.devicePixelRatio || 1}
+          powerPreference="high-performance"
+        >
+          <GameContent />
+        </Application>
+      </div>
       <p className="instructions" data-testid="app-instructions">
         A minimal PixiJS game built with @pixi/react and @pixi/layout
       </p>

@@ -35,7 +35,6 @@ describe("App Component", () => {
 
   it("should display Pixi application", () => {
     render(<App />);
-
     // Verify Pixi Application is rendered
     const pixiApp = screen.getByTestId("pixi-application");
     expect(pixiApp).toBeInTheDocument();
