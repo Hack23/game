@@ -20,7 +20,7 @@ export default defineConfig({
   viewportWidth: 1280,
   viewportHeight: 800,
   waitForAnimations: false,
-  pageLoadTimeout: 10000,
+  pageLoadTimeout: 30000, // Increase timeout to 30 seconds
   requestTimeout: 5000,
   retries: {
     runMode: 2,

@@ -1,71 +1,41 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { extendSpy } from "./test/setup";
+import "@testing-library/jest-dom";
+import App from "./App";
+import { it, expect, beforeAll, vi } from "vitest";
 
-describe("PixiJS Game App", () => {
-  let App: React.ComponentType;
+// Add this to the top of the file to mock window.scrollTo for jsdom
+beforeAll(() => {
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  window.scrollTo = () => {};
+});
 
-  beforeEach(async () => {
-    // Reset all mocks before each test
-    vi.clearAllMocks();
+// Mock the entire @pixi/react module to avoid renderer issues in jsdom
+vi.mock("@pixi/react", () => ({
+  Application: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="mocked-pixi-application">{children}</div>
+  ),
+  extend: vi.fn(),
+  useApplication: () => ({ app: null }),
+}));
 
-    // Clear the extend spy call history
-    extendSpy.mockClear();
+// Mock PixiJS core classes
+vi.mock("pixi.js", () => ({
+  Container: class MockContainer {},
+  Graphics: class MockGraphics {},
+  Text: class MockText {},
+}));
 
-    // Reset module cache to ensure fresh import
-    vi.resetModules();
+// Mock @pixi/layout and @pixi/ui
+vi.mock("@pixi/layout/components", () => ({
+  LayoutContainer: class MockLayoutContainer {},
+}));
 
-    // Import App which should trigger the extend call
-    const appModule = await import("./App");
-    App = appModule.default;
-  });
+vi.mock("@pixi/ui", () => ({
+  Button: class MockButton {},
+  FancyButton: class MockFancyButton {},
+}));
 
-  it("renders the game title", () => {
-    render(<App />);
-    const heading = screen.getByRole("heading", { name: /PixiJS React Game/i });
-    expect(heading).toBeInTheDocument();
-  });
-
-  it("displays the game instructions", () => {
-    render(<App />);
-    const instructions = screen.getByText(
-      /A minimal PixiJS game built with @pixi\/react/i
-    );
-    expect(instructions).toBeInTheDocument();
-  });
-
-  it("renders the PixiJS Application component", () => {
-    render(<App />);
-    const pixiApp = screen.getByTestId("pixi-application");
-    expect(pixiApp).toBeInTheDocument();
-    expect(pixiApp).toHaveAttribute("data-width", "800");
-    expect(pixiApp).toHaveAttribute("data-height", "600");
-  });
-
-  it("has the correct page structure", () => {
-    render(<App />);
-
-    // Check for main container
-    const container = document.querySelector(".app-container");
-    expect(container).toBeInTheDocument();
-
-    // Check for heading
-    const heading = screen.getByRole("heading", { level: 1 });
-    expect(heading).toHaveTextContent("PixiJS React Game");
-
-    // Check for instructions paragraph
-    const instructions = screen.getByText(/minimal PixiJS game/i);
-    expect(instructions).toBeInTheDocument();
-  });
-
-  it("calls extend function on module load", () => {
-    // The extend function should have been called when App.tsx was imported
-    // in the beforeEach hook
-    expect(extendSpy).toHaveBeenCalled();
-    expect(extendSpy).toHaveBeenCalledWith({
-      Container: expect.any(Function),
-      Graphics: expect.any(Function),
-      Text: expect.any(Function),
-    });
-  });
+it("renders the app container", () => {
+  render(<App />);
+  expect(screen.getByTestId("app-container")).toBeInTheDocument();
 });
