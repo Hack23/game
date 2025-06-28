@@ -29,7 +29,7 @@ export default defineConfig({
   // Simplified reporter configuration to avoid CommonJS conflicts
   reporter: "spec",
   e2e: {
-    baseUrl: "http://localhost:5174",
+    baseUrl: "http://localhost:5173",
     specPattern: "cypress/e2e/**/*.cy.{js,jsx,ts,tsx}",
     supportFile: "cypress/support/e2e.ts",
     testIsolation: true,
