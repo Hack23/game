@@ -2,204 +2,271 @@ import "@testing-library/jest-dom";
 import { vi } from "vitest";
 import React from "react";
 
+// Mock for Graphics class
+class MockGraphics {
+  beginFill(_color: number): this {
+    return this;
+  }
+
+  drawRoundedRect(
+    _x: number,
+    _y: number,
+    _width: number,
+    _height: number,
+    _radius: number
+  ): this {
+    return this;
+  }
+
+  drawRect(_x: number, _y: number, _width: number, _height: number): this {
+    return this;
+  }
+
+  endFill(): this {
+    return this;
+  }
+
+  clear(): this {
+    return this;
+  }
+
+  // Add any other methods used in your code
+  circle(_x: number, _y: number, _radius: number): this {
+    return this;
+  }
+
+  stroke(): this {
+    return this;
+  }
+
+  fill(): this {
+    return this;
+  }
+
+  // Add setFillStyle method for compatibility with PixiJS v8
+  setFillStyle(_options: { color: number; alpha?: number }): this {
+    return this;
+  }
+
+  // Add roundRect method for compatibility with PixiJS v8
+  roundRect(
+    _x: number,
+    _y: number,
+    _width: number,
+    _height: number,
+    _radius: number
+  ): this {
+    return this;
+  }
+
+  // Add setStrokeStyle method for compatibility with PixiJS v8
+  setStrokeStyle(_options: {
+    color: number;
+    width?: number;
+    alpha?: number;
+  }): this {
+    return this;
+  }
+
+  // Add moveTo and lineTo methods
+  moveTo(_x: number, _y: number): this {
+    return this;
+  }
+
+  lineTo(_x: number, _y: number): this {
+    return this;
+  }
+}
+
+// Mock pixi.js imports
+vi.mock("pixi.js", () => {
+  return {
+    Container: class {},
+    Graphics: MockGraphics,
+    Text: class {
+      constructor(text: string, style: Record<string, unknown>) {
+        this.text = text;
+        this.style = style;
+      }
+      text: string;
+      style: Record<string, unknown>;
+    },
+  };
+});
+
 // Create a proper spy for the extend function
 const extendSpy = vi.fn();
 
+// Create a robust renderer mock with all needed methods
+const rendererMock = {
+  on: vi.fn(),
+  off: vi.fn(),
+  plugins: {},
+  view: document.createElement("canvas"),
+  screen: { width: 800, height: 600 },
+  resize: vi.fn(),
+  render: vi.fn(),
+  clear: vi.fn(),
+};
+
 // Mock @pixi/react with proper React components
-vi.mock("@pixi/react", () => ({
-  Application: ({
+vi.mock("@pixi/react", () => {
+  return {
+    Application: ({
+      children,
+      width,
+      height,
+      backgroundColor,
+      antialias,
+      resizeTo,
+      autoDensity,
+      resolution,
+      powerPreference,
+      ...rest
+    }: {
+      children?: React.ReactNode;
+      width: number;
+      height: number;
+      backgroundColor: number;
+      antialias: boolean;
+      resizeTo?: Window;
+      autoDensity?: boolean;
+      resolution?: number;
+      powerPreference?: string;
+      [key: string]: any;
+    }) =>
+      React.createElement(
+        "div",
+        {
+          "data-testid": "pixi-application",
+          "data-width": width,
+          "data-height": height,
+          "data-background-color": backgroundColor,
+          "data-antialias": antialias,
+          "data-auto-density": autoDensity,
+          "data-resolution": resolution,
+          "data-power-preference": powerPreference,
+          ...rest,
+        },
+        children
+      ),
+    extend: extendSpy,
+    useApplication: vi.fn(() => ({
+      app: {
+        screen: { width: 800, height: 600 },
+        renderer: rendererMock,
+        stage: {},
+        view: document.createElement("canvas"),
+      },
+    })),
+    Stage: ({
+      children,
+      ...props
+    }: {
+      children?: React.ReactNode;
+      [key: string]: any;
+    }) =>
+      React.createElement(
+        "div",
+        { "data-testid": "pixi-stage", ...props },
+        children
+      ),
+    Container: ({
+      children,
+      ...props
+    }: {
+      children?: React.ReactNode;
+      [key: string]: any;
+    }) =>
+      React.createElement(
+        "div",
+        { "data-testid": "pixi-container", ...props },
+        children
+      ),
+    Graphics: ({
+      draw,
+      ...props
+    }: {
+      draw?: (g: any) => void;
+      [key: string]: any;
+    }) =>
+      React.createElement("div", {
+        "data-testid": "pixi-graphics",
+        "data-has-draw": Boolean(draw),
+        ...props,
+      }),
+    Text: ({
+      text,
+      style,
+      ...props
+    }: {
+      text: string;
+      style?: any;
+      [key: string]: any;
+    }) =>
+      React.createElement(
+        "div",
+        { "data-testid": "pixi-text", "data-text": text, ...props },
+        text
+      ),
+    useTick: vi.fn((callback) => callback && callback(0.1)),
+  };
+});
+
+// Mock @pixi/ui components
+vi.mock("@pixi/ui", () => ({
+  Button: vi.fn().mockImplementation(() => ({})),
+  FancyButton: ({
+    text,
+    onPress,
+    ...props
+  }: {
+    text?: string;
+    onPress?: () => void;
+    [key: string]: any;
+  }) =>
+    React.createElement(
+      "button",
+      {
+        "data-testid": "pixi-fancy-button",
+        onClick: onPress,
+        ...props,
+      },
+      text
+    ),
+}));
+
+// Mock @pixi/layout components
+vi.mock("@pixi/layout/components", () => ({
+  LayoutContainer: ({
     children,
-    width,
-    height,
-    backgroundColor,
-    antialias,
-    resizeTo,
-    autoDensity,
-    resolution,
-    powerPreference,
-    ...rest
+    layout,
+    ...props
   }: {
     children?: React.ReactNode;
-    width: number;
-    height: number;
-    backgroundColor: number;
-    antialias: boolean;
-    resizeTo?: Window;
-    autoDensity?: boolean;
-    resolution?: number;
-    powerPreference?: string;
+    layout?: any;
     [key: string]: any;
   }) =>
     React.createElement(
       "div",
       {
-        "data-testid": "pixi-application",
-        "data-width": width,
-        "data-height": height,
-        "data-background-color": backgroundColor,
-        "data-antialias": antialias,
-        "data-auto-density": autoDensity,
-        "data-resolution": resolution,
-        "data-power-preference": powerPreference,
-        ...rest,
+        "data-testid": "layout-container",
+        "data-layout": JSON.stringify(layout || {}),
+        ...props,
       },
       children
     ),
-  extend: extendSpy,
-  useApplication: vi.fn(() => ({
-    app: {
-      screen: { width: 800, height: 600 },
-      renderer: { on: vi.fn() },
-    },
-  })),
 }));
 
-// Mock @pixi/ui components
-vi.mock("@pixi/ui", () => ({
-  Button: vi.fn().mockImplementation(() => ({})),
-  FancyButton: vi.fn().mockImplementation(() => ({})),
-}));
-
-// Mock @pixi/layout components
-vi.mock("@pixi/layout/components", () => ({
-  LayoutContainer: vi.fn().mockImplementation(() => ({})),
-}));
-
-// Mock @pixi/layout/react
+// Mock @pixi/layout/react and @pixi/layout
 vi.mock("@pixi/layout/react", () => ({}));
-
-// Mock @pixi/layout
 vi.mock("@pixi/layout", () => ({}));
 
-// Mock PixiJS core components with complete exports using importOriginal
-vi.mock("pixi.js", async (importOriginal) => {
-  const actual = (await importOriginal()) as Record<string, unknown>;
-  return {
-    ...actual,
-    Container: vi.fn().mockImplementation(() => ({})),
-    Graphics: vi.fn().mockImplementation(() => ({
-      clear: vi.fn(),
-      setFillStyle: vi.fn(),
-      circle: vi.fn(),
-      rect: vi.fn(),
-      fill: vi.fn(),
-      setStrokeStyle: vi.fn(),
-      stroke: vi.fn(),
-    })),
-    Text: vi.fn().mockImplementation(() => ({})),
-    TextStyle: vi.fn().mockImplementation(() => ({})),
-    Application: vi.fn().mockImplementation(() => ({})),
-    Sprite: vi.fn().mockImplementation(() => ({})),
-    Texture: {
-      from: vi.fn(),
-      EMPTY: {},
-      WHITE: {},
-    },
-    Rectangle: vi.fn().mockImplementation(() => ({})),
-    Point: vi.fn().mockImplementation(() => ({})),
-  };
-});
-
-// Create properly typed React components for PixiJS intrinsic elements
-const createPixiComponent = (displayName: string) => {
-  const Component = ({
-    children,
-    draw,
-    interactive,
-    cursor,
-    onClick,
-    style,
-    text,
-    ...props
-  }: {
-    children?: React.ReactNode;
-    draw?: (graphics: unknown) => void;
-    interactive?: boolean;
-    cursor?: string;
-    onClick?: () => void;
-    style?: Record<string, unknown>;
-    text?: string;
-    [key: string]: unknown;
-  }): React.ReactElement => {
-    // Convert problematic props to strings for DOM compatibility
-    const domProps: Record<string, unknown> = {
-      ...props,
-      "data-testid": displayName.toLowerCase(),
-      "data-has-draw": draw ? "true" : undefined,
-      "data-interactive": interactive ? "true" : undefined,
-      "data-cursor": cursor,
-      "data-style": style ? JSON.stringify(style) : undefined,
-      "data-text": text,
-      // Handle click events properly
-      onClick: onClick,
-    };
-
-    // Clean up undefined values
-    Object.keys(domProps).forEach((key) => {
-      if (domProps[key] === undefined) {
-        delete domProps[key];
-      }
-    });
-
-    return React.createElement("div", domProps, text || children);
-  };
-  Component.displayName = displayName;
-  return Component;
-};
-
-// Define the PixiJS components as proper React components
-const PixiContainer = createPixiComponent("pixi-container");
-const PixiGraphics = createPixiComponent("pixi-graphics");
-const PixiText = createPixiComponent("pixi-text");
-const PixiFancyButton = createPixiComponent("pixi-fancy-button");
-const LayoutContainer = createPixiComponent("layout-container");
-
-// Store original createElement and create a safe override
-const originalCreateElement = React.createElement;
-
-// Create a type-safe createElement override
-const createElementOverride = (
-  type: string | React.ComponentType<unknown>,
-  props: Record<string, unknown> | null,
-  ...children: React.ReactNode[]
-): React.ReactElement => {
-  // Handle PixiJS intrinsic elements
-  if (typeof type === "string") {
-    switch (type) {
-      case "pixiContainer":
-        return originalCreateElement(PixiContainer, props, ...children);
-      case "pixiGraphics":
-        return originalCreateElement(PixiGraphics, props, ...children);
-      case "pixiText":
-        return originalCreateElement(PixiText, props, ...children);
-      case "pixiFancyButton":
-        return originalCreateElement(PixiFancyButton, props, ...children);
-      case "layoutContainer":
-        return originalCreateElement(LayoutContainer, props, ...children);
-      default:
-        // For regular HTML elements, use the original createElement
-        return originalCreateElement(type, props, ...children);
-    }
-  }
-
-  return originalCreateElement(type, props, ...children);
-};
-
-// Override React.createElement safely
-Object.defineProperty(React, "createElement", {
-  value: createElementOverride,
-  writable: true,
-  configurable: true,
-});
-
-// Declare global JSX namespace for PixiJS intrinsic elements
+// Define interface for JSX intrinsic elements
 declare global {
   namespace JSX {
     interface IntrinsicElements {
-      pixiContainer: React.DetailedHTMLProps<
-        React.HTMLAttributes<HTMLDivElement>,
-        HTMLDivElement
-      > & {
+      pixiContainer: React.HTMLAttributes<HTMLDivElement> & {
         x?: number;
         y?: number;
         interactive?: boolean;
@@ -212,11 +279,9 @@ declare global {
         pivot?: { x: number; y: number };
         anchor?: { x: number; y: number };
         layout?: Record<string, unknown>;
+        ref?: React.Ref<unknown>;
       };
-      pixiGraphics: React.DetailedHTMLProps<
-        React.HTMLAttributes<HTMLDivElement>,
-        HTMLDivElement
-      > & {
+      pixiGraphics: React.HTMLAttributes<HTMLDivElement> & {
         draw?: (graphics: unknown) => void;
         x?: number;
         y?: number;
@@ -226,10 +291,7 @@ declare global {
         scale?: number | { x: number; y: number };
         pivot?: { x: number; y: number };
       };
-      pixiText: React.DetailedHTMLProps<
-        React.HTMLAttributes<HTMLDivElement>,
-        HTMLDivElement
-      > & {
+      pixiText: React.HTMLAttributes<HTMLDivElement> & {
         text: string;
         x?: number;
         y?: number;
@@ -241,10 +303,7 @@ declare global {
         pivot?: { x: number; y: number };
         anchor?: { x: number; y: number };
       };
-      pixiFancyButton: React.DetailedHTMLProps<
-        React.HTMLAttributes<HTMLDivElement>,
-        HTMLDivElement
-      > & {
+      pixiFancyButton: React.HTMLAttributes<HTMLDivElement> & {
         defaultView?: Record<string, unknown>;
         hoverView?: Record<string, unknown>;
         pressedView?: Record<string, unknown>;
@@ -254,16 +313,92 @@ declare global {
         x?: number;
         y?: number;
       };
-      layoutContainer: React.DetailedHTMLProps<
-        React.HTMLAttributes<HTMLDivElement>,
-        HTMLDivElement
-      > & {
+      layoutContainer: React.HTMLAttributes<HTMLDivElement> & {
         layout?: Record<string, unknown>;
         ref?: React.Ref<unknown>;
       };
     }
   }
 }
+
+// Transform lowercase JSX elements to proper React components
+const originalCreateElement = React.createElement;
+React.createElement = function (
+  type: React.ElementType | string,
+  props?: Record<string, any> | null,
+  ...children: React.ReactNode[]
+): React.ReactElement {
+  // Transform lowercase pixijs elements to divs with appropriate data attributes
+  if (typeof type === "string") {
+    switch (type.toLowerCase()) {
+      case "pixicontainer":
+      case "pixiContainer":
+        return originalCreateElement(
+          "div",
+          {
+            ...props,
+            "data-testid": "pixi-container",
+            "data-component-type": "container",
+          },
+          ...children
+        );
+
+      case "pixigraphics":
+      case "pixiGraphics":
+        return originalCreateElement(
+          "div",
+          {
+            ...props,
+            "data-testid": "pixi-graphics",
+            "data-component-type": "graphics",
+            "data-has-draw": props?.draw ? "true" : "false",
+          },
+          ...children
+        );
+
+      case "pixitext":
+      case "pixiText":
+        return originalCreateElement(
+          "div",
+          {
+            ...props,
+            "data-testid": "pixi-text",
+            "data-component-type": "text",
+            "data-text": props?.text,
+          },
+          props?.text || children
+        );
+
+      case "pixifancybutton":
+      case "pixiFancyButton":
+        return originalCreateElement(
+          "button",
+          {
+            ...props,
+            "data-testid": "pixi-fancy-button",
+            "data-component-type": "fancy-button",
+            onClick: props?.onPress,
+          },
+          props?.text || children
+        );
+
+      case "layoutcontainer":
+      case "layoutContainer":
+        return originalCreateElement(
+          "div",
+          {
+            ...props,
+            "data-testid": "layout-container",
+            "data-component-type": "layout-container",
+            "data-layout": props?.layout ? JSON.stringify(props.layout) : "{}",
+          },
+          children
+        );
+    }
+  }
+
+  return originalCreateElement(type, props, ...children);
+} as typeof React.createElement;
 
 // Create a properly typed ImageData mock
 const createMockImageData = (

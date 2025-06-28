@@ -4,15 +4,15 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host --open",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest",
     "coverage": "vitest run --coverage --coverage.reportOnFailure",
     "test:ci": "vitest run --coverage --reporter=junit --outputFile=coverage/junit.xml",
-    "test:e2e": "mkdir -p cypress/results && start-server-and-test dev http://localhost:5173 'cypress run --reporter cypress-multi-reporters --reporter-options configFile=cypress.config.reporter.json'",
-    "test:e2e:ci": "mkdir -p cypress/results && start-server-and-test dev http://localhost:5173 'cypress run --headless --reporter cypress-multi-reporters --reporter-options configFile=cypress.config.reporter.json'"
+    "test:e2e": "mkdir -p cypress/results && start-server-and-test dev http://localhost:5174 'cypress run --reporter cypress-multi-reporters --reporter-options configFile=cypress.config.reporter.json'",
+    "test:e2e:ci": "mkdir -p cypress/results && start-server-and-test dev http://localhost:5174 'cypress run --headless --reporter cypress-multi-reporters --reporter-options configFile=cypress.config.reporter.json'"
   },
   "dependencies": {
     "@pixi/layout": "^3.0.2",

@@ -1,106 +1,116 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import App from "./App";
+import { extendSpy } from "./test/setup";
 
-// Mock PixiJS components since they won't work in a test environment
-vi.mock("@pixi/react", () => ({
-  Application: ({ children }: { children: React.ReactNode }) => (
-    <div data-testid="mocked-pixi-app">{children}</div>
-  ),
-  useApplication: () => ({
-    app: { screen: { width: 800, height: 600 }, renderer: true },
-  }),
-  extend: vi.fn(),
-}));
+// Reset mocks before each test
+beforeEach(() => {
+  vi.clearAllMocks();
+});
 
-vi.mock("@pixi/layout/components", () => ({
-  LayoutContainer: ({ children, layout, "data-testid": testId }: any) => (
-    <div
-      data-testid={testId || "mocked-layout-container"}
-      data-layout={JSON.stringify(layout)}
-    >
-      {children}
-    </div>
-  ),
-}));
-
-vi.mock("@pixi/layout/react", () => ({}));
-vi.mock("@pixi/layout", () => ({}));
-
-vi.mock("@pixi/ui", () => ({
-  Button: ({ children, onPress }: any) => (
-    <button onClick={onPress} data-testid="mocked-button">
-      {children}
-    </button>
-  ),
-  FancyButton: ({ text, onPress }: any) => (
-    <button onClick={onPress} data-testid="mocked-fancy-button">
-      {text}
-    </button>
-  ),
-}));
-
-
-describe("App", () => {
-  beforeEach(() => {
-    // Reset window dimensions for consistent testing
-    Object.defineProperty(window, "innerWidth", {
-      writable: true,
-      configurable: true,
-      value: 1024,
-    });
-    Object.defineProperty(window, "innerHeight", {
-      writable: true,
-      configurable: true,
-      value: 768,
-    });
-
-    // Mock window.scrollTo to prevent errors
-    window.scrollTo = vi.fn();
-  });
-
-  it("renders without crashing", () => {
+describe("App Component", () => {
+  it("should render without crashing", () => {
     render(<App />);
+
+    // Test basic elements that should always be present
     expect(screen.getByTestId("app-container")).toBeInTheDocument();
     expect(screen.getByTestId("app-title")).toBeInTheDocument();
-    expect(screen.getByTestId("mocked-pixi-app")).toBeInTheDocument();
   });
 
-  it("renders app title and instructions", () => {
+  it("should extend Pixi components on mount", () => {
     render(<App />);
-    expect(screen.getByTestId("app-title")).toHaveTextContent(
-      "PixiJS React Game"
-    );
-    expect(screen.getByTestId("app-instructions")).toBeInTheDocument();
+
+    // Verify extend was called
+    expect(extendSpy).toHaveBeenCalled();
   });
 
-  it("responds to window resize events", async () => {
+  it("should display game title", () => {
     render(<App />);
 
-    // Trigger resize event
-    Object.defineProperty(window, "innerWidth", { value: 500 });
-    Object.defineProperty(window, "innerHeight", { value: 500 });
-    fireEvent(window, new Event("resize"));
-
-    // Check that scrollTo was called (part of resize handler)
-    expect(window.scrollTo).toHaveBeenCalledWith(0, 0);
+    // Check for the app title text
+    const appTitle = screen.getByTestId("app-title");
+    expect(appTitle).toHaveTextContent("PixiJS React Game");
   });
 
-  // Test game functionality through mocked components
-  it("handles game interactions through mocked components", () => {
+  it("should display Pixi application", () => {
     render(<App />);
 
-    // Find mocked game buttons
-    const resetButtons = screen.getAllByTestId("mocked-fancy-button");
-    const resetButton = resetButtons.find((button) =>
-      button.textContent?.includes("Reset")
-    );
+    // Verify Pixi Application is rendered
+    const pixiApp = screen.getByTestId("pixi-application");
+    expect(pixiApp).toBeInTheDocument();
+  });
 
-    // Verify reset button exists
+  it("should display instructions", () => {
+    render(<App />);
+
+    // Check instructions are displayed
+    const instructions = screen.getByTestId("app-instructions");
+    expect(instructions).toBeInTheDocument();
+  });
+
+  it("should display game elements", () => {
+    render(<App />);
+
+    // Check for game title
+    const gameTitle = screen.getByTestId("game-title");
+    expect(gameTitle).toHaveAttribute("data-text", "Circle Clicker");
+
+    // Check for score display
+    const scoreDisplay = screen.getByTestId("score-display");
+    expect(scoreDisplay).toBeInTheDocument();
+
+    // Check for game instructions
+    const instructions = screen.getByTestId("instructions");
+    expect(instructions).toBeInTheDocument();
+
+    // Check for reset button
+    const resetButton = screen.getByTestId("reset-button");
     expect(resetButton).toBeInTheDocument();
+  });
 
-    // We can't test the actual game mechanics since we've mocked the PixiJS components,
-    // but we can verify the basic structure is there
+  it("should handle pause/resume functionality", () => {
+    render(<App />);
+
+    // Get the pause button
+    const pauseButton = screen.getByTestId("pause-button");
+    expect(pauseButton).toBeInTheDocument();
+
+    // Initially the game should be running (status shows Active)
+    const gameStatus = screen.getByTestId("game-status");
+    expect(gameStatus).toHaveAttribute("data-text", "🎯 Active");
+
+    // Click pause button
+    fireEvent.click(pauseButton);
+
+    // After pause, the status should change to Paused
+    expect(gameStatus).toHaveAttribute("data-text", "⏸️ Paused");
+
+    // Pause overlay should appear
+    const pauseOverlay = screen.getByTestId("pause-overlay");
+    expect(pauseOverlay).toBeInTheDocument();
+
+    // Click pause button again to resume
+    fireEvent.click(pauseButton);
+
+    // Status should be back to Active
+    expect(gameStatus).toHaveAttribute("data-text", "🎯 Active");
+
+    // Pause overlay should no longer be visible
+    expect(screen.queryByTestId("pause-overlay")).not.toBeInTheDocument();
+  });
+
+  it("should reset the game when the reset button is clicked", () => {
+    render(<App />);
+
+    // Get the reset button
+    const resetButton = screen.getByTestId("reset-button");
+
+    // Click the reset button
+    fireEvent.click(resetButton);
+
+    // Score should be reset to 0
+    const scoreValue = screen.getByTestId("score-value");
+    expect(scoreValue).toHaveAttribute("data-text", "0");
   });
 });

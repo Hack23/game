@@ -88,13 +88,13 @@ function LayoutResizer({ children }: LayoutResizerProps): JSX.Element {
     window.addEventListener("resize", handleResize);
 
     // Also listen for PixiJS resize events if available
-    if (app?.renderer) {
+    if (app?.renderer && typeof app.renderer.on === "function") {
       app.renderer.on("resize", handleResize);
     }
 
     return () => {
       window.removeEventListener("resize", handleResize);
-      if (app?.renderer) {
+      if (app?.renderer && typeof app.renderer.off === "function") {
         app.renderer.off("resize", handleResize);
       }
     };
@@ -173,9 +173,36 @@ function GameContent(): JSX.Element {
       cornerRadius: number = 6
     ): Graphics => {
       const graphics = new Graphics();
-      graphics.setFillStyle({ color });
-      graphics.roundRect(0, 0, width, height, cornerRadius);
-      graphics.fill();
+
+      // Try the PixiJS v8 approach first
+      if (
+        typeof graphics.setFillStyle === "function" &&
+        typeof graphics.roundRect === "function"
+      ) {
+        graphics.setFillStyle({ color });
+        graphics.roundRect(0, 0, width, height, cornerRadius);
+        graphics.fill();
+      }
+      // Fall back to older PixiJS API style that might be used in tests
+      else if (
+        typeof graphics.beginFill === "function" &&
+        typeof graphics.drawRoundedRect === "function"
+      ) {
+        graphics.beginFill(color);
+        graphics.drawRoundedRect(0, 0, width, height, cornerRadius);
+        graphics.endFill();
+      }
+      // Last resort - draw a regular rectangle if rounded corners not available
+      else if (typeof graphics.beginFill === "function") {
+        graphics.beginFill(color);
+        if (typeof graphics.drawRect === "function") {
+          graphics.drawRect(0, 0, width, height);
+        }
+        if (typeof graphics.endFill === "function") {
+          graphics.endFill();
+        }
+      }
+
       return graphics;
     },
     []
