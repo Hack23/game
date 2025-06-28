@@ -1,5 +1,6 @@
 import type { Graphics, Container, Text, TextStyle } from "pixi.js";
 import type { ReactNode } from "react";
+import "@pixi/layout/react";
 
 // Only declare the module for react-reconciler constants fix
 declare module "react-reconciler/constants" {
