@@ -29,30 +29,85 @@ interface LayoutResizerProps {
   children: React.ReactNode;
 }
 
+// Add this interface to track screen dimensions
+interface ScreenDimensions {
+  width: number;
+  height: number;
+  scale: number;
+}
+
 function LayoutResizer({ children }: LayoutResizerProps): JSX.Element {
   const layoutRef = useRef<LayoutContainer>(null);
   const { app } = useApplication();
+  const [dimensions, setDimensions] = useState<ScreenDimensions>({
+    width: window.innerWidth,
+    height: window.innerHeight - 100, // Account for header/footer
+    scale: 1,
+  });
 
   useEffect(() => {
-    const handleResize = (): void => {
-      if (layoutRef.current && app?.screen) {
-        layoutRef.current.layout = {
-          width: app.screen.width,
-          height: app.screen.height,
-        };
-      }
+    const calculateDimensions = (): ScreenDimensions => {
+      const windowWidth = window.innerWidth;
+      const windowHeight = window.innerHeight - 100; // Account for header/footer
+
+      // Minimum content dimensions (adjust as needed for your game)
+      const minWidth = 800;
+      const minHeight = 600;
+
+      // Calculate scale factors
+      const scaleX = windowWidth < minWidth ? minWidth / windowWidth : 1;
+      const scaleY = windowHeight < minHeight ? minHeight / windowHeight : 1;
+      const scale = Math.max(scaleX, scaleY);
+
+      return {
+        width: windowWidth,
+        height: windowHeight,
+        scale: scale,
+      };
     };
 
+    const handleResize = (): void => {
+      const newDimensions = calculateDimensions();
+      setDimensions(newDimensions);
+
+      if (layoutRef.current) {
+        layoutRef.current.layout = {
+          width: newDimensions.width,
+          height: newDimensions.height,
+        };
+      }
+
+      // Scroll to top to avoid mobile resize issues
+      window.scrollTo(0, 0);
+    };
+
+    // Initial resize
+    handleResize();
+
+    // Listen for window resize events
+    window.addEventListener("resize", handleResize);
+
+    // Also listen for PixiJS resize events if available
     if (app?.renderer) {
       app.renderer.on("resize", handleResize);
-      return () => {
-        app.renderer.off("resize", handleResize);
-      };
     }
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      if (app?.renderer) {
+        app.renderer.off("resize", handleResize);
+      }
+    };
   }, [app]);
 
   return (
-    <pixiContainer ref={layoutRef} layout={{}}>
+    <pixiContainer
+      ref={layoutRef}
+      layout={{
+        width: dimensions.width,
+        height: dimensions.height,
+      }}
+    >
       {children}
     </pixiContainer>
   );
@@ -522,19 +577,48 @@ function GameContent(): JSX.Element {
   );
 }
 
+// Update the App component for proper sizing
 function App(): JSX.Element {
+  const [dimensions, setDimensions] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight - 100,
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setDimensions({
+        width: window.innerWidth,
+        height: window.innerHeight - 100,
+      });
+
+      // Scroll to top to avoid mobile resize issues
+      window.scrollTo(0, 0);
+    };
+
+    // Set initial dimensions
+    handleResize();
+
+    // Add resize listener
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   return (
     <div className="app-container">
       <h1>PixiJS React Game</h1>
       <Application
-        width={window.innerWidth}
-        height={window.innerHeight - 100} // Account for header/footer
+        width={dimensions.width}
+        height={dimensions.height}
         backgroundColor={0x242424}
         antialias={true}
         resizeTo={window} // This ensures automatic resizing
         autoDensity={true}
         resolution={window.devicePixelRatio || 1}
         powerPreference="high-performance"
+        data-testid="pixi-application"
       >
         <GameContent />
       </Application>

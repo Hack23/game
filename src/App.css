@@ -101,6 +101,45 @@ body,
   overflow: hidden;
 }
 
+body,
+html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: #0d1117;
+}
+
+.app-container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: white;
+}
+
+.app-container h1 {
+  margin: 10px 0;
+  font-size: 24px;
+  color: #646cff;
+}
+
+.app-container canvas {
+  display: block;
+  width: 100% !important;
+  height: calc(100vh - 100px) !important;
+  max-height: none !important;
+  max-width: none !important;
+}
+
+.instructions {
+  margin: 8px 0;
+  font-size: 14px;
+  color: #8b949e;
+}
+
 @media (max-width: 900px) {
   .app-container {
     padding: 1rem;
