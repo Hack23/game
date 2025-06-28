@@ -32,7 +32,30 @@ vi.mock("@pixi/react", () => ({
       children
     ),
   extend: extendSpy,
+  useApplication: vi.fn(() => ({
+    app: {
+      screen: { width: 800, height: 600 },
+      renderer: { on: vi.fn() },
+    },
+  })),
 }));
+
+// Mock @pixi/ui components
+vi.mock("@pixi/ui", () => ({
+  Button: vi.fn().mockImplementation(() => ({})),
+  FancyButton: vi.fn().mockImplementation(() => ({})),
+}));
+
+// Mock @pixi/layout components
+vi.mock("@pixi/layout/components", () => ({
+  LayoutContainer: vi.fn().mockImplementation(() => ({})),
+}));
+
+// Mock @pixi/layout/react
+vi.mock("@pixi/layout/react", () => ({}));
+
+// Mock @pixi/layout
+vi.mock("@pixi/layout", () => ({}));
 
 // Mock PixiJS core components with complete exports using importOriginal
 vi.mock("pixi.js", async (importOriginal) => {
@@ -114,6 +137,8 @@ const createPixiComponent = (displayName: string) => {
 const PixiContainer = createPixiComponent("pixi-container");
 const PixiGraphics = createPixiComponent("pixi-graphics");
 const PixiText = createPixiComponent("pixi-text");
+const PixiFancyButton = createPixiComponent("pixi-fancy-button");
+const LayoutContainer = createPixiComponent("layout-container");
 
 // Store original createElement and create a safe override
 const originalCreateElement = React.createElement;
@@ -133,6 +158,10 @@ const createElementOverride = (
         return originalCreateElement(PixiGraphics, props, ...children);
       case "pixiText":
         return originalCreateElement(PixiText, props, ...children);
+      case "pixiFancyButton":
+        return originalCreateElement(PixiFancyButton, props, ...children);
+      case "layoutContainer":
+        return originalCreateElement(LayoutContainer, props, ...children);
       default:
         // For regular HTML elements, use the original createElement
         return originalCreateElement(type, props, ...children);
@@ -168,6 +197,7 @@ declare global {
         scale?: number | { x: number; y: number };
         pivot?: { x: number; y: number };
         anchor?: { x: number; y: number };
+        layout?: Record<string, unknown>;
       };
       pixiGraphics: React.DetailedHTMLProps<
         React.HTMLAttributes<HTMLDivElement>,
@@ -196,6 +226,26 @@ declare global {
         scale?: number | { x: number; y: number };
         pivot?: { x: number; y: number };
         anchor?: { x: number; y: number };
+      };
+      pixiFancyButton: React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLDivElement>,
+        HTMLDivElement
+      > & {
+        defaultView?: Record<string, unknown>;
+        hoverView?: Record<string, unknown>;
+        pressedView?: Record<string, unknown>;
+        text?: string;
+        textStyle?: Record<string, unknown>;
+        onPress?: () => void;
+        x?: number;
+        y?: number;
+      };
+      layoutContainer: React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLDivElement>,
+        HTMLDivElement
+      > & {
+        layout?: Record<string, unknown>;
+        ref?: React.Ref<unknown>;
       };
     }
   }

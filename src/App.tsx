@@ -1,6 +1,7 @@
 import { Application, extend, useApplication } from "@pixi/react";
 import { Container, Graphics, Text } from "pixi.js";
 import { LayoutContainer } from "@pixi/layout/components";
+import { Button, FancyButton } from "@pixi/ui";
 import "@pixi/layout/react";
 import "@pixi/layout";
 import { useCallback, useState, useRef } from "react";
@@ -13,12 +14,15 @@ extend({
   Graphics,
   Text,
   LayoutContainer,
+  Button,
+  FancyButton,
 });
 
 interface GameState {
   score: number;
   playerX: number;
   playerY: number;
+  isPlaying: boolean;
 }
 
 interface LayoutResizerProps {
@@ -48,34 +52,60 @@ function LayoutResizer({ children }: LayoutResizerProps): JSX.Element {
 function GameContent(): JSX.Element {
   const [gameState, setGameState] = useState<GameState>({
     score: 0,
-    playerX: 50, // Percentage-based positioning
+    playerX: 50,
     playerY: 50,
+    isPlaying: true,
   });
 
   const gameAreaRef = useRef<LayoutContainer>(null);
   const { app } = useApplication();
 
-  const drawPlayer = useCallback((graphics: Graphics) => {
-    graphics.clear();
-    graphics.setFillStyle({ color: 0x646cff });
-    graphics.circle(0, 0, 25);
-    graphics.fill();
-    graphics.setStrokeStyle({ color: 0xffffff, width: 2 });
-    graphics.stroke();
-  }, []);
-
   const handlePlayerClick = useCallback(() => {
+    if (!gameState.isPlaying) return;
+
     setGameState((prev) => ({
       ...prev,
       score: prev.score + 1,
-      playerX: Math.random() * 80 + 10, // Keep within 10-90% range
-      playerY: Math.random() * 70 + 15, // Keep within 15-85% range
+      playerX: Math.random() * 80 + 10,
+      playerY: Math.random() * 70 + 15,
+    }));
+  }, [gameState.isPlaying]);
+
+  const handleReset = useCallback(() => {
+    setGameState({
+      score: 0,
+      playerX: 50,
+      playerY: 50,
+      isPlaying: true,
+    });
+  }, []);
+
+  const handlePauseToggle = useCallback(() => {
+    setGameState((prev) => ({
+      ...prev,
+      isPlaying: !prev.isPlaying,
     }));
   }, []);
 
+  const createButtonGraphics = useCallback(
+    (
+      color: number,
+      width: number,
+      height: number,
+      cornerRadius: number = 6
+    ): Graphics => {
+      const graphics = new Graphics();
+      graphics.setFillStyle({ color });
+      graphics.roundRect(0, 0, width, height, cornerRadius);
+      graphics.fill();
+      return graphics;
+    },
+    []
+  );
+
   // Calculate player position based on app dimensions
   const gameAreaWidth = app.screen.width;
-  const gameAreaHeight = app.screen.height * 0.85; // 85% for game area
+  const gameAreaHeight = app.screen.height * 0.85;
   const playerPixelX = (gameState.playerX / 100) * gameAreaWidth;
   const playerPixelY = (gameState.playerY / 100) * gameAreaHeight;
 
@@ -90,7 +120,7 @@ function GameContent(): JSX.Element {
           flexDirection: "column",
         }}
       >
-        {/* UI Panel */}
+        {/* UI Panel with improved styling */}
         <layoutContainer
           layout={{
             width: "100%",
@@ -98,51 +128,173 @@ function GameContent(): JSX.Element {
             backgroundColor: "#1a1a1a",
             flexDirection: "row",
             alignItems: "center",
+            justifyContent: "space-between",
             paddingLeft: 20,
+            paddingRight: 20,
             paddingTop: 10,
-            gap: 20,
+            paddingBottom: 10,
           }}
         >
-          {/* Score display */}
-          <pixiText
-            text={`Score: ${gameState.score}`}
-            style={{
-              fontFamily: "Arial",
-              fontSize: 24,
-              fill: 0xffffff,
+          {/* Left side - Score and instructions */}
+          <layoutContainer
+            layout={{
+              flexDirection: "column",
+              alignItems: "flex-start",
+              gap: 5,
             }}
-          />
+          >
+            <pixiText
+              text={`Score: ${gameState.score}`}
+              style={{
+                fontFamily: "Arial",
+                fontSize: 28,
+                fill: 0xffffff,
+                fontWeight: "bold",
+              }}
+            />
+            <pixiText
+              text={
+                gameState.isPlaying
+                  ? "Click the circle to score!"
+                  : "Game Paused"
+              }
+              style={{
+                fontFamily: "Arial",
+                fontSize: 14,
+                fill: gameState.isPlaying ? 0x00ff00 : 0xff9900,
+              }}
+            />
+          </layoutContainer>
 
-          {/* Instructions */}
-          <pixiText
-            text="Click the circle to score points!"
-            style={{
-              fontFamily: "Arial",
-              fontSize: 16,
-              fill: 0xcccccc,
+          {/* Right side - Control buttons using @pixi/ui */}
+          <layoutContainer
+            layout={{
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 15,
             }}
-          />
+          >
+            {/* Pause/Resume Button using FancyButton */}
+            <pixiFancyButton
+              defaultView={createButtonGraphics(
+                gameState.isPlaying ? 0xff9900 : 0x00ff00,
+                80,
+                35,
+                6
+              )}
+              hoverView={createButtonGraphics(
+                gameState.isPlaying ? 0xffaa33 : 0x33ff33,
+                80,
+                35,
+                6
+              )}
+              pressedView={createButtonGraphics(
+                gameState.isPlaying ? 0xe68a00 : 0x00cc00,
+                80,
+                35,
+                6
+              )}
+              text={gameState.isPlaying ? "Pause" : "Resume"}
+              padding={12}
+              onPress={handlePauseToggle}
+            />
+
+            {/* Reset Button using FancyButton */}
+            <pixiFancyButton
+              defaultView={createButtonGraphics(0x4caf50, 100, 40, 8)}
+              hoverView={createButtonGraphics(0x66bb6a, 100, 40, 8)}
+              pressedView={createButtonGraphics(0x388e3c, 100, 40, 8)}
+              text="Reset"
+              padding={12}
+              onPress={handleReset}
+            />
+          </layoutContainer>
         </layoutContainer>
 
-        {/* Game Area */}
+        {/* Game Area with enhanced styling */}
         <layoutContainer
           ref={gameAreaRef}
           layout={{
             width: "100%",
             height: "85%",
-            backgroundColor: "#242424",
+            backgroundColor: "#2a2a2a",
           }}
         >
-          {/* Player circle positioned with calculated coordinates */}
+          {/* Game background pattern */}
+          <pixiGraphics
+            draw={(g: Graphics) => {
+              g.clear();
+              // Draw subtle grid pattern
+              g.setStrokeStyle({ color: 0x333333, width: 1, alpha: 0.3 });
+              const gridSize = 50;
+              for (let x = 0; x < gameAreaWidth; x += gridSize) {
+                g.moveTo(x, 0);
+                g.lineTo(x, gameAreaHeight);
+                g.stroke();
+              }
+              for (let y = 0; y < gameAreaHeight; y += gridSize) {
+                g.moveTo(0, y);
+                g.lineTo(gameAreaWidth, y);
+                g.stroke();
+              }
+            }}
+          />
+
+          {/* Player circle with enhanced visual feedback */}
           <pixiContainer
             x={playerPixelX}
             y={playerPixelY}
-            interactive={true}
-            cursor="pointer"
+            interactive={gameState.isPlaying}
+            cursor={gameState.isPlaying ? "pointer" : "default"}
             onClick={handlePlayerClick}
+            scale={gameState.isPlaying ? 1 : 0.8}
+            alpha={gameState.isPlaying ? 1 : 0.6}
           >
-            <pixiGraphics draw={drawPlayer} />
+            <pixiGraphics
+              draw={(g: Graphics) => {
+                g.clear();
+                // Outer glow effect
+                g.setFillStyle({ color: 0x646cff, alpha: 0.3 });
+                g.circle(0, 0, 35);
+                g.fill();
+                // Main circle
+                g.setFillStyle({ color: 0x646cff });
+                g.circle(0, 0, 25);
+                g.fill();
+                // Border
+                g.setStrokeStyle({ color: 0xffffff, width: 2 });
+                g.stroke();
+                // Inner highlight
+                g.setFillStyle({ color: 0xffffff, alpha: 0.3 });
+                g.circle(-8, -8, 8);
+                g.fill();
+              }}
+            />
           </pixiContainer>
+
+          {/* Game status overlay when paused */}
+          {!gameState.isPlaying && (
+            <layoutContainer
+              layout={{
+                position: "absolute",
+                width: "100%",
+                height: "100%",
+                alignItems: "center",
+                justifyContent: "center",
+                backgroundColor: "rgba(0, 0, 0, 0.5)",
+              }}
+            >
+              <pixiText
+                text="GAME PAUSED"
+                style={{
+                  fontFamily: "Arial",
+                  fontSize: 48,
+                  fill: 0xffffff,
+                  fontWeight: "bold",
+                }}
+              />
+            </layoutContainer>
+          )}
         </layoutContainer>
       </layoutContainer>
     </LayoutResizer>
