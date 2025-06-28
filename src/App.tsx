@@ -103,131 +103,115 @@ function GameContent(): JSX.Element {
     []
   );
 
-  // Calculate player position based on app dimensions
-  const gameAreaWidth = app.screen.width;
-  const gameAreaHeight = app.screen.height * 0.85;
-  const playerPixelX = (gameState.playerX / 100) * gameAreaWidth;
-  const playerPixelY = (gameState.playerY / 100) * gameAreaHeight;
+  // Safe access to app dimensions with fallbacks
+  const gameAreaWidth = app?.screen?.width ?? 800;
 
-  return (
-    <LayoutResizer>
-      {/* Main game layout container with improved structure */}
+  // Don't render if app is not ready
+  if (!app || !app.screen) {
+    return (
       <layoutContainer
         layout={{
           width: "100%",
           height: "100%",
-          backgroundColor: "#1a1a1a",
-          flexDirection: "column",
-          gap: 2,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#0d1117",
         }}
       >
-        {/* Header section with game title and stats */}
+        <pixiText
+          text="Loading..."
+          style={{
+            fontFamily: "Arial",
+            fontSize: 24,
+            fill: 0xffffff,
+          }}
+        />
+      </layoutContainer>
+    );
+  }
+
+  return (
+    <LayoutResizer>
+      {/* Main game layout container with card-style design */}
+      <layoutContainer
+        layout={{
+          width: "100%",
+          height: "100%",
+          backgroundColor: "#0d1117",
+          padding: 16,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        {/* Game card container */}
         <layoutContainer
           layout={{
-            width: "100%",
-            height: 80,
-            backgroundColor: "#2d2d30",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            paddingLeft: 24,
-            paddingRight: 24,
-            borderRadius: 8,
-            marginBottom: 8,
+            width: "90%",
+            maxWidth: 800,
+            height: "90%",
+            backgroundColor: "#161b22",
+            borderRadius: 16,
+            flexDirection: "column",
+            overflow: "hidden",
           }}
         >
-          {/* Left section - Game title and status */}
+          {/* Header section - Game title and status */}
           <layoutContainer
             layout={{
-              flexDirection: "column",
-              alignItems: "flex-start",
-              gap: 4,
-              flexShrink: 0,
-            }}
-          >
-            <pixiText
-              text="Circle Clicker"
-              style={{
-                fontFamily: "Arial",
-                fontSize: 24,
-                fill: 0xffffff,
-                fontWeight: "bold",
-              }}
-            />
-            <pixiText
-              text={gameState.isPlaying ? "🎯 Active Game" : "⏸️ Game Paused"}
-              style={{
-                fontFamily: "Arial",
-                fontSize: 12,
-                fill: gameState.isPlaying ? 0x00ff88 : 0xffa500,
-                fontWeight: "normal",
-              }}
-            />
-          </layoutContainer>
-
-          {/* Center section - Score display with enhanced styling */}
-          <layoutContainer
-            layout={{
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              backgroundColor: "#404045",
-              borderRadius: 12,
-              paddingLeft: 20,
-              paddingRight: 20,
-              paddingTop: 12,
-              paddingBottom: 12,
-              marginLeft: 20,
-              marginRight: 20,
-              flexGrow: 1,
-              maxWidth: 200,
-            }}
-          >
-            <pixiText
-              text="SCORE"
-              style={{
-                fontFamily: "Arial",
-                fontSize: 10,
-                fill: 0xaaaaaa,
-                fontWeight: "bold",
-              }}
-            />
-            <pixiText
-              text={gameState.score.toString()}
-              style={{
-                fontFamily: "Arial",
-                fontSize: 32,
-                fill: 0x00ff88,
-                fontWeight: "bold",
-              }}
-            />
-          </layoutContainer>
-
-          {/* Right section - Control buttons */}
-          <layoutContainer
-            layout={{
+              width: "100%",
+              height: 80,
+              backgroundColor: "#21262d",
               flexDirection: "row",
+              justifyContent: "space-between",
               alignItems: "center",
-              gap: 12,
-              flexShrink: 0,
+              paddingLeft: 24,
+              paddingRight: 24,
             }}
           >
+            {/* Game title */}
+            <layoutContainer
+              layout={{
+                flexDirection: "column",
+                alignItems: "flex-start",
+                gap: 4,
+              }}
+            >
+              <pixiText
+                text="Circle Clicker"
+                style={{
+                  fontFamily: "Arial",
+                  fontSize: 24,
+                  fill: 0xffffff,
+                  fontWeight: "bold",
+                }}
+              />
+              <pixiText
+                text={gameState.isPlaying ? "🎯 Active" : "⏸️ Paused"}
+                style={{
+                  fontFamily: "Arial",
+                  fontSize: 12,
+                  fill: gameState.isPlaying ? 0x00ff88 : 0xffa500,
+                }}
+              />
+            </layoutContainer>
+
+            {/* Pause/Resume button in header */}
             <pixiFancyButton
               defaultView={createButtonGraphics(
                 gameState.isPlaying ? 0xff6b35 : 0x00c851,
-                90,
+                100,
                 40,
                 8
               )}
               hoverView={createButtonGraphics(
                 gameState.isPlaying ? 0xff8a65 : 0x4caf50,
-                90,
+                100,
                 40,
                 8
               )}
               pressedView={createButtonGraphics(
                 gameState.isPlaying ? 0xd84315 : 0x2e7d32,
-                90,
+                100,
                 40,
                 8
               )}
@@ -235,238 +219,294 @@ function GameContent(): JSX.Element {
               padding={8}
               onPress={handlePauseToggle}
             />
+          </layoutContainer>
 
+          {/* Main content area */}
+          <layoutContainer
+            layout={{
+              width: "100%",
+              flexGrow: 1,
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              position: "relative",
+              padding: 24,
+            }}
+            ref={gameAreaRef}
+          >
+            {/* Centered score display */}
+            <layoutContainer
+              layout={{
+                width: 240,
+                backgroundColor: "#30363d",
+                borderRadius: 20,
+                paddingLeft: 32,
+                paddingRight: 32,
+                paddingTop: 20,
+                paddingBottom: 20,
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 8,
+                marginBottom: 20,
+              }}
+            >
+              <pixiText
+                text="SCORE"
+                style={{
+                  fontFamily: "Arial",
+                  fontSize: 14,
+                  fill: 0x7d8590,
+                  fontWeight: "bold",
+                }}
+              />
+              <pixiText
+                text={gameState.score.toString()}
+                style={{
+                  fontFamily: "Arial",
+                  fontSize: 48,
+                  fill: 0x00ff88,
+                  fontWeight: "bold",
+                }}
+              />
+            </layoutContainer>
+
+            {/* Instructions */}
+            <layoutContainer
+              layout={{
+                width: 360,
+                backgroundColor: "#21262d",
+                borderRadius: 12,
+                paddingLeft: 20,
+                paddingRight: 20,
+                paddingTop: 12,
+                paddingBottom: 12,
+                alignItems: "center",
+                justifyContent: "center",
+                marginBottom: 30,
+              }}
+            >
+              <pixiText
+                text={
+                  gameState.isPlaying
+                    ? "🎯 Click the target to score points!"
+                    : "⏸️ Game paused - Resume to continue"
+                }
+                style={{
+                  fontFamily: "Arial",
+                  fontSize: 16,
+                  fill: gameState.isPlaying ? 0xffffff : 0x7d8590,
+                  fontWeight: "normal",
+                }}
+              />
+            </layoutContainer>
+
+            {/* Game area background */}
+            <layoutContainer
+              layout={{
+                width: "100%",
+                flexGrow: 1,
+                backgroundColor: "#0d1117",
+                borderRadius: 12,
+                position: "relative",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              {/* Grid pattern background */}
+              <pixiGraphics
+                draw={(g: Graphics) => {
+                  g.clear();
+                  const areaWidth = Math.max(gameAreaWidth * 0.7, 400);
+                  const areaHeight = Math.max(200, 300);
+
+                  // Background with subtle pattern
+                  g.setFillStyle({ color: 0x161b22 });
+                  g.roundRect(0, 0, areaWidth, areaHeight, 8);
+                  g.fill();
+
+                  // Grid pattern
+                  g.setStrokeStyle({ color: 0x21262d, width: 1, alpha: 0.6 });
+                  const gridSize = 40;
+
+                  for (let x = 0; x < areaWidth; x += gridSize) {
+                    g.moveTo(x, 0);
+                    g.lineTo(x, areaHeight);
+                    g.stroke();
+                  }
+                  for (let y = 0; y < areaHeight; y += gridSize) {
+                    g.moveTo(0, y);
+                    g.lineTo(areaWidth, y);
+                    g.stroke();
+                  }
+                }}
+              />
+
+              {/* Enhanced target circle */}
+              <pixiContainer
+                x={
+                  (gameState.playerX / 100) * Math.max(gameAreaWidth * 0.5, 300)
+                }
+                y={(gameState.playerY / 100) * Math.max(200, 200)}
+                interactive={gameState.isPlaying}
+                cursor={gameState.isPlaying ? "pointer" : "default"}
+                onClick={handlePlayerClick}
+                scale={gameState.isPlaying ? 1 : 0.6}
+                alpha={gameState.isPlaying ? 1 : 0.3}
+              >
+                <pixiGraphics
+                  draw={(g: Graphics) => {
+                    g.clear();
+
+                    if (gameState.isPlaying) {
+                      // Animated pulse rings
+                      g.setFillStyle({ color: 0x00ff88, alpha: 0.1 });
+                      g.circle(0, 0, 60);
+                      g.fill();
+
+                      g.setFillStyle({ color: 0x00ff88, alpha: 0.2 });
+                      g.circle(0, 0, 45);
+                      g.fill();
+
+                      g.setFillStyle({ color: 0x00ff88, alpha: 0.3 });
+                      g.circle(0, 0, 35);
+                      g.fill();
+                    }
+
+                    // Main target circle
+                    g.setFillStyle({
+                      color: gameState.isPlaying ? 0x00ff88 : 0x30363d,
+                    });
+                    g.circle(0, 0, 30);
+                    g.fill();
+
+                    // Inner rings for target effect
+                    g.setStrokeStyle({
+                      color: gameState.isPlaying ? 0xffffff : 0x7d8590,
+                      width: 2,
+                    });
+                    g.circle(0, 0, 25);
+                    g.stroke();
+                    g.circle(0, 0, 15);
+                    g.stroke();
+                    g.circle(0, 0, 5);
+                    g.stroke();
+
+                    // Center dot
+                    g.setFillStyle({
+                      color: gameState.isPlaying ? 0xffffff : 0x7d8590,
+                    });
+                    g.circle(0, 0, 3);
+                    g.fill();
+                  }}
+                />
+              </pixiContainer>
+
+              {/* Pause overlay with better design */}
+              {!gameState.isPlaying && (
+                <layoutContainer
+                  layout={{
+                    position: "absolute",
+                    width: "100%",
+                    height: "100%",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    backgroundColor: "rgba(0, 0, 0, 0.8)",
+                    borderRadius: 12,
+                  }}
+                >
+                  <layoutContainer
+                    layout={{
+                      backgroundColor: "#21262d",
+                      borderRadius: 20,
+                      paddingLeft: 48,
+                      paddingRight: 48,
+                      paddingTop: 32,
+                      paddingBottom: 32,
+                      alignItems: "center",
+                      gap: 12,
+                    }}
+                  >
+                    <pixiText
+                      text="⏸️"
+                      style={{
+                        fontFamily: "Arial",
+                        fontSize: 64,
+                        fill: 0xffa500,
+                      }}
+                    />
+                    <pixiText
+                      text="GAME PAUSED"
+                      style={{
+                        fontFamily: "Arial",
+                        fontSize: 28,
+                        fill: 0xffffff,
+                        fontWeight: "bold",
+                      }}
+                    />
+                  </layoutContainer>
+                </layoutContainer>
+              )}
+            </layoutContainer>
+          </layoutContainer>
+
+          {/* Bottom section - Reset button centered */}
+          <layoutContainer
+            layout={{
+              width: "100%",
+              height: 80,
+              backgroundColor: "#21262d",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
             <pixiFancyButton
-              defaultView={createButtonGraphics(0x6200ea, 80, 40, 8)}
-              hoverView={createButtonGraphics(0x7c4dff, 80, 40, 8)}
-              pressedView={createButtonGraphics(0x3700b3, 80, 40, 8)}
-              text="Reset"
-              padding={8}
+              defaultView={createButtonGraphics(0x7c3aed, 140, 50, 12)}
+              hoverView={createButtonGraphics(0x8b5cf6, 140, 50, 12)}
+              pressedView={createButtonGraphics(0x6d28d9, 140, 50, 12)}
+              text="🔄 Reset Game"
+              padding={12}
               onPress={handleReset}
             />
           </layoutContainer>
-        </layoutContainer>
 
-        {/* Instructions panel */}
-        <layoutContainer
-          layout={{
-            width: "100%",
-            height: 50,
-            backgroundColor: "#363640",
-            flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "center",
-            borderRadius: 6,
-            marginBottom: 8,
-          }}
-        >
-          <pixiText
-            text={
-              gameState.isPlaying
-                ? "🎯 Click the glowing circle to score points!"
-                : "🚫 Game is paused - Click Resume to continue"
-            }
-            style={{
-              fontFamily: "Arial",
-              fontSize: 16,
-              fill: gameState.isPlaying ? 0xffffff : 0xcccccc,
-              fontWeight: "normal",
+          {/* Footer stats */}
+          <layoutContainer
+            layout={{
+              width: "100%",
+              height: 40,
+              backgroundColor: "#0d1117",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              paddingLeft: 20,
+              paddingRight: 20,
             }}
-          />
-        </layoutContainer>
-
-        {/* Game area with enhanced visual hierarchy */}
-        <layoutContainer
-          layout={{
-            width: "100%",
-            flexGrow: 1,
-            backgroundColor: "#242428",
-            borderRadius: 12,
-            padding: 16,
-            justifyContent: "center",
-            alignItems: "center",
-            position: "relative",
-          }}
-          ref={gameAreaRef}
-        >
-          {/* Game background with improved grid */}
-          <pixiGraphics
-            draw={(g: Graphics) => {
-              g.clear();
-              // Main background
-              g.setFillStyle({ color: 0x1e1e22 });
-              g.roundRect(0, 0, gameAreaWidth - 32, gameAreaHeight - 32, 8);
-              g.fill();
-
-              // Subtle grid pattern
-              g.setStrokeStyle({ color: 0x2a2a2e, width: 1, alpha: 0.5 });
-              const gridSize = 60;
-              const startX = 16;
-              const startY = 16;
-              const endX = gameAreaWidth - 16;
-              const endY = gameAreaHeight - 16;
-
-              for (let x = startX; x < endX; x += gridSize) {
-                g.moveTo(x, startY);
-                g.lineTo(x, endY - 32);
-                g.stroke();
-              }
-              for (let y = startY; y < endY - 32; y += gridSize) {
-                g.moveTo(startX, y);
-                g.lineTo(endX - 32, y);
-                g.stroke();
-              }
-            }}
-          />
-
-          {/* Player target with enhanced visual design */}
-          <pixiContainer
-            x={playerPixelX}
-            y={playerPixelY}
-            interactive={gameState.isPlaying}
-            cursor={gameState.isPlaying ? "pointer" : "default"}
-            onClick={handlePlayerClick}
-            scale={gameState.isPlaying ? 1 : 0.7}
-            alpha={gameState.isPlaying ? 1 : 0.4}
           >
-            <pixiGraphics
-              draw={(g: Graphics) => {
-                g.clear();
-
-                if (gameState.isPlaying) {
-                  // Outer pulse ring
-                  g.setFillStyle({ color: 0x00ff88, alpha: 0.2 });
-                  g.circle(0, 0, 45);
-                  g.fill();
-
-                  // Middle glow
-                  g.setFillStyle({ color: 0x00ff88, alpha: 0.4 });
-                  g.circle(0, 0, 35);
-                  g.fill();
-                }
-
-                // Main target circle
-                g.setFillStyle({
-                  color: gameState.isPlaying ? 0x00ff88 : 0x666666,
-                });
-                g.circle(0, 0, 28);
-                g.fill();
-
-                // Inner highlight
-                g.setFillStyle({ color: 0xffffff, alpha: 0.3 });
-                g.circle(-10, -10, 12);
-                g.fill();
-
-                // Border ring
-                g.setStrokeStyle({
-                  color: gameState.isPlaying ? 0xffffff : 0x999999,
-                  width: 3,
-                });
-                g.circle(0, 0, 28);
-                g.stroke();
-
-                // Center dot
-                g.setFillStyle({ color: 0xffffff, alpha: 0.8 });
-                g.circle(0, 0, 4);
-                g.fill();
+            <pixiText
+              text={`Total Clicks: ${gameState.score}`}
+              style={{
+                fontFamily: "Arial",
+                fontSize: 12,
+                fill: 0x7d8590,
               }}
             />
-          </pixiContainer>
-
-          {/* Game status overlay with better positioning */}
-          {!gameState.isPlaying && (
-            <layoutContainer
-              layout={{
-                position: "absolute",
-                width: "100%",
-                height: "100%",
-                alignItems: "center",
-                justifyContent: "center",
-                backgroundColor: "rgba(0, 0, 0, 0.7)",
-                borderRadius: 12,
+            <pixiText
+              text="Built with PixiJS + Layout"
+              style={{
+                fontFamily: "Arial",
+                fontSize: 12,
+                fill: 0x58a6ff,
               }}
-            >
-              <layoutContainer
-                layout={{
-                  backgroundColor: "#2d2d30",
-                  borderRadius: 16,
-                  paddingLeft: 40,
-                  paddingRight: 40,
-                  paddingTop: 30,
-                  paddingBottom: 30,
-                  alignItems: "center",
-                  gap: 8,
-                }}
-              >
-                <pixiText
-                  text="⏸️"
-                  style={{
-                    fontFamily: "Arial",
-                    fontSize: 48,
-                    fill: 0xffa500,
-                  }}
-                />
-                <pixiText
-                  text="GAME PAUSED"
-                  style={{
-                    fontFamily: "Arial",
-                    fontSize: 24,
-                    fill: 0xffffff,
-                    fontWeight: "bold",
-                  }}
-                />
-                <pixiText
-                  text="Click Resume to continue"
-                  style={{
-                    fontFamily: "Arial",
-                    fontSize: 14,
-                    fill: 0xcccccc,
-                  }}
-                />
-              </layoutContainer>
-            </layoutContainer>
-          )}
-        </layoutContainer>
-
-        {/* Footer stats bar */}
-        <layoutContainer
-          layout={{
-            width: "100%",
-            height: 40,
-            backgroundColor: "#2d2d30",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            paddingLeft: 20,
-            paddingRight: 20,
-            borderRadius: 6,
-            marginTop: 8,
-          }}
-        >
-          <pixiText
-            text={`Clicks: ${gameState.score}`}
-            style={{
-              fontFamily: "Arial",
-              fontSize: 12,
-              fill: 0xaaaaaa,
-            }}
-          />
-          <pixiText
-            text="PixiJS Game Engine"
-            style={{
-              fontFamily: "Arial",
-              fontSize: 12,
-              fill: 0x666666,
-            }}
-          />
-          <pixiText
-            text={gameState.isPlaying ? "🟢 Online" : "🟡 Paused"}
-            style={{
-              fontFamily: "Arial",
-              fontSize: 12,
-              fill: gameState.isPlaying ? 0x00ff88 : 0xffa500,
-            }}
-          />
+            />
+            <pixiText
+              text={gameState.isPlaying ? "🟢 Active" : "🟡 Paused"}
+              style={{
+                fontFamily: "Arial",
+                fontSize: 12,
+                fill: gameState.isPlaying ? 0x00ff88 : 0xffa500,
+              }}
+            />
+          </layoutContainer>
         </layoutContainer>
       </layoutContainer>
     </LayoutResizer>
