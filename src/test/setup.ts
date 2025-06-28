@@ -13,12 +13,22 @@ vi.mock("@pixi/react", () => ({
     height,
     backgroundColor,
     antialias,
+    resizeTo,
+    autoDensity,
+    resolution,
+    powerPreference,
+    ...rest
   }: {
     children?: React.ReactNode;
     width: number;
     height: number;
     backgroundColor: number;
     antialias: boolean;
+    resizeTo?: Window;
+    autoDensity?: boolean;
+    resolution?: number;
+    powerPreference?: string;
+    [key: string]: any;
   }) =>
     React.createElement(
       "div",
@@ -28,6 +38,10 @@ vi.mock("@pixi/react", () => ({
         "data-height": height,
         "data-background-color": backgroundColor,
         "data-antialias": antialias,
+        "data-auto-density": autoDensity,
+        "data-resolution": resolution,
+        "data-power-preference": powerPreference,
+        ...rest,
       },
       children
     ),

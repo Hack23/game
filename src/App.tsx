@@ -113,29 +113,25 @@ function LayoutResizer({ children }: LayoutResizerProps): JSX.Element {
   );
 }
 
-function GameContent(): JSX.Element {
+// Add a custom hook to manage game state for better testability
+function useGameState(initialState?: Partial<GameState>) {
   const [gameState, setGameState] = useState<GameState>({
-    score: 0,
-    playerX: 50,
-    playerY: 50,
-    isPlaying: true,
+    score: initialState?.score || 0,
+    playerX: initialState?.playerX || 50,
+    playerY: initialState?.playerY || 50,
+    isPlaying: initialState?.isPlaying ?? true,
   });
 
-  const gameAreaRef = useRef<LayoutContainer>(null);
-  const { app } = useApplication();
-
-  const handlePlayerClick = useCallback(() => {
-    if (!gameState.isPlaying) return;
-
+  const incrementScore = useCallback(() => {
     setGameState((prev) => ({
       ...prev,
       score: prev.score + 1,
       playerX: Math.random() * 80 + 10,
       playerY: Math.random() * 70 + 15,
     }));
-  }, [gameState.isPlaying]);
+  }, []);
 
-  const handleReset = useCallback(() => {
+  const resetGame = useCallback(() => {
     setGameState({
       score: 0,
       playerX: 50,
@@ -144,12 +140,30 @@ function GameContent(): JSX.Element {
     });
   }, []);
 
-  const handlePauseToggle = useCallback(() => {
+  const togglePause = useCallback(() => {
     setGameState((prev) => ({
       ...prev,
       isPlaying: !prev.isPlaying,
     }));
   }, []);
+
+  return {
+    gameState,
+    incrementScore,
+    resetGame,
+    togglePause,
+  };
+}
+
+function GameContent(): JSX.Element {
+  const { gameState, incrementScore, resetGame, togglePause } = useGameState();
+  const gameAreaRef = useRef<LayoutContainer>(null);
+  const { app } = useApplication();
+
+  const handlePlayerClick = useCallback(() => {
+    if (!gameState.isPlaying) return;
+    incrementScore();
+  }, [gameState.isPlaying, incrementScore]);
 
   const createButtonGraphics = useCallback(
     (
@@ -207,6 +221,7 @@ function GameContent(): JSX.Element {
           justifyContent: "center",
           alignItems: "center",
         }}
+        data-testid="game-layout-container"
       >
         {/* Game card container */}
         <layoutContainer
@@ -218,6 +233,7 @@ function GameContent(): JSX.Element {
             flexDirection: "column",
             overflow: "hidden",
           }}
+          data-testid="game-card"
         >
           {/* Header section - Game title and status */}
           <layoutContainer
@@ -231,6 +247,7 @@ function GameContent(): JSX.Element {
               paddingLeft: 24,
               paddingRight: 24,
             }}
+            data-testid="game-header"
           >
             {/* Game title */}
             <layoutContainer
@@ -239,6 +256,7 @@ function GameContent(): JSX.Element {
                 alignItems: "flex-start",
                 gap: 4,
               }}
+              data-testid="game-title-container"
             >
               <pixiText
                 text="Circle Clicker"
@@ -248,6 +266,7 @@ function GameContent(): JSX.Element {
                   fill: 0xffffff,
                   fontWeight: "bold",
                 }}
+                data-testid="game-title"
               />
               <pixiText
                 text={gameState.isPlaying ? "🎯 Active" : "⏸️ Paused"}
@@ -256,6 +275,7 @@ function GameContent(): JSX.Element {
                   fontSize: 12,
                   fill: gameState.isPlaying ? 0x00ff88 : 0xffa500,
                 }}
+                data-testid="game-status"
               />
             </layoutContainer>
 
@@ -281,7 +301,9 @@ function GameContent(): JSX.Element {
               )}
               text={gameState.isPlaying ? "Pause" : "Resume"}
               padding={8}
-              onPress={handlePauseToggle}
+              onPress={togglePause}
+              data-testid="pause-button"
+              aria-label={gameState.isPlaying ? "Pause Game" : "Resume Game"}
             />
           </layoutContainer>
 
@@ -297,6 +319,7 @@ function GameContent(): JSX.Element {
               padding: 24,
             }}
             ref={gameAreaRef}
+            data-testid="game-content"
           >
             {/* Centered score display */}
             <layoutContainer
@@ -313,6 +336,7 @@ function GameContent(): JSX.Element {
                 gap: 8,
                 marginBottom: 20,
               }}
+              data-testid="score-display"
             >
               <pixiText
                 text="SCORE"
@@ -322,6 +346,7 @@ function GameContent(): JSX.Element {
                   fill: 0x7d8590,
                   fontWeight: "bold",
                 }}
+                data-testid="score-label"
               />
               <pixiText
                 text={gameState.score.toString()}
@@ -331,6 +356,7 @@ function GameContent(): JSX.Element {
                   fill: 0x00ff88,
                   fontWeight: "bold",
                 }}
+                data-testid="score-value"
               />
             </layoutContainer>
 
@@ -348,6 +374,7 @@ function GameContent(): JSX.Element {
                 justifyContent: "center",
                 marginBottom: 30,
               }}
+              data-testid="instructions"
             >
               <pixiText
                 text={
@@ -375,6 +402,7 @@ function GameContent(): JSX.Element {
                 alignItems: "center",
                 justifyContent: "center",
               }}
+              data-testid="game-play-area"
             >
               {/* Grid pattern background */}
               <pixiGraphics
@@ -414,6 +442,8 @@ function GameContent(): JSX.Element {
                 interactive={gameState.isPlaying}
                 cursor={gameState.isPlaying ? "pointer" : "default"}
                 onClick={handlePlayerClick}
+                data-testid="target-circle"
+                aria-label="Clickable target"
                 scale={gameState.isPlaying ? 1 : 0.6}
                 alpha={gameState.isPlaying ? 1 : 0.3}
               >
@@ -477,6 +507,7 @@ function GameContent(): JSX.Element {
                     backgroundColor: "rgba(0, 0, 0, 0.8)",
                     borderRadius: 12,
                   }}
+                  data-testid="pause-overlay"
                 >
                   <layoutContainer
                     layout={{
@@ -522,6 +553,7 @@ function GameContent(): JSX.Element {
               justifyContent: "center",
               alignItems: "center",
             }}
+            data-testid="game-footer"
           >
             <pixiFancyButton
               defaultView={createButtonGraphics(0x7c3aed, 140, 50, 12)}
@@ -529,7 +561,9 @@ function GameContent(): JSX.Element {
               pressedView={createButtonGraphics(0x6d28d9, 140, 50, 12)}
               text="🔄 Reset Game"
               padding={12}
-              onPress={handleReset}
+              onPress={resetGame}
+              data-testid="reset-button"
+              aria-label="Reset Game"
             />
           </layoutContainer>
 
@@ -545,6 +579,7 @@ function GameContent(): JSX.Element {
               paddingLeft: 20,
               paddingRight: 20,
             }}
+            data-testid="game-stats"
           >
             <pixiText
               text={`Total Clicks: ${gameState.score}`}
@@ -607,8 +642,8 @@ function App(): JSX.Element {
   }, []);
 
   return (
-    <div className="app-container">
-      <h1>PixiJS React Game</h1>
+    <div className="app-container" data-testid="app-container">
+      <h1 data-testid="app-title">PixiJS React Game</h1>
       <Application
         width={dimensions.width}
         height={dimensions.height}
@@ -622,7 +657,7 @@ function App(): JSX.Element {
       >
         <GameContent />
       </Application>
-      <p className="instructions">
+      <p className="instructions" data-testid="app-instructions">
         A minimal PixiJS game built with @pixi/react and @pixi/layout
       </p>
     </div>
