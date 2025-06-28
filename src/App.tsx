@@ -1,4 +1,9 @@
-import { Application, extend, useApplication } from "@pixi/react";
+import {
+  Application,
+  ApplicationRef,
+  extend,
+  useApplication,
+} from "@pixi/react";
 import { Container, Graphics, Text } from "pixi.js";
 import { LayoutContainer } from "@pixi/layout/components";
 import { Button, FancyButton } from "@pixi/ui";
@@ -495,6 +500,7 @@ function GameContent(): JSX.Element {
                   (gameState.playerY / 100) *
                   Math.max(200, 200)
                 ).toString()}
+                pixi-data={{ type: "target" }} // <-- Add this prop
               >
                 <pixiGraphics
                   draw={(g: Graphics) => {
@@ -678,21 +684,39 @@ function App(): JSX.Element {
     height: window.innerHeight - 100,
   });
 
+  // Use a ref to store the PixiJS Application instance
+  const appRef = useRef<ApplicationRef>(null);
+
+  // Set window.pixiApp as soon as the Application instance is available (for Cypress E2E)
+  useEffect(() => {
+    // Poll for the Application instance and set window.pixiApp as soon as possible
+    const interval = setInterval(() => {
+      const instance = appRef.current as { app?: unknown } | null;
+      if (
+        typeof window !== "undefined" &&
+        (window as { Cypress?: boolean }).Cypress &&
+        instance &&
+        instance.app &&
+        !(window as any).pixiApp
+      ) {
+        (window as any).pixiApp = instance.app;
+        clearInterval(interval);
+      }
+    }, 50);
+
+    return () => clearInterval(interval);
+  }, []);
+
   useEffect(() => {
     const handleResize = () => {
       setDimensions({
         width: window.innerWidth,
         height: window.innerHeight - 100,
       });
-
-      // Scroll to top to avoid mobile resize issues
       window.scrollTo(0, 0);
     };
 
-    // Set initial dimensions
     handleResize();
-
-    // Add resize listener
     window.addEventListener("resize", handleResize);
 
     return () => {
@@ -705,11 +729,12 @@ function App(): JSX.Element {
       <h1 data-testid="app-title">PixiJS React Game</h1>
       <div data-testid="pixi-application">
         <Application
+          ref={appRef}
           width={dimensions.width}
           height={dimensions.height}
           backgroundColor={0x242424}
           antialias={true}
-          resizeTo={window} // This ensures automatic resizing
+          resizeTo={window}
           autoDensity={true}
           resolution={window.devicePixelRatio || 1}
           powerPreference="high-performance"

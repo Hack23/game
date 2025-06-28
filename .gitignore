@@ -5702,3 +5702,6 @@ dist/assets/index-B7DphLce.js
 dist/assets/DebugRenderer-CD6EGoRx.js
 dist/assets/index-CFk_I2Uk.js
 src/App.tsx
+cypress/results/
+cypress/results
+cypress/videos
