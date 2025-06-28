@@ -217,7 +217,7 @@ function GameContent(): JSX.Element {
   // If app is not ready, show loading state
   if (!isAppReady) {
     return (
-      <pixiContainer>
+      <pixiContainer data-testid="loading-container">
         <pixiText
           text="Loading..."
           style={{
@@ -228,6 +228,7 @@ function GameContent(): JSX.Element {
           x={400}
           y={300}
           anchor={0.5}
+          data-testid="loading-text"
         />
       </pixiContainer>
     );
@@ -294,6 +295,7 @@ function GameContent(): JSX.Element {
                   fontWeight: "bold",
                 }}
                 data-testid="game-title"
+                data-text="Circle Clicker"
               />
               <pixiText
                 text={gameState.isPlaying ? "🎯 Active" : "⏸️ Paused"}
@@ -303,6 +305,7 @@ function GameContent(): JSX.Element {
                   fill: gameState.isPlaying ? 0x00ff88 : 0xffa500,
                 }}
                 data-testid="game-status"
+                data-text={gameState.isPlaying ? "🎯 Active" : "⏸️ Paused"}
               />
             </layoutContainer>
 
@@ -374,6 +377,7 @@ function GameContent(): JSX.Element {
                   fontWeight: "bold",
                 }}
                 data-testid="score-label"
+                data-text="SCORE"
               />
               <pixiText
                 text={gameState.score.toString()}
@@ -384,6 +388,7 @@ function GameContent(): JSX.Element {
                   fontWeight: "bold",
                 }}
                 data-testid="score-value"
+                data-text={gameState.score.toString()}
               />
             </layoutContainer>
 
@@ -415,6 +420,12 @@ function GameContent(): JSX.Element {
                   fill: gameState.isPlaying ? 0xffffff : 0x7d8590,
                   fontWeight: "normal",
                 }}
+                data-testid="instructions-text"
+                data-text={
+                  gameState.isPlaying
+                    ? "🎯 Click the target to score points!"
+                    : "⏸️ Game paused - Resume to continue"
+                }
               />
             </layoutContainer>
 
@@ -458,6 +469,7 @@ function GameContent(): JSX.Element {
                     g.stroke();
                   }
                 }}
+                data-testid="game-area-background"
               />
 
               {/* Enhanced target circle */}
@@ -519,6 +531,7 @@ function GameContent(): JSX.Element {
                     g.circle(0, 0, 3);
                     g.fill();
                   }}
+                  data-testid="target-circle-graphics"
                 />
               </pixiContainer>
 
@@ -547,6 +560,7 @@ function GameContent(): JSX.Element {
                       alignItems: "center",
                       gap: 12,
                     }}
+                    data-testid="pause-modal"
                   >
                     <pixiText
                       text="⏸️"
@@ -555,6 +569,7 @@ function GameContent(): JSX.Element {
                         fontSize: 64,
                         fill: 0xffa500,
                       }}
+                      data-testid="pause-icon"
                     />
                     <pixiText
                       text="GAME PAUSED"
@@ -564,6 +579,7 @@ function GameContent(): JSX.Element {
                         fill: 0xffffff,
                         fontWeight: "bold",
                       }}
+                      data-testid="pause-title"
                     />
                   </layoutContainer>
                 </layoutContainer>
@@ -615,6 +631,8 @@ function GameContent(): JSX.Element {
                 fontSize: 12,
                 fill: 0x7d8590,
               }}
+              data-testid="total-clicks"
+              data-text={`Total Clicks: ${gameState.score}`}
             />
             <pixiText
               text="Built with PixiJS + Layout"
@@ -623,6 +641,8 @@ function GameContent(): JSX.Element {
                 fontSize: 12,
                 fill: 0x58a6ff,
               }}
+              data-testid="footer-built-with"
+              data-text="Built with PixiJS + Layout"
             />
             <pixiText
               text={gameState.isPlaying ? "🟢 Active" : "🟡 Paused"}
@@ -631,6 +651,8 @@ function GameContent(): JSX.Element {
                 fontSize: 12,
                 fill: gameState.isPlaying ? 0x00ff88 : 0xffa500,
               }}
+              data-testid="footer-status"
+              data-text={gameState.isPlaying ? "🟢 Active" : "🟡 Paused"}
             />
           </layoutContainer>
         </layoutContainer>

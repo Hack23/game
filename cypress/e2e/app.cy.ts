@@ -1,148 +1,106 @@
-describe("PixiJS Game E2E", () => {
+describe("App E2E", () => {
   beforeEach(() => {
     cy.visit("/");
-    cy.viewport(1280, 720); // Set a standard viewport for testing
+    // Wait for app to initialize
+    cy.get("[data-testid=app-container]", { timeout: 10000 }).should(
+      "be.visible"
+    );
+    // Wait for the game to load
+    cy.get("[data-testid=pixi-application]", { timeout: 5000 }).should(
+      "be.visible"
+    );
   });
 
-  describe("Initial Page Load", () => {
-    it("should display the game page correctly", () => {
-      // Check main heading
-      cy.get("h1").should("contain.text", "PixiJS React Game");
+  it("displays the app header", () => {
+    cy.get("[data-testid=app-title]").should("have.text", "PixiJS React Game");
+  });
 
-      // Check instructions are present
-      cy.get("p.instructions").should(
-        "contain.text",
-        "A minimal PixiJS game built with @pixi/react and @pixi/layout"
+  it("displays the game title", () => {
+    cy.get("[data-testid=game-title]").should("be.visible");
+  });
+
+  it("has a functional reset button", () => {
+    // First, get the score to make sure we're starting at zero
+    cy.contains("Score: 0").should("exist");
+
+    // Click on the target a few times to increase score
+    cy.get("[data-testid=target-circle]").click({ force: true });
+    cy.get("[data-testid=target-circle]").click({ force: true });
+    cy.get("[data-testid=target-circle]").click({ force: true });
+
+    // Verify the score increased
+    cy.contains("Score: 0").should("not.exist");
+
+    // Now click reset
+    cy.get("[data-testid=reset-button]").click({ force: true });
+
+    // Verify score is reset to 0
+    cy.contains("Score: 0").should("exist");
+  });
+
+  it("has a functional pause button", () => {
+    // Verify game is initially in active state
+    cy.get("[data-testid=game-status]").should("contain.text", "Active");
+
+    // Click pause button
+    cy.get("[data-testid=pause-button]").click({ force: true });
+
+    // Verify game is paused
+    cy.get("[data-testid=game-status]").should("contain.text", "Paused");
+
+    // Try clicking on target - score should not increase when paused
+    cy.get("[data-testid=score-display]").then(($score) => {
+      const initialScore = $score.text();
+      cy.get("[data-testid=target-circle]").click({ force: true });
+      cy.get("[data-testid=score-display]").should("have.text", initialScore);
+    });
+
+    // Resume the game
+    cy.get("[data-testid=pause-button]").click({ force: true });
+
+    // Verify game is active again
+    cy.get("[data-testid=game-status]").should("contain.text", "Active");
+
+    // Now clicking should increase the score
+    cy.get("[data-testid=score-display]").then(($score) => {
+      const initialScore = $score.text();
+      cy.get("[data-testid=target-circle]").click({ force: true });
+      cy.get("[data-testid=score-display]").should(
+        "not.have.text",
+        initialScore
       );
-
-      // Check that the game container exists
-      cy.get(".app-container").should("be.visible");
-    });
-
-    it("should have proper page structure", () => {
-      // Check main container
-      cy.get(".app-container").should("exist").and("be.visible");
-
-      // Check heading structure
-      cy.get("h1").should("have.length", 1);
-
-      // Check instructions
-      cy.get("p.instructions").should("be.visible");
     });
   });
 
-  describe("Game Canvas", () => {
-    it("should render the PixiJS canvas", () => {
-      // PixiJS creates a canvas element
-      cy.get("canvas").should("exist").and("be.visible");
+  it("should have interactive target that increases score", () => {
+    // Get initial score
+    let initialScore: string;
+    cy.get("[data-testid=score-display]").then(($score) => {
+      initialScore = $score.text();
+
+      // Click on the target
+      cy.get("[data-testid=target-circle]").click({ force: true });
+
+      // Verify score increased
+      cy.get("[data-testid=score-display]").should(
+        "not.have.text",
+        initialScore
+      );
     });
 
-    it("should have responsive canvas", () => {
-      // Check that canvas has a width and height (not checking specific values as they're responsive)
-      cy.get("canvas").should(($canvas) => {
-        expect($canvas[0]).to.have.property("width");
-        expect($canvas[0]).to.have.property("height");
-        // Canvas should be visible with non-zero dimensions
-        expect($canvas[0].width).to.be.greaterThan(0);
-        expect($canvas[0].height).to.be.greaterThan(0);
+    // Click multiple times and verify position changes
+    cy.get("[data-testid=target-circle]").then(($target) => {
+      const initialPosition = $target.position();
+
+      // Click the target
+      cy.get("[data-testid=target-circle]").click({ force: true });
+
+      // Get new position and verify it changed
+      cy.get("[data-testid=target-circle]").then(($newTarget) => {
+        const newPosition = $newTarget.position();
+        // Position should change after clicking
+        expect(newPosition).not.to.deep.equal(initialPosition);
       });
     });
-  });
-
-  describe("Game Interaction", () => {
-    it("should be interactive", () => {
-      // Wait for canvas to be ready
-      cy.get("canvas").should("be.visible");
-
-      // The game canvas should be present and ready for interaction
-      cy.get("canvas").should("have.attr", "style");
-    });
-  });
-
-  describe("Accessibility", () => {
-    it("should have proper heading structure", () => {
-      cy.get("h1").should("have.length", 1);
-    });
-
-    it("should have readable content", () => {
-      cy.get("h1")
-        .should("be.visible")
-        .and("contain.text", "PixiJS React Game");
-      cy.get("p.instructions").should("be.visible");
-    });
-  });
-
-  describe("Responsive Design", () => {
-    it("should be visible on different screen sizes", () => {
-      // Test on tablet size
-      cy.viewport(768, 1024);
-      cy.get(".app-container").should("be.visible");
-      cy.get("canvas").should("be.visible");
-
-      // Test on mobile size
-      cy.viewport(375, 667);
-      cy.get(".app-container").should("be.visible");
-      cy.get("canvas").should("be.visible");
-
-      // Canvas should always be visible and appropriately sized
-      cy.get("canvas").should(($canvas) => {
-        expect($canvas[0].width).to.be.greaterThan(0);
-        expect($canvas[0].height).to.be.greaterThan(0);
-      });
-    });
-  });
-
-  it("should load the game correctly", () => {
-    // Check the title and instructions
-    cy.get('[data-testid="app-title"]')
-      .should("be.visible")
-      .and("contain.text", "PixiJS React Game");
-    cy.get('[data-testid="app-instructions"]').should("be.visible");
-
-    // Check that the game canvas is rendered
-    cy.get("canvas").should("be.visible");
-  });
-
-  it("should have correct initial game state", () => {
-    // Since we can't directly test PixiJS elements in Cypress,
-    // we can use application state or visual testing
-    cy.wait(1000); // Wait for PixiJS to initialize
-
-    // Take a screenshot for visual comparison
-    cy.screenshot("game-initial-state");
-  });
-
-  it("should be responsive on different screen sizes", () => {
-    // Test on mobile size
-    cy.viewport(375, 667);
-    cy.wait(500);
-    cy.screenshot("game-mobile-view");
-
-    // Test on tablet size
-    cy.viewport(768, 1024);
-    cy.wait(500);
-    cy.screenshot("game-tablet-view");
-
-    // Test on large desktop
-    cy.viewport(1920, 1080);
-    cy.wait(500);
-    cy.screenshot("game-desktop-view");
-  });
-
-  it("should have working navigation and buttons", () => {
-    cy.wait(1000); // Wait for PixiJS to initialize
-
-    // Since we can't easily test PixiJS specific elements in Cypress,
-    // we can test keyboard controls or focus navigation
-
-    // Press space to pause (assuming we implement keyboard controls)
-    cy.focused().type(" ");
-    cy.wait(500);
-    cy.screenshot("game-paused-state");
-
-    // Press space again to resume
-    cy.focused().type(" ");
-    cy.wait(500);
-    cy.screenshot("game-resumed-state");
   });
 });
