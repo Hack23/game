@@ -4,7 +4,7 @@ import { LayoutContainer } from "@pixi/layout/components";
 import { Button, FancyButton } from "@pixi/ui";
 import "@pixi/layout/react";
 import "@pixi/layout";
-import { useCallback, useState, useRef } from "react";
+import { useCallback, useState, useRef, useEffect } from "react";
 import type { JSX } from "react";
 import "./App.css";
 
@@ -33,14 +33,23 @@ function LayoutResizer({ children }: LayoutResizerProps): JSX.Element {
   const layoutRef = useRef<LayoutContainer>(null);
   const { app } = useApplication();
 
-  app.renderer.on("resize", () => {
-    if (layoutRef.current) {
-      layoutRef.current.layout = {
-        width: app.screen.width,
-        height: app.screen.height,
+  useEffect(() => {
+    const handleResize = (): void => {
+      if (layoutRef.current && app?.screen) {
+        layoutRef.current.layout = {
+          width: app.screen.width,
+          height: app.screen.height,
+        };
+      }
+    };
+
+    if (app?.renderer) {
+      app.renderer.on("resize", handleResize);
+      return () => {
+        app.renderer.off("resize", handleResize);
       };
     }
-  });
+  }, [app]);
 
   return (
     <pixiContainer ref={layoutRef} layout={{}}>
@@ -103,21 +112,16 @@ function GameContent(): JSX.Element {
     []
   );
 
-  // Safe access to app dimensions with fallbacks
-  const gameAreaWidth = app?.screen?.width ?? 800;
+  // Check if app is initialized
+  const isAppReady = Boolean(app && app.renderer);
 
-  // Don't render if app is not ready
-  if (!app || !app.screen) {
+  // Use safe default values when app isn't ready
+  const screenWidth = isAppReady && app?.screen ? app.screen.width : 800;
+
+  // If app is not ready, show loading state
+  if (!isAppReady) {
     return (
-      <layoutContainer
-        layout={{
-          width: "100%",
-          height: "100%",
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "#0d1117",
-        }}
-      >
+      <pixiContainer>
         <pixiText
           text="Loading..."
           style={{
@@ -125,10 +129,16 @@ function GameContent(): JSX.Element {
             fontSize: 24,
             fill: 0xffffff,
           }}
+          x={400}
+          y={300}
+          anchor={0.5}
         />
-      </layoutContainer>
+      </pixiContainer>
     );
   }
+
+  // Safe access to app dimensions with fallback values
+  const gameAreaWidth = screenWidth;
 
   return (
     <LayoutResizer>
