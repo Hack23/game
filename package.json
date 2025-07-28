@@ -18,7 +18,7 @@
     "@pixi/layout": "^3.0.2",
     "@pixi/react": "^8.0.3",
     "@pixi/sound": "^6.0.1",
-    "@pixi/ui": "^2.2.4",
+    "@pixi/ui": "^2.2.7",
     "howler": "^2.2.4",
     "pixi.js": "^8.11.0",
     "react": "^19.1.0",
