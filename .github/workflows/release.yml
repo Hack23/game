@@ -183,8 +183,6 @@ jobs:
         id: attest
         with:
           subject-path: game-${{ needs.prepare.outputs.version }}.zip
-          subject-digest-algorithm: sha256
-          bundle-path: game-${{ needs.prepare.outputs.version }}.zip.intoto.jsonl
 
       - name: Copy artifact attestation for zip
         run: cp ${{ steps.attest.outputs.bundle-path }} game-${{ needs.prepare.outputs.version }}.zip.intoto.jsonl
