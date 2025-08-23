@@ -35,6 +35,118 @@ This template implements comprehensive security measures:
 - 🎮 **PixiJS 8.x** - High-performance WebGL renderer for 2D games
 - 🎵 **Howler.js** - Audio library for games
 
+## 🚀 Using This Template
+
+When you create a new repository from this template, follow these essential setup steps to get all security and automation features working properly:
+
+### 1. 📋 Setup Repository Labels
+
+Labels are essential for automated pull request categorization and release note generation.
+
+**Run the setup workflow:**
+1. Go to **Actions** → **Setup Repository Labels**
+2. Click **"Run workflow"**
+3. Choose whether to recreate all labels (optional)
+4. Wait for completion
+
+This creates all necessary labels for:
+- 🚀 Features and enhancements
+- 🐛 Bug fixes  
+- 🎮 Game development (graphics, audio, game logic)
+- 🔒 Security and compliance
+- 📦 Dependencies and infrastructure
+
+### 2. 🌐 Enable GitHub Pages Deployment
+
+Enable GitHub Pages to automatically deploy your game when creating releases.
+
+**Setup GitHub Pages:**
+1. Go to **Settings** → **Pages**
+2. Under **Source**, select **"GitHub Actions"**
+3. Save the configuration
+
+Your game will be automatically deployed to `https://your-username.github.io/your-repo-name/` when you run the release workflow.
+
+### 3. 🔒 Update Security Badge
+
+Update the OpenSSF Scorecard badge to point to your repository.
+
+**Edit the README:**
+```markdown
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/your-username/your-repo-name/badge)](https://scorecard.dev/viewer/?uri=github.com/your-username/your-repo-name)
+```
+
+Replace `your-username/your-repo-name` with your actual GitHub repository path.
+
+### 4. 🎮 Start Building Your Game
+
+With the template configured, you can now:
+
+1. **Develop locally or in Codespaces**
+   ```bash
+   npm install
+   npm run dev
+   ```
+
+2. **Create pull requests** - Labels will be automatically applied
+3. **Run tests** - Automated testing on every push/PR
+4. **Create releases** - Use the release workflow for deployment
+5. **Monitor security** - Automated security scanning and scoring
+
+### 🔄 Available Workflows
+
+Your repository includes these automated workflows:
+
+| Workflow | Trigger | Purpose |
+|----------|---------|---------|
+| **Setup Repository Labels** | Manual | Creates all required labels for PR categorization |
+| **Test and Report** | Push/PR | Runs unit tests, E2E tests, and generates coverage |
+| **Build, Attest and Release** | Manual/Tag | Creates secure releases with SBOM and attestations |
+| **CodeQL Analysis** | Push/PR/Schedule | Static code analysis for security vulnerabilities |
+| **Dependency Review** | PR | Reviews dependencies for known vulnerabilities |
+| **Scorecard Analysis** | Push/Schedule | OSSF supply chain security assessment |
+| **ZAP Security Scan** | Manual | Dynamic security testing of deployed app |
+| **Lighthouse Performance** | Manual | Performance and accessibility audits |
+
+### 🛡️ Security Features Ready to Use
+
+Once configured, your repository automatically provides:
+
+- **🔍 Code Scanning** - Vulnerability detection on every push
+- **📦 Dependency Protection** - Automated vulnerability checks
+- **🏆 Supply Chain Security** - OSSF Scorecard monitoring with public badge
+- **🔏 Build Attestations** - Cryptographic proof of build integrity
+- **📄 SBOM Generation** - Software Bill of Materials for transparency
+- **🕷️ Security Testing** - OWASP ZAP dynamic scanning
+- **⚡ Performance Monitoring** - Lighthouse audits
+
+### 🎯 Next Steps
+
+1. **Replace the example game** in `src/components/` with your game logic
+2. **Add game assets** to the `public/assets/` directory  
+3. **Create your first PR** to see automated labeling in action
+4. **Run your first release** to deploy to GitHub Pages
+5. **Monitor security** through the automatically generated security reports
+
+All security workflows will protect your game from vulnerabilities while providing complete transparency through attestations and SBOM generation.
+
+## 🔒 Security Features
+
+This template implements comprehensive security measures:
+
+- **🛡️ Supply Chain Security** - OSSF Scorecard analysis and dependency review
+- **🔍 Static Analysis** - CodeQL scanning for vulnerabilities
+- **📦 Dependency Protection** - Automated dependency vulnerability checks
+- **🔐 Runner Hardening** - All CI/CD runners are hardened with audit logging
+- **📋 Security Policies** - GitHub security advisories and vulnerability reporting
+- **🏷️ Pinned Dependencies** - All GitHub Actions pinned to specific SHA hashes
+- **📄 SBOM Generation** - Software Bill of Materials for transparency
+- **🔏 Build Attestations** - Cryptographic proof of build integrity
+- **🏆 Artifact Verification** - SLSA-compliant build provenance
+- **🕷️ ZAP Security Scanning** - OWASP ZAP dynamic application security testing
+- **⚡ Lighthouse Performance** - Automated performance and accessibility audits
+
+
 ## Development Environment
 
 This template includes a fully configured development environment:
