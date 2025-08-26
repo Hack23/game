@@ -32,7 +32,7 @@
     "@testing-library/user-event": "^14.6.1",
     "@types/howler": "^2.2.12",
     "@types/react": "^19.1.11",
-    "@types/react-dom": "^19.1.7",
+    "@types/react-dom": "^19.1.8",
     "@typescript-eslint/eslint-plugin": "^8.35.0",
     "@typescript-eslint/parser": "^8.41.0",
     "@vitejs/plugin-react": "^5.0.1",
