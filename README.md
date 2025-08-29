@@ -142,6 +142,9 @@ This template implements comprehensive security measures:
 - **🏷️ Pinned Dependencies** - All GitHub Actions pinned to specific SHA hashes
 - **📄 SBOM Generation** - Software Bill of Materials for transparency
 - **🔏 Build Attestations** - Cryptographic proof of build integrity
+- **🛡️ Immutable Releases** - Artifacts cannot be tampered with
+- **🔐 Build Integrity** - Original builds remain unchanged  
+- **📋 Audit Trail** - Complete release history
 - **🏆 Artifact Verification** - SLSA-compliant build provenance
 - **🕷️ ZAP Security Scanning** - OWASP ZAP dynamic application security testing
 - **⚡ Lighthouse Performance** - Automated performance and accessibility audits
@@ -604,6 +607,45 @@ gh attestation verify game-v1.0.0.zip \
   --owner Hack23 --repo game \
   --predicate-type https://spdx.dev/Document
 ```
+
+# 🔒 Immutable Releases
+
+This repository uses **GitHub's immutable releases** to prevent unauthorized modifications to published releases.
+
+## What are Immutable Releases?
+
+Immutable releases lock release artifacts after publication, ensuring:
+- **🛡️ Supply Chain Security** - Artifacts cannot be tampered with
+- **🔐 Build Integrity** - Original builds remain unchanged  
+- **📋 Audit Trail** - Complete release history
+
+> Only release title and notes can be modified after publication.
+
+## How to Enable
+
+### For Your Repository:
+1. Go to **Settings** → **General**
+2. Scroll to the **"Releases"** section
+3. Check **"Enable release immutability"**
+4. ⚠️ Only applies to **future releases**
+
+### For Your Organization:
+1. Go to **Organization Settings** → **Repository** → **General**
+2. In **"Releases"** section, select policy:
+   - **All repositories** - Apply to all org repos
+   - **Selected repositories** - Choose specific repos
+3. ⚠️ Only applies to **future releases**
+
+## Verification
+
+```bash
+# Verify release artifacts haven't been tampered with
+gh attestation verify game-v1.1.4.zip --owner Hack23 --repo game
+```
+
+---
+
+*Part of our security-first approach alongside OSSF Scorecard, SLSA attestations, and automated scanning.*
 
 ### 📦 Release Artifacts
 
