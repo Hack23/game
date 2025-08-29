@@ -19,6 +19,9 @@ This template implements comprehensive security measures:
 - **🏷️ Pinned Dependencies** - All GitHub Actions pinned to specific SHA hashes
 - **📄 SBOM Generation** - Software Bill of Materials for transparency
 - **🔏 Build Attestations** - Cryptographic proof of build integrity
+- **🛡️ Immutable Releases** - Artifacts cannot be tampered with
+- **🔐 Build Integrity** - Original builds remain unchanged  
+- **📋 Audit Trail** - Complete release history
 - **🏆 Artifact Verification** - SLSA-compliant build provenance
 - **🕷️ ZAP Security Scanning** - OWASP ZAP dynamic application security testing
 - **⚡ Lighthouse Performance** - Automated performance and accessibility audits
@@ -112,28 +115,6 @@ Your repository includes these automated workflows:
 
 Once configured, your repository automatically provides:
 
-- **🔍 Code Scanning** - Vulnerability detection on every push
-- **📦 Dependency Protection** - Automated vulnerability checks
-- **🏆 Supply Chain Security** - OSSF Scorecard monitoring with public badge
-- **🔏 Build Attestations** - Cryptographic proof of build integrity
-- **📄 SBOM Generation** - Software Bill of Materials for transparency
-- **🕷️ Security Testing** - OWASP ZAP dynamic scanning
-- **⚡ Performance Monitoring** - Lighthouse audits
-
-### 🎯 Next Steps
-
-1. **Replace the example game** in `src/components/` with your game logic
-2. **Add game assets** to the `public/assets/` directory  
-3. **Create your first PR** to see automated labeling in action
-4. **Run your first release** to deploy to GitHub Pages
-5. **Monitor security** through the automatically generated security reports
-
-All security workflows will protect your game from vulnerabilities while providing complete transparency through attestations and SBOM generation.
-
-## 🔒 Security Features
-
-This template implements comprehensive security measures:
-
 - **🛡️ Supply Chain Security** - OSSF Scorecard analysis and dependency review
 - **🔍 Static Analysis** - CodeQL scanning for vulnerabilities
 - **📦 Dependency Protection** - Automated dependency vulnerability checks
@@ -149,6 +130,15 @@ This template implements comprehensive security measures:
 - **🕷️ ZAP Security Scanning** - OWASP ZAP dynamic application security testing
 - **⚡ Lighthouse Performance** - Automated performance and accessibility audits
 
+### 🎯 Next Steps
+
+1. **Replace the example game** in `src/components/` with your game logic
+2. **Add game assets** to the `public/assets/` directory  
+3. **Create your first PR** to see automated labeling in action
+4. **Run your first release** to deploy to GitHub Pages
+5. **Monitor security** through the automatically generated security reports
+
+All security workflows will protect your game from vulnerabilities while providing complete transparency through attestations and SBOM generation.
 
 ## Development Environment
 
