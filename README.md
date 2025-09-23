@@ -14,13 +14,14 @@ This template implements comprehensive security measures:
 - **🛡️ Supply Chain Security** - OSSF Scorecard analysis and dependency review
 - **🔍 Static Analysis** - CodeQL scanning for vulnerabilities
 - **📦 Dependency Protection** - Automated dependency vulnerability checks
-- **🔐 Runner Hardening** - All CI/CD runners are hardened with audit logging
+- **� License Compliance** - Automated checking of dependency licenses (MIT, Apache-2.0, BSD variants, ISC, CC0-1.0, Unlicense)
+- **�🔐 Runner Hardening** - All CI/CD runners are hardened with audit logging
 - **📋 Security Policies** - GitHub security advisories and vulnerability reporting
 - **🏷️ Pinned Dependencies** - All GitHub Actions pinned to specific SHA hashes
 - **📄 SBOM Generation** - Software Bill of Materials for transparency
 - **🔏 Build Attestations** - Cryptographic proof of build integrity
 - **🛡️ Immutable Releases** - Artifacts cannot be tampered with
-- **🔐 Build Integrity** - Original builds remain unchanged  
+- **🔐 Build Integrity** - Original builds remain unchanged
 - **📋 Audit Trail** - Complete release history
 - **🏆 Artifact Verification** - SLSA-compliant build provenance
 - **🕷️ ZAP Security Scanning** - OWASP ZAP dynamic application security testing
@@ -47,14 +48,16 @@ When you create a new repository from this template, follow these essential setu
 Labels are essential for automated pull request categorization and release note generation.
 
 **Run the setup workflow:**
+
 1. Go to **Actions** → **Setup Repository Labels**
 2. Click **"Run workflow"**
 3. Choose whether to recreate all labels (optional)
 4. Wait for completion
 
 This creates all necessary labels for:
+
 - 🚀 Features and enhancements
-- 🐛 Bug fixes  
+- 🐛 Bug fixes
 - 🎮 Game development (graphics, audio, game logic)
 - 🔒 Security and compliance
 - 📦 Dependencies and infrastructure
@@ -64,6 +67,7 @@ This creates all necessary labels for:
 Enable GitHub Pages to automatically deploy your game when creating releases.
 
 **Setup GitHub Pages:**
+
 1. Go to **Settings** → **Pages**
 2. Under **Source**, select **"GitHub Actions"**
 3. Save the configuration
@@ -75,6 +79,7 @@ Your game will be automatically deployed to `https://your-username.github.io/you
 Update the OpenSSF Scorecard badge to point to your repository.
 
 **Edit the README:**
+
 ```markdown
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/your-username/your-repo-name/badge)](https://scorecard.dev/viewer/?uri=github.com/your-username/your-repo-name)
 ```
@@ -86,6 +91,7 @@ Replace `your-username/your-repo-name` with your actual GitHub repository path.
 With the template configured, you can now:
 
 1. **Develop locally or in Codespaces**
+
    ```bash
    npm install
    npm run dev
@@ -100,16 +106,16 @@ With the template configured, you can now:
 
 Your repository includes these automated workflows:
 
-| Workflow | Trigger | Purpose |
-|----------|---------|---------|
-| **Setup Repository Labels** | Manual | Creates all required labels for PR categorization |
-| **Test and Report** | Push/PR | Runs unit tests, E2E tests, and generates coverage |
-| **Build, Attest and Release** | Manual/Tag | Creates secure releases with SBOM and attestations |
-| **CodeQL Analysis** | Push/PR/Schedule | Static code analysis for security vulnerabilities |
-| **Dependency Review** | PR | Reviews dependencies for known vulnerabilities |
-| **Scorecard Analysis** | Push/Schedule | OSSF supply chain security assessment |
-| **ZAP Security Scan** | Manual | Dynamic security testing of deployed app |
-| **Lighthouse Performance** | Manual | Performance and accessibility audits |
+| Workflow                      | Trigger          | Purpose                                                                 |
+| ----------------------------- | ---------------- | ----------------------------------------------------------------------- |
+| **Setup Repository Labels**   | Manual           | Creates all required labels for PR categorization                       |
+| **Test and Report**           | Push/PR          | Runs unit tests, E2E tests, license compliance, and generates coverage  |
+| **Build, Attest and Release** | Manual/Tag       | Creates secure releases with SBOM, license validation, and attestations |
+| **CodeQL Analysis**           | Push/PR/Schedule | Static code analysis for security vulnerabilities                       |
+| **Dependency Review**         | PR               | Reviews dependencies for known vulnerabilities                          |
+| **Scorecard Analysis**        | Push/Schedule    | OSSF supply chain security assessment                                   |
+| **ZAP Security Scan**         | Manual           | Dynamic security testing of deployed app                                |
+| **Lighthouse Performance**    | Manual           | Performance and accessibility audits                                    |
 
 ### 🛡️ Security Features Ready to Use
 
@@ -118,13 +124,14 @@ Once configured, your repository automatically provides:
 - **🛡️ Supply Chain Security** - OSSF Scorecard analysis and dependency review
 - **🔍 Static Analysis** - CodeQL scanning for vulnerabilities
 - **📦 Dependency Protection** - Automated dependency vulnerability checks
-- **🔐 Runner Hardening** - All CI/CD runners are hardened with audit logging
+- **� License Compliance** - Automated checking of dependency licenses (MIT, Apache-2.0, BSD variants, ISC, CC0-1.0, Unlicense)
+- **�🔐 Runner Hardening** - All CI/CD runners are hardened with audit logging
 - **📋 Security Policies** - GitHub security advisories and vulnerability reporting
 - **🏷️ Pinned Dependencies** - All GitHub Actions pinned to specific SHA hashes
 - **📄 SBOM Generation** - Software Bill of Materials for transparency
 - **🔏 Build Attestations** - Cryptographic proof of build integrity
 - **🛡️ Immutable Releases** - Artifacts cannot be tampered with
-- **🔐 Build Integrity** - Original builds remain unchanged  
+- **🔐 Build Integrity** - Original builds remain unchanged
 - **📋 Audit Trail** - Complete release history
 - **🏆 Artifact Verification** - SLSA-compliant build provenance
 - **🕷️ ZAP Security Scanning** - OWASP ZAP dynamic application security testing
@@ -133,7 +140,7 @@ Once configured, your repository automatically provides:
 ### 🎯 Next Steps
 
 1. **Replace the example game** in `src/components/` with your game logic
-2. **Add game assets** to the `public/assets/` directory  
+2. **Add game assets** to the `public/assets/` directory
 3. **Create your first PR** to see automated labeling in action
 4. **Run your first release** to deploy to GitHub Pages
 5. **Monitor security** through the automatically generated security reports
@@ -203,30 +210,32 @@ graph TD
 
     B --> |🔍 Code Analysis| C[CodeQL Scanning]
     B --> |📦 Dependencies| D[Dependency Review]
-    B --> |🏗️ Supply Chain| E[OSSF Scorecard]
+    B --> |📜 License Check| E[License Compliance]
+    B --> |🏗️ Supply Chain| F[OSSF Scorecard]
 
-    C --> |🚨 Vulnerabilities| F[Security Alerts]
-    D --> |⚠️ Known CVEs| F
-    E --> |📊 Security Score| G[Security Dashboard]
+    C --> |🚨 Vulnerabilities| G[Security Alerts]
+    D --> |⚠️ Known CVEs| G
+    E --> |� Invalid Licenses| G
+    F --> |�📊 Security Score| H[Security Dashboard]
 
-    F --> H[🚫 Block Merge]
-    G --> I[✅ Security Badge]
+    G --> I[🚫 Block Merge]
+    H --> J[✅ Security Badge]
 
     subgraph "🔐 Protection Layers"
-        J[Runner Hardening]
-        K[Pinned Actions]
-        L[Audit Logging]
+        K[Runner Hardening]
+        L[Pinned Actions]
+        M[Audit Logging]
     end
 
     subgraph "🧪 Runtime Security Testing"
-        M[🕷️ ZAP DAST Scan]
-        N[⚡ Lighthouse Audit]
-        O[🌐 Live Site Testing]
+        N[🕷️ ZAP DAST Scan]
+        O[⚡ Lighthouse Audit]
+        P[🌐 Live Site Testing]
     end
 
-    I --> M
-    M --> |🔍 Dynamic Scan| N
-    N --> |📊 Performance Report| O
+    J --> N
+    N --> |🔍 Dynamic Scan| O
+    O --> |📊 Performance Report| P
 
     %% Styling
     classDef security fill:#ffebee,stroke:#c62828,stroke-width:2px,color:#000
@@ -235,11 +244,11 @@ graph TD
     classDef alert fill:#fff3e0,stroke:#ef6c00,stroke-width:2px,color:#000
     classDef runtime fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000
 
-    class A,B,H security
-    class C,D,E analysis
-    class J,K,L protection
-    class F,G,I alert
-    class M,N,O runtime
+    class A,B,I security
+    class C,D,E,F analysis
+    class K,L,M protection
+    class G,H,J alert
+    class N,O,P runtime
 ```
 
 ## Test & Report Workflow
@@ -298,6 +307,9 @@ npm run test
 
 # Run E2E tests
 npm run test:e2e
+
+# Check license compliance
+npm run test:licenses
 ```
 
 ## PixiJS 8.x Integration
@@ -356,6 +368,13 @@ export function Game() {
 - Starts dev server automatically
 - Screenshots and videos on failure
 - Run with: `npm run test:e2e`
+
+### License Compliance
+
+- Automated checking of dependency licenses using `license-compliance`
+- Only allows approved open-source licenses (MIT, Apache-2.0, BSD variants, ISC, CC0-1.0, Unlicense)
+- Prevents dependencies with restrictive or unknown licenses
+- Run with: `npm run test:licenses`
 
 ### CI/CD Pipeline
 
@@ -422,6 +441,7 @@ flowchart LR
 
 - **CodeQL Analysis**: Automated vulnerability scanning on push/PR
 - **Dependency Review**: Checks for known vulnerabilities in dependencies
+- **License Compliance**: Validates all dependencies use approved open-source licenses
 - **OSSF Scorecard**: Supply chain security assessment with public scoring
 - **Runner Hardening**: All CI/CD runners use hardened security policies
 
@@ -605,8 +625,9 @@ This repository uses **GitHub's immutable releases** to prevent unauthorized mod
 ## What are Immutable Releases?
 
 Immutable releases lock release artifacts after publication, ensuring:
+
 - **🛡️ Supply Chain Security** - Artifacts cannot be tampered with
-- **🔐 Build Integrity** - Original builds remain unchanged  
+- **🔐 Build Integrity** - Original builds remain unchanged
 - **📋 Audit Trail** - Complete release history
 
 > Only release title and notes can be modified after publication.
@@ -614,12 +635,14 @@ Immutable releases lock release artifacts after publication, ensuring:
 ## How to Enable
 
 ### For Your Repository:
+
 1. Go to **Settings** → **General**
 2. Scroll to the **"Releases"** section
 3. Check **"Enable release immutability"**
 4. ⚠️ Only applies to **future releases**
 
 ### For Your Organization:
+
 1. Go to **Organization Settings** → **Repository** → **General**
 2. In **"Releases"** section, select policy:
    - **All repositories** - Apply to all org repos
@@ -635,7 +658,7 @@ gh attestation verify game-v1.1.4.zip --owner Hack23 --repo game
 
 ---
 
-*Part of our security-first approach alongside OSSF Scorecard, SLSA attestations, and automated scanning.*
+_Part of our security-first approach alongside OSSF Scorecard, SLSA attestations, and automated scanning._
 
 ### 📦 Release Artifacts
 

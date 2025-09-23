@@ -8,6 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
+    "test:licenses": "license-compliance --direct --allow 'MIT;ISC;0BSD;BSD-2-Clause;BSD-3-Clause;Apache-2.0;Unlicense;CC0-1.0'",
     "test": "vitest",
     "coverage": "vitest run --coverage --coverage.reportOnFailure",
     "test:ci": "vitest run --coverage --reporter=junit --outputFile=coverage/junit.xml",
@@ -26,6 +27,7 @@
     "react-error-boundary": "^6.0.0"
   },
   "devDependencies": {
+    "license-compliance": "3.0.1",
     "@eslint/js": "^9.36.0",
     "@testing-library/jest-dom": "^6.8.0",
     "@testing-library/react": "^16.3.0",

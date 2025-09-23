@@ -83,6 +83,9 @@ jobs:
       - name: build
         run: npm run build
 
+      - name: Check licenses
+        run: npm run test:licenses
+
       - name: Verify Cypress
         run: npx cypress verify
 
