@@ -92,6 +92,31 @@ jobs:
       - name: Check licenses
         run: npm run test:licenses
 
+      - name: Generate SBOM
+        uses: anchore/sbom-action@f8bdd1d8ac5e901a77a92f111440fdb1b593736b # v0.20.6
+        id: sbom
+        with:
+          format: spdx-json
+          output-file: game.spdx.json
+          artifact-name: game
+
+
+      - name: Install SBOMQS
+        run: |
+          curl -LO https://github.com/interlynk-io/sbomqs/releases/download/v1.2.0/sbomqs-linux-amd64
+          sudo mv sbomqs-linux-amd64 /usr/local/bin/sbomqs
+          sudo chmod a+x /usr/local/bin/sbomqs
+                
+      - name: Check SBOM Quality
+        run: |
+          score=$(sbomqs score game.spdx.json --json | jq '.files[0].avg_score')
+          echo "SBOM Score: $score/10"
+          
+          if (( $(echo "$score < 7.0" | bc -l) )); then
+            echo "::error::SBOM quality score too low: $score"
+            exit 1
+          fi
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
