@@ -106,7 +106,10 @@ jobs:
           curl -LO https://github.com/interlynk-io/sbomqs/releases/download/v1.2.0/sbomqs-linux-amd64
           sudo mv sbomqs-linux-amd64 /usr/local/bin/sbomqs
           sudo chmod a+x /usr/local/bin/sbomqs
-                
+
+      - name: Details SBOM Quality
+        run: sbomqs score game.spdx.json --detailed
+
       - name: Check SBOM Quality
         run: |
           score=$(sbomqs score game.spdx.json --json | jq '.files[0].avg_score')
