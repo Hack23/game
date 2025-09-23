@@ -15,6 +15,7 @@ This template implements comprehensive security measures:
 - **🔍 Static Analysis** - CodeQL scanning for vulnerabilities
 - **📦 Dependency Protection** - Automated dependency vulnerability checks
 - **� License Compliance** - Automated checking of dependency licenses (MIT, Apache-2.0, BSD variants, ISC, CC0-1.0, Unlicense)
+- **📋 SBOM Quality Validation** - Automated SBOM quality scoring with minimum 7.0/10 threshold using SBOMQS
 - **�🔐 Runner Hardening** - All CI/CD runners are hardened with audit logging
 - **📋 Security Policies** - GitHub security advisories and vulnerability reporting
 - **🏷️ Pinned Dependencies** - All GitHub Actions pinned to specific SHA hashes
@@ -106,16 +107,16 @@ With the template configured, you can now:
 
 Your repository includes these automated workflows:
 
-| Workflow                      | Trigger          | Purpose                                                                 |
-| ----------------------------- | ---------------- | ----------------------------------------------------------------------- |
-| **Setup Repository Labels**   | Manual           | Creates all required labels for PR categorization                       |
-| **Test and Report**           | Push/PR          | Runs unit tests, E2E tests, license compliance, and generates coverage  |
-| **Build, Attest and Release** | Manual/Tag       | Creates secure releases with SBOM, license validation, and attestations |
-| **CodeQL Analysis**           | Push/PR/Schedule | Static code analysis for security vulnerabilities                       |
-| **Dependency Review**         | PR               | Reviews dependencies for known vulnerabilities                          |
-| **Scorecard Analysis**        | Push/Schedule    | OSSF supply chain security assessment                                   |
-| **ZAP Security Scan**         | Manual           | Dynamic security testing of deployed app                                |
-| **Lighthouse Performance**    | Manual           | Performance and accessibility audits                                    |
+| Workflow                      | Trigger          | Purpose                                                                                         |
+| ----------------------------- | ---------------- | ----------------------------------------------------------------------------------------------- |
+| **Setup Repository Labels**   | Manual           | Creates all required labels for PR categorization                                               |
+| **Test and Report**           | Push/PR          | Runs unit tests, E2E tests, license compliance, SBOM quality validation, and generates coverage |
+| **Build, Attest and Release** | Manual/Tag       | Creates secure releases with SBOM, license validation, and attestations                         |
+| **CodeQL Analysis**           | Push/PR/Schedule | Static code analysis for security vulnerabilities                                               |
+| **Dependency Review**         | PR               | Reviews dependencies for known vulnerabilities                                                  |
+| **Scorecard Analysis**        | Push/Schedule    | OSSF supply chain security assessment                                                           |
+| **ZAP Security Scan**         | Manual           | Dynamic security testing of deployed app                                                        |
+| **Lighthouse Performance**    | Manual           | Performance and accessibility audits                                                            |
 
 ### 🛡️ Security Features Ready to Use
 
@@ -125,6 +126,7 @@ Once configured, your repository automatically provides:
 - **🔍 Static Analysis** - CodeQL scanning for vulnerabilities
 - **📦 Dependency Protection** - Automated dependency vulnerability checks
 - **� License Compliance** - Automated checking of dependency licenses (MIT, Apache-2.0, BSD variants, ISC, CC0-1.0, Unlicense)
+- **📋 SBOM Quality Validation** - Automated SBOM quality scoring with minimum 7.0/10 threshold using SBOMQS
 - **�🔐 Runner Hardening** - All CI/CD runners are hardened with audit logging
 - **📋 Security Policies** - GitHub security advisories and vulnerability reporting
 - **🏷️ Pinned Dependencies** - All GitHub Actions pinned to specific SHA hashes
@@ -376,6 +378,15 @@ export function Game() {
 - Prevents dependencies with restrictive or unknown licenses
 - Run with: `npm run test:licenses`
 
+### SBOM Quality Validation
+
+- Automated SBOM quality assessment using [SBOMQS](https://github.com/interlynk-io/sbomqs) during CI/CD builds
+- Validates SBOM completeness across multiple standards (NTIA-minimum-elements, BSI v1.1/v2.0, Semantic, Quality, Sharing, Structural)
+- Enforces minimum quality score of **7.0/10** to ensure high-quality Software Bill of Materials
+- Checks for essential components: names, versions, unique IDs, suppliers, licenses, checksums, and dependency relationships
+- Blocks builds with insufficient SBOM quality to maintain supply chain transparency
+- Provides detailed quality reports with actionable feedback for improvement
+
 ### CI/CD Pipeline
 
 ```mermaid
@@ -391,7 +402,8 @@ flowchart LR
         S1[🛡️ CodeQL Analysis]
         S2[📦 Dependency Review]
         S3[🏆 OSSF Scorecard]
-        S4[🔐 Runner Hardening]
+        S4[� SBOM Quality Check]
+        S5[�🔐 Runner Hardening]
     end
 
     subgraph "📈 Test Coverage"
@@ -416,6 +428,7 @@ flowchart LR
     A1 --> S2
     A1 --> S3
     A1 --> S4
+    A1 --> S5
 
     A5 --> C1
     A5 --> C2
@@ -424,6 +437,7 @@ flowchart LR
     S1 --> C5
     S2 --> C5
     S3 --> C5
+    S4 --> C5
 
     %% Styling
     classDef pipeline fill:#e3f2fd,stroke:#1565c0,stroke-width:2px
@@ -442,6 +456,7 @@ flowchart LR
 - **CodeQL Analysis**: Automated vulnerability scanning on push/PR
 - **Dependency Review**: Checks for known vulnerabilities in dependencies
 - **License Compliance**: Validates all dependencies use approved open-source licenses
+- **SBOM Quality Validation**: Automated SBOM quality assessment using SBOMQS with minimum 7.0/10 score requirement
 - **OSSF Scorecard**: Supply chain security assessment with public scoring
 - **Runner Hardening**: All CI/CD runners use hardened security policies
 
