@@ -16,7 +16,7 @@
     "test:e2e:ci": "mkdir -p cypress/results && start-server-and-test dev http://localhost:5173 'cypress run --headless --reporter cypress-multi-reporters --reporter-options configFile=cypress.config.reporter.json'"
   },
   "dependencies": {
-    "@pixi/layout": "^3.1.0",
+    "@pixi/layout": "^3.2.0",
     "@pixi/react": "^8.0.3",
     "@pixi/sound": "^6.0.1",
     "@pixi/ui": "^2.2.7",
