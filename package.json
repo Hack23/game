@@ -23,7 +23,7 @@
     "howler": "^2.2.4",
     "pixi.js": "^8.13.2",
     "react": "^19.1.0",
-    "react-dom": "^19.1.1",
+    "react-dom": "^19.2.0",
     "react-error-boundary": "^6.0.0"
   },
   "devDependencies": {
@@ -34,7 +34,7 @@
     "@testing-library/user-event": "^14.6.1",
     "@types/howler": "^2.2.12",
     "@types/react": "^19.1.16",
-    "@types/react-dom": "^19.1.9",
+    "@types/react-dom": "^19.2.0",
     "@typescript-eslint/eslint-plugin": "^8.35.0",
     "@typescript-eslint/parser": "^8.45.0",
     "@vitejs/plugin-react": "^5.0.4",
