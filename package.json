@@ -21,7 +21,7 @@
     "@pixi/sound": "^6.0.1",
     "@pixi/ui": "^2.2.7",
     "howler": "^2.2.4",
-    "pixi.js": "^8.13.2",
+    "pixi.js": "^8.14.0",
     "react": "^19.1.0",
     "react-dom": "^19.2.0",
     "react-error-boundary": "^6.0.0"
