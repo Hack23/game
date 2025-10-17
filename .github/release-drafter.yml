@@ -1,5 +1,7 @@
 name-template: "Release $RESOLVED_VERSION"
 tag-template: "$RESOLVED_VERSION"
+
+# Categories match exactly with PR labels from labeler.yml
 categories:
   - title: "🚀 New Features"
     labels:
@@ -53,6 +55,7 @@ categories:
     labels:
       - "test-coverage-impact"
       - "needs-tests"
+      - "high-coverage"
       - "e2e"
 
   - title: "🎨 Assets & Resources"
@@ -71,8 +74,14 @@ categories:
       - "component-ui"
 
 change-template: "- $TITLE @$AUTHOR (#$NUMBER)"
+change-title-escapes: '\<*_&' # Escape markdown special characters
+
 exclude-labels:
   - "skip-changelog"
+  - "duplicate"
+  - "invalid"
+  - "wontfix"
+  - "question"
 
 include-paths:
   - "src"
@@ -80,6 +89,12 @@ include-paths:
   - "docs"
   - ".github"
   - ".devcontainer"
+
+exclude-paths:
+  - "**/*.test.ts"
+  - "**/*.test.tsx"
+  - "**/*.spec.ts"
+  - "**/*.spec.tsx"
 
 template: |
   # Highlights
@@ -117,62 +132,288 @@ version-resolver:
       - "game-logic"
       - "graphics"
       - "audio"
+      - "pixi-components"
   patch:
     labels:
       - "bug"
+      - "fix"
       - "security"
       - "dependencies"
       - "documentation"
       - "performance"
       - "refactor"
-    # Detect patch version from conventional commit messages
-    pattern: '^(fix|refactor|perf|security|build\(deps\)|docs|chore)(\([^)]+\))?:'
   default: patch
 
+# Autolabeler is BACKUP for PRs without labels
+# Primary labeling happens via .github/labeler.yml
 autolabeler:
+  # Features & Enhancements
   - label: "feature"
     title:
       - '/^feat(\([^)]+\))?:/i'
-  - label: "bug"
-    title:
-      - '/^fix(\([^)]+\))?:/i'
-  - label: "documentation"
-    title:
-      - '/^docs(\([^)]+\))?:/i'
+      - '/^feature(\([^)]+\))?:/i'
+      - '/^add(\([^)]+\))?:/i'
+    branch:
+      - '/^feature\/.+/'
+      - '/^feat\/.+/'
+  
   - label: "enhancement"
     title:
       - '/^enhance(\([^)]+\))?:/i'
+      - '/^improve(\([^)]+\))?:/i'
+      - '/^improvement(\([^)]+\))?:/i'
+    branch:
+      - '/^enhancement\/.+/'
+  
+  # Bug Fixes
+  - label: "bug"
+    title:
+      - '/^fix(\([^)]+\))?:/i'
+      - '/^bug(\([^)]+\))?:/i'
+      - '/^bugfix(\([^)]+\))?:/i'
+    branch:
+      - '/^fix\/.+/'
+      - '/^bugfix\/.+/'
+      - '/^hotfix\/.+/'
+  
+  - label: "fix"
+    title:
+      - '/^fix(\([^)]+\))?:/i'
+  
+  # Documentation
+  - label: "documentation"
+    title:
+      - '/^docs(\([^)]+\))?:/i'
+      - '/^doc(\([^)]+\))?:/i'
+    files:
+      - '**/*.md'
+      - 'docs/**/*'
+      - '**/*.mdx'
+    branch:
+      - '/^docs\/.+/'
+  
+  # UI/UX
   - label: "ui"
     title:
-      - '/^style(\([^)]+\))?:/i'
       - '/^ui(\([^)]+\))?:/i'
+    files:
+      - 'src/**/components/**/*'
+      - 'src/**/ui/**/*'
+  
+  - label: "design"
+    title:
       - '/^design(\([^)]+\))?:/i'
+  
+  - label: "style"
+    title:
+      - '/^style(\([^)]+\))?:/i'
+    files:
+      - '**/*.css'
+      - '**/*.scss'
+      - '**/*.less'
+      - '**/*.styles.*'
+  
+  # Dependencies - CRITICAL FOR DEPENDABOT/RENOVATE
   - label: "dependencies"
     title:
       - '/^build\(deps\):/i'
+      - '/^build\(deps-dev\):/i'
+      - '/^chore\(deps\):/i'
+      - '/^chore\(deps-dev\):/i'
       - '/^deps(\([^)]+\))?:/i'
+      - '/^dependency(\([^)]+\))?:/i'
+      - '/^dependencies(\([^)]+\))?:/i'
+      - '/^bump/i'
+      - '/^update.*dependenc/i'
+      - '/^upgrade.*dependenc/i'
+    files:
+      - 'package.json'
+      - 'package-lock.json'
+      - 'yarn.lock'
+      - 'pnpm-lock.yaml'
+    branch:
+      - '/^dependabot\/.+/'
+      - '/^renovate\/.+/'
+      - '/^deps\/.+/'
+  
+  # Security
   - label: "security"
     title:
       - '/^security(\([^)]+\))?:/i'
+      - '/^sec(\([^)]+\))?:/i'
+      - '/^fix-vuln(\([^)]+\))?:/i'
+      - '/\[security\]/i'
+    branch:
+      - '/^security\/.+/'
+  
+  # Performance
   - label: "performance"
     title:
       - '/^perf(\([^)]+\))?:/i'
+      - '/^optimize(\([^)]+\))?:/i'
+    files:
+      - 'src/**/perf/**/*'
+      - 'src/**/performance/**/*'
+      - 'src/**/optimize/**/*'
+  
+  # Infrastructure
+  - label: "infrastructure"
+    title:
+      - '/^infra(\([^)]+\))?:/i'
+      - '/^ci(\([^)]+\))?:/i'
+      - '/^cd(\([^)]+\))?:/i'
+    files:
+      - '.github/**/*'
+      - 'scripts/**/*'
+      - 'docker/**/*'
+    branch:
+      - '/^infra\/.+/'
+      - '/^ci\/.+/'
+  
+  - label: "build"
+    title:
+      - '/^build(\([^)]+\))?:/i'
+      - '/^chore\(build\):/i'
+    files:
+      - 'vite.config.*'
+      - 'vitest.config.*'
+      - 'tsconfig.json'
+      - 'webpack.config.*'
+  
+  - label: "config"
+    title:
+      - '/^config(\([^)]+\))?:/i'
+      - '/^chore\(config\):/i'
+    files:
+      - '**/*.config.*'
+      - '**/eslint.config.*'
+      - '**/tsconfig*.json'
+  
+  # Code Quality
   - label: "refactor"
     title:
       - '/^refactor(\([^)]+\))?:/i'
+    branch:
+      - '/^refactor\/.+/'
+  
+  - label: "testing"
+    title:
+      - '/^test(\([^)]+\))?:/i'
+    files:
+      - '**/*.test.*'
+      - '**/*.spec.*'
+      - 'cypress/**/*'
+      - '__tests__/**/*'
+      - 'test/**/*'
+    branch:
+      - '/^test\/.+/'
+  
+  - label: "types"
+    title:
+      - '/^types(\([^)]+\))?:/i'
+      - '/^type(\([^)]+\))?:/i'
+    files:
+      - '**/*.d.ts'
+      - 'src/types/**/*'
+  
+  # Game Development
   - label: "game-logic"
     title:
       - '/^game(\([^)]+\))?:/i'
       - '/^logic(\([^)]+\))?:/i'
+      - '/^mechanics(\([^)]+\))?:/i'
+    files:
+      - 'src/**/game/**/*'
+      - 'src/**/logic/**/*'
+      - 'src/**/mechanics/**/*'
+  
   - label: "graphics"
     title:
       - '/^graphics(\([^)]+\))?:/i'
       - '/^pixi(\([^)]+\))?:/i'
       - '/^render(\([^)]+\))?:/i'
+    files:
+      - 'src/**/graphics/**/*'
+      - 'src/**/pixi/**/*'
+      - 'src/**/render/**/*'
+  
   - label: "audio"
     title:
       - '/^audio(\([^)]+\))?:/i'
       - '/^sound(\([^)]+\))?:/i'
-  - label: "testing"
+    files:
+      - 'src/**/audio/**/*'
+      - 'src/**/sound/**/*'
+      - '**/*howler*'
+      - '**/*.mp3'
+      - '**/*.wav'
+      - '**/*.ogg'
+  
+  - label: "pixi-components"
     title:
-      - '/^test(\([^)]+\))?:/i'
+      - '/^pixi(\([^)]+\))?:/i'
+    files:
+      - 'src/**/*pixi*'
+      - 'src/**/*Pixi*'
+  
+  # Test Coverage
+  - label: "test-coverage-impact"
+    files:
+      - '**/*.test.{ts,tsx}'
+      - '**/__tests__/**'
+  
+  - label: "needs-tests"
+    files:
+      - 'src/components/**/*'
+      - 'src/hooks/**/*'
+  
+  - label: "high-coverage"
+    files:
+      - 'src/App.tsx'
+      - 'src/main.tsx'
+  
+  - label: "e2e"
+    title:
+      - '/^e2e(\([^)]+\))?:/i'
+      - '/end.?to.?end/i'
+    files:
+      - 'cypress/**/*'
+      - '**/*.cy.*'
+  
+  # Assets
+  - label: "assets"
+    title:
+      - '/^assets(\([^)]+\))?:/i'
+    files:
+      - 'src/assets/**/*'
+      - 'public/**/*.png'
+      - 'public/**/*.jpg'
+      - 'public/**/*.svg'
+      - 'public/**/*.mp3'
+      - 'public/**/*.wav'
+      - 'public/**/*.ogg'
+  
+  # DevContainer
+  - label: "devcontainer"
+    title:
+      - '/devcontainer/i'
+    files:
+      - '.devcontainer/**/*'
+      - '.codespaces/**/*'
+  
+  # Component-specific labels
+  - label: "component-app"
+    files:
+      - 'src/App.tsx'
+  
+  - label: "component-main"
+    files:
+      - 'src/main.tsx'
+  
+  - label: "component-game"
+    files:
+      - 'src/components/Game.tsx'
+  
+  - label: "component-ui"
+    files:
+      - 'src/components/UI/**/*'
