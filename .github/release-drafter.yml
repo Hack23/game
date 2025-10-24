@@ -78,25 +78,6 @@ categories:
 change-template: "- $TITLE @$AUTHOR (#$NUMBER)"
 change-title-escapes: '\<*_&' # Escape markdown special characters
 
-exclude-labels:
-  - "skip-changelog"
-  - "duplicate"
-  - "invalid"
-  - "wontfix"
-  - "question"
-
-include-paths:
-  - "src"
-  - "public"
-  - "docs"
-  - ".github"
-  - ".devcontainer"
-
-exclude-paths:
-  - "**/*.test.ts"
-  - "**/*.test.tsx"
-  - "**/*.spec.ts"
-  - "**/*.spec.tsx"
 
 template: |
   # Highlights
@@ -155,17 +136,12 @@ autolabeler:
       - '/^feat(\([^)]+\))?:/i'
       - '/^feature(\([^)]+\))?:/i'
       - '/^add(\([^)]+\))?:/i'
-    branch:
-      - '/^feature\/.+/'
-      - '/^feat\/.+/'
   
   - label: "enhancement"
     title:
       - '/^enhance(\([^)]+\))?:/i'
       - '/^improve(\([^)]+\))?:/i'
       - '/^improvement(\([^)]+\))?:/i'
-    branch:
-      - '/^enhancement\/.+/'
   
   # Bug Fixes
   - label: "bug"
@@ -173,10 +149,6 @@ autolabeler:
       - '/^fix(\([^)]+\))?:/i'
       - '/^bug(\([^)]+\))?:/i'
       - '/^bugfix(\([^)]+\))?:/i'
-    branch:
-      - '/^fix\/.+/'
-      - '/^bugfix\/.+/'
-      - '/^hotfix\/.+/'
   
   - label: "fix"
     title:
@@ -191,8 +163,6 @@ autolabeler:
       - '**/*.md'
       - 'docs/**/*'
       - '**/*.mdx'
-    branch:
-      - '/^docs\/.+/'
   
   # UI/UX
   - label: "ui"
@@ -228,15 +198,6 @@ autolabeler:
       - '/^bump/i'
       - '/^update.*dependenc/i'
       - '/^upgrade.*dependenc/i'
-    files:
-      - 'package.json'
-      - 'package-lock.json'
-      - 'yarn.lock'
-      - 'pnpm-lock.yaml'
-    branch:
-      - '/^dependabot\/.+/'
-      - '/^renovate\/.+/'
-      - '/^deps\/.+/'
   
   # Security
   - label: "security"
@@ -245,18 +206,12 @@ autolabeler:
       - '/^sec(\([^)]+\))?:/i'
       - '/^fix-vuln(\([^)]+\))?:/i'
       - '/\[security\]/i'
-    branch:
-      - '/^security\/.+/'
   
   # Performance
   - label: "performance"
     title:
       - '/^perf(\([^)]+\))?:/i'
       - '/^optimize(\([^)]+\))?:/i'
-    files:
-      - 'src/**/perf/**/*'
-      - 'src/**/performance/**/*'
-      - 'src/**/optimize/**/*'
   
   # Infrastructure
   - label: "infrastructure"
@@ -268,9 +223,6 @@ autolabeler:
       - '.github/**/*'
       - 'scripts/**/*'
       - 'docker/**/*'
-    branch:
-      - '/^infra\/.+/'
-      - '/^ci\/.+/'
   
   - label: "build"
     title:
@@ -295,8 +247,6 @@ autolabeler:
   - label: "refactor"
     title:
       - '/^refactor(\([^)]+\))?:/i'
-    branch:
-      - '/^refactor\/.+/'
   
   - label: "testing"
     title:
@@ -307,8 +257,6 @@ autolabeler:
       - 'cypress/**/*'
       - '__tests__/**/*'
       - 'test/**/*'
-    branch:
-      - '/^test\/.+/'
   
   - label: "types"
     title:
