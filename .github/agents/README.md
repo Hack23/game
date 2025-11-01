@@ -55,12 +55,12 @@ Specialized in:
 
 ## How to Use
 
-When working with GitHub Copilot coding agent, you can request help from specific agents:
+When working with GitHub Copilot coding agent, you can request help from specific agents by mentioning them in your requests. Here are some example phrases (use natural language):
 - "Ask the game-developer agent to implement a new sprite"
 - "Have the security-specialist review this dependency"
 - "Request the test-engineer to write tests for this component"
 
-The coding agent will automatically apply the specialized knowledge and guidelines from the relevant agent.
+The coding agent will automatically apply the specialized knowledge and guidelines from the relevant agent based on your request.
 
 ## Agent Configuration
 
