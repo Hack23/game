@@ -64,7 +64,7 @@ npm run test:licenses
 - **Components**: Place React components in `src/` or appropriate subdirectories
 - **Assets**: Store game assets (images, sounds) in `public/assets/`
 - **Types**: Define custom types in `src/types/`
-- **Tests**: Colocate unit tests with source files using `.test.tsx` extension
+- **Tests**: Colocate unit tests with source files using `.test.tsx` or `.test.ts` extension
 
 ### Code Quality
 
