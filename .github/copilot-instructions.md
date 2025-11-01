@@ -39,7 +39,7 @@ npm run coverage
 # Run E2E tests with Cypress
 npm run test:e2e
 
-# Check license compliance
+# Check license compliance (using license-compliance tool)
 npm run test:licenses
 ```
 
@@ -48,7 +48,7 @@ npm run test:licenses
 - **Unit Tests**: Use Vitest with jsdom for React components and game logic
 - **E2E Tests**: Use Cypress for end-to-end testing of game flows
 - **Coverage Target**: Minimum 80% code coverage
-- **Test Location**: Unit tests in `src/` with `.test.tsx` extension, E2E tests in `cypress/`
+- **Test Location**: Unit tests in `src/` with `.test.tsx` or `.test.ts` extension, E2E tests in `cypress/`
 
 ## Coding Guidelines
 
@@ -95,6 +95,9 @@ npm run test:licenses
 ### Test Structure
 
 ```typescript
+import { render, screen } from "@testing-library/react";
+import { describe, it, expect } from "vitest";
+
 describe("ComponentName", () => {
   it("should render correctly", () => {
     // Arrange
