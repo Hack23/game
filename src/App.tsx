@@ -1,67 +1,10 @@
 import { Canvas, ThreeEvent } from "@react-three/fiber";
 import { OrbitControls, Html } from "@react-three/drei";
-import { useCallback, useState, useRef } from "react";
+import { useRef, useState, useCallback } from "react";
 import type { JSX } from "react";
 import * as THREE from "three";
+import { useGameState } from "./hooks/useGameState";
 import "./App.css";
-
-interface GameState {
-  score: number;
-  playerX: number;
-  playerY: number;
-  playerZ: number;
-  isPlaying: boolean;
-}
-
-// Add a custom hook to manage game state for better testability
-function useGameState(initialState?: Partial<GameState>): {
-  gameState: GameState;
-  incrementScore: () => void;
-  resetGame: () => void;
-  togglePause: () => void;
-} {
-  const [gameState, setGameState] = useState<GameState>({
-    score: initialState?.score ?? 0,
-    playerX: initialState?.playerX ?? 0,
-    playerY: initialState?.playerY ?? 0,
-    playerZ: initialState?.playerZ ?? 0,
-    isPlaying: initialState?.isPlaying ?? true,
-  });
-
-  const incrementScore = useCallback(() => {
-    setGameState((prev) => ({
-      ...prev,
-      score: prev.score + 1,
-      playerX: Math.random() * 4 - 2,
-      playerY: Math.random() * 3 - 1.5,
-      playerZ: Math.random() * 2 - 1,
-    }));
-  }, []);
-
-  const resetGame = useCallback(() => {
-    setGameState({
-      score: 0,
-      playerX: 0,
-      playerY: 0,
-      playerZ: 0,
-      isPlaying: true,
-    });
-  }, []);
-
-  const togglePause = useCallback(() => {
-    setGameState((prev) => ({
-      ...prev,
-      isPlaying: !prev.isPlaying,
-    }));
-  }, []);
-
-  return {
-    gameState,
-    incrementScore,
-    resetGame,
-    togglePause,
-  };
-}
 
 interface TargetSphereProps {
   position: [number, number, number];
