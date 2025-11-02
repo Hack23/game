@@ -107,16 +107,17 @@ With the template configured, you can now:
 
 Your repository includes these automated workflows:
 
-| Workflow                      | Trigger          | Purpose                                                                                         |
-| ----------------------------- | ---------------- | ----------------------------------------------------------------------------------------------- |
-| **Setup Repository Labels**   | Manual           | Creates all required labels for PR categorization                                               |
-| **Test and Report**           | Push/PR          | Runs unit tests, E2E tests, license compliance, SBOM quality validation, and generates coverage |
-| **Build, Attest and Release** | Manual/Tag       | Creates secure releases with SBOM, license validation, and attestations                         |
-| **CodeQL Analysis**           | Push/PR/Schedule | Static code analysis for security vulnerabilities                                               |
-| **Dependency Review**         | PR               | Reviews dependencies for known vulnerabilities                                                  |
-| **Scorecard Analysis**        | Push/Schedule    | OSSF supply chain security assessment                                                           |
-| **ZAP Security Scan**         | Manual           | Dynamic security testing of deployed app                                                        |
-| **Lighthouse Performance**    | Manual           | Performance and accessibility audits                                                            |
+| Workflow                         | Trigger          | Purpose                                                                                         |
+| -------------------------------- | ---------------- | ----------------------------------------------------------------------------------------------- |
+| **Setup Repository Labels**      | Manual           | Creates all required labels for PR categorization                                               |
+| **Setup Copilot Environment**    | Manual           | Validates and documents Copilot MCP server configuration                                        |
+| **Test and Report**              | Push/PR          | Runs unit tests, E2E tests, license compliance, SBOM quality validation, and generates coverage |
+| **Build, Attest and Release**    | Manual/Tag       | Creates secure releases with SBOM, license validation, and attestations                         |
+| **CodeQL Analysis**              | Push/PR/Schedule | Static code analysis for security vulnerabilities                                               |
+| **Dependency Review**            | PR               | Reviews dependencies for known vulnerabilities                                                  |
+| **Scorecard Analysis**           | Push/Schedule    | OSSF supply chain security assessment                                                           |
+| **ZAP Security Scan**            | Manual           | Dynamic security testing of deployed app                                                        |
+| **Lighthouse Performance**       | Manual           | Performance and accessibility audits                                                            |
 
 ### 🛡️ Security Features Ready to Use
 
@@ -158,6 +159,7 @@ This template includes a fully configured development environment:
 - **💬 Copilot Chat** - In-editor AI assistance for debugging and explanations
 - **🔧 VS Code Extensions** - Pre-configured extensions for game development
 - **🔒 Secure Container** - Hardened development container with security features
+- **🔌 MCP Servers** - Model Context Protocol servers for enhanced Copilot capabilities
 
 ### 🚀 Codespaces Setup
 
@@ -166,8 +168,27 @@ This repository is fully configured for GitHub Codespaces, providing:
 - **One-click setup** - Start coding immediately with zero configuration
 - **Pre-installed dependencies** - All tools and libraries ready to use
 - **Configured test environment** - Cypress and Vitest ready to run
-- **GitHub Copilot integration** - AI-powered code assistance
+- **GitHub Copilot integration** - AI-powered code assistance with MCP servers
 - **Optimized performance** - Container configured for game development
+
+### 🔌 MCP Servers for Enhanced Copilot
+
+This repository is configured with Model Context Protocol (MCP) servers that enhance GitHub Copilot's capabilities:
+
+- **🗂️ Filesystem Server** - Secure file access for code navigation and editing
+- **🐙 GitHub Server** - Repository context, issues, and PR integration
+- **📚 Git Server** - Version control history and code evolution understanding
+- **🧠 Memory Server** - Maintains context across Copilot conversations
+- **🔍 Brave Search Server** - Documentation search (optional, requires API key)
+- **🎭 Playwright Server** - Browser automation for testing and debugging
+
+**Configuration Files:**
+- `.github/copilot-setup-steps.yml` - Pre-installation steps for Copilot agent
+- `.github/mcp-config.json` - MCP server configuration
+- `.github/copilot-instructions.md` - Coding guidelines for Copilot
+- `docs/MCP_CONFIGURATION.md` - Detailed MCP setup documentation
+
+**Learn More:** See [MCP Configuration Guide](docs/MCP_CONFIGURATION.md) for detailed setup and usage instructions.
 
 ```mermaid
 graph LR
