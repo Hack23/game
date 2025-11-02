@@ -1,1 +1,1 @@
-{"root":["./src/App.test.tsx","./src/App.tsx","./src/main.tsx","./src/vite-env.d.ts","./src/test/setup.ts"],"version":"5.9.3"}
+{"root":["./src/App.test.tsx","./src/App.tsx","./src/GameState.test.ts","./src/main.tsx","./src/vite-env.d.ts","./src/test/setup.ts"],"version":"5.9.3"}
