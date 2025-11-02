@@ -60,7 +60,7 @@ export default defineConfig({
     },
     specPattern: "src/**/*.cy.{js,jsx,ts,tsx}",
     supportFile: "cypress/support/component.ts",
-    setupNodeEvents(on, config) {
+    setupNodeEvents(on, _config) {
       // implement node event listeners here
       on("before:browser:launch", (browser, launchOptions) => {
         if (browser.family === "chromium" && browser.name !== "electron") {

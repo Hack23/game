@@ -1,6 +1,6 @@
 # Game Template
 
-A clean, minimal template for building games with React, TypeScript, PixiJS, and Vite - built with **security-first principles**.
+A clean, minimal template for building games with React, TypeScript, Three.js, and Vite - built with **security-first principles**.
 
 ## Badges
 
@@ -37,7 +37,9 @@ This template implements comprehensive security measures:
 - 🌲 **Cypress** - Reliable E2E testing
 - 📦 **ESLint** - Code linting with TypeScript rules
 - 🔄 **GitHub Actions** - Automated testing and reporting
-- 🎮 **PixiJS 8.x** - High-performance WebGL renderer for 2D games
+- 🎮 **Three.js** - High-performance 3D WebGL renderer
+- 🎨 **@react-three/fiber** - React renderer for Three.js
+- 🛠️ **@react-three/drei** - Useful helpers for react-three-fiber
 - 🎵 **Howler.js** - Audio library for games
 
 ## 🚀 Using This Template
@@ -202,7 +204,7 @@ graph LR
     D -->|Includes| H[ESLint Integration]
     D -->|Includes| I[Debug Tools]
 
-    E -->|Installs| J[PixiJS 8.x]
+    E -->|Installs| J[Three.js]
     E -->|Installs| K[React 19]
     E -->|Installs| L[TypeScript]
 
@@ -335,43 +337,41 @@ npm run test:e2e
 npm run test:licenses
 ```
 
-## PixiJS 8.x Integration
+## Three.js Integration
 
-This template uses PixiJS 8.x for high-performance 2D game rendering:
+This template uses Three.js for high-performance 3D game rendering:
 
-- Modern WebGL-based rendering
-- Optimized sprite batching
-- Integrated with React via @pixi/react
-- Sound support via @pixi/sound and Howler.js
-- Responsive game canvas
+- Modern WebGL-based 3D rendering
+- Optimized performance with @react-three/fiber
+- React integration via @react-three/fiber
+- Useful helpers via @react-three/drei
+- Sound support via Howler.js
+- Responsive 3D canvas
 - Touch and mouse input handling
+- Camera controls with OrbitControls
 
 Example game component:
 
 ```tsx
-import { Stage, Sprite, useTick } from "@pixi/react";
-import { useState } from "react";
+import { Canvas } from "@react-three/fiber";
+import { OrbitControls } from "@react-three/drei";
 
 export function Game() {
-  const [position, setPosition] = useState({ x: 100, y: 100 });
-
-  useTick((delta) => {
-    // Game logic here
-    setPosition((prev) => ({
-      x: prev.x + delta,
-      y: prev.y,
-    }));
-  });
-
   return (
-    <Stage width={800} height={600} options={{ backgroundColor: 0x1d2230 }}>
-      <Sprite
-        image="/assets/character.png"
-        x={position.x}
-        y={position.y}
-        anchor={{ x: 0.5, y: 0.5 }}
-      />
-    </Stage>
+    <Canvas camera={{ position: [0, 2, 8], fov: 50 }}>
+      {/* Lighting */}
+      <ambientLight intensity={0.5} />
+      <pointLight position={[10, 10, 10]} intensity={1} />
+
+      {/* 3D Objects */}
+      <mesh>
+        <sphereGeometry args={[0.5, 32, 32]} />
+        <meshStandardMaterial color="#00ff88" />
+      </mesh>
+
+      {/* Camera Controls */}
+      <OrbitControls />
+    </Canvas>
   );
 }
 ```

@@ -7,13 +7,10 @@ export default defineConfig(({ command }) => ({
   // Use relative paths for production builds (GitHub Pages)
   base: command === "build" ? "./" : "/",
   resolve: {
-    alias: {
-      // Fix react-reconciler module resolution
-      "react-reconciler/constants": "react-reconciler/constants.js",
-    },
+    alias: {},
   },
   optimizeDeps: {
-    include: ["@pixi/react", "pixi.js", "react-reconciler"],
+    include: ["three", "@react-three/fiber", "@react-three/drei"],
   },
   build: {
     target: "esnext",
@@ -21,7 +18,7 @@ export default defineConfig(({ command }) => ({
       external: [],
       output: {
         manualChunks: {
-          pixi: ["pixi.js", "@pixi/react"],
+          three: ["three", "@react-three/fiber", "@react-three/drei"],
         },
       },
     },
@@ -41,6 +38,7 @@ export default defineConfig(({ command }) => ({
         "src/test/",
         "**/*.d.ts",
         "**/*.config.*",
+        "**/*.css",
         "dist/",
         "coverage/",
         "cypress/",

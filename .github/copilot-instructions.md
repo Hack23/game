@@ -4,7 +4,7 @@ This file provides guidance for GitHub Copilot coding agent when working on this
 
 ## Project Overview
 
-This is a game template built with React, TypeScript, PixiJS, and Vite with a strong focus on security and code quality.
+This is a game template built with React, TypeScript, Three.js, and Vite with a strong focus on security and code quality.
 
 ## Development Workflow
 
@@ -112,146 +112,192 @@ describe("ComponentName", () => {
 });
 ```
 
-## PixiJS with React Guidelines
+## Three.js with React Guidelines
 
 ### Core Principles
 
-- **Leverage `@pixi/react` Components**: Use declarative components like `Stage`, `Container`, `Sprite`, `Graphics`, `Text`
+- **Leverage `@react-three/fiber`**: Use declarative React components for Three.js scenes
+- **Use `@react-three/drei` helpers**: Pre-built components for common 3D game needs
 - **Documentation**: 
-  - `@pixi/react`: https://react.pixijs.io/getting-started/
-  - PixiJS Core API: https://pixijs.download/release/docs/index.html
+  - `@react-three/fiber`: https://docs.pmnd.rs/react-three-fiber/
+  - Three.js Core API: https://threejs.org/docs/
+  - `@react-three/drei`: https://github.com/pmndrs/drei
 
 ### Component Architecture
 
-- **Extend PixiJS Objects**: Use `extend()` function to make PixiJS display objects available as React components
+- **Declarative 3D Scene**: Build 3D scenes using JSX-like syntax
   ```typescript
-  import { extend } from "@pixi/react";
-  import { Graphics, Sprite } from "pixi.js";
-  extend({ Graphics, Sprite });
+  import { Canvas } from "@react-three/fiber";
+  import { OrbitControls } from "@react-three/drei";
+  
+  function Scene() {
+    return (
+      <Canvas>
+        <ambientLight intensity={0.5} />
+        <mesh>
+          <sphereGeometry args={[1, 32, 32]} />
+          <meshStandardMaterial color="hotpink" />
+        </mesh>
+        <OrbitControls />
+      </Canvas>
+    );
+  }
   ```
 
-- **Component-Based Structure**: Build reusable React components for game elements
-- **State Management**: Use React hooks (`useState`, `useReducer`) within components
-- **Drawing Logic**: Encapsulate PixiJS drawing in components, use `useCallback` for draw functions
+- **Component-Based Structure**: Build reusable React components for game objects
+- **State Management**: Use React hooks (`useState`, `useReducer`) for game state
+- **Refs for Three.js objects**: Use `useRef` to access underlying Three.js objects
 
 ### Game Loop and Updates
 
-- **Use `useTick` hook**: For frame-by-frame logic (animations, physics)
+- **Use `useFrame` hook**: For frame-by-frame logic (animations, physics)
   ```typescript
-  useTick((delta: number) => {
-    // Update game state each frame
-  });
+  import { useFrame } from "@react-three/fiber";
+  
+  function RotatingBox() {
+    const meshRef = useRef<THREE.Mesh>(null);
+    
+    useFrame((state, delta) => {
+      if (meshRef.current) {
+        meshRef.current.rotation.x += delta;
+      }
+    });
+    
+    return (
+      <mesh ref={meshRef}>
+        <boxGeometry />
+        <meshStandardMaterial />
+      </mesh>
+    );
+  }
   ```
 - **State Management**: Use React state (`useState`, `useContext`) or external libraries (Zustand, Redux) for complex state
-- **Re-render Triggers**: Ensure state updates correctly trigger re-renders of PixiJS components
+- **Re-render Triggers**: State updates trigger React re-renders, not Three.js re-renders (for performance)
 
 ### Event Handling
 
-- **Use event props**: `onClick`, `onPointerDown`, etc., similar to DOM events
-- **Enable interactivity**: Set `interactive={true}` on components that need pointer events
+- **Use event props**: `onClick`, `onPointerDown`, `onPointerOver`, etc.
+- **Automatic interactivity**: All meshes are interactive by default
   ```typescript
-  <Sprite 
-    interactive={true}
-    cursor="pointer"
-    onPointerDown={handleClick}
-  />
+  <mesh 
+    onClick={(e) => console.log('clicked', e)}
+    onPointerOver={(e) => setHovered(true)}
+    onPointerOut={(e) => setHovered(false)}
+  >
+    <sphereGeometry />
+    <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
+  </mesh>
   ```
 
-### Strict Typing with PixiJS
+### Strict Typing with Three.js
 
-- **Type PixiJS objects**: Use types from `pixi.js` and `@pixi/react`
-- **Type callbacks explicitly**: 
+- **Type Three.js objects**: Use types from `three` and `@react-three/fiber`
+- **Type refs explicitly**: 
   ```typescript
-  draw={(g: PIXI.Graphics) => {
-    g.beginFill(0xff0000);
-    g.drawRect(0, 0, 100, 100);
-    g.endFill();
-  }}
+  import * as THREE from "three";
+  
+  const meshRef = useRef<THREE.Mesh>(null);
+  const groupRef = useRef<THREE.Group>(null);
   ```
 - **Define component prop interfaces**: Always create interfaces for component props
 
 ### Example: Simple Player Component
 
 ```tsx
-import { Sprite, useTick } from "@pixi/react";
-import { Texture } from "pixi.js";
-import { useState, useCallback } from "react";
+import { useRef, useState, useCallback } from "react";
+import { useFrame } from "@react-three/fiber";
+import * as THREE from "three";
 
 interface PlayerProps {
-  initialX: number;
-  initialY: number;
-  texture: Texture;
+  initialPosition: [number, number, number];
+  color: string;
 }
 
 export function Player({
-  initialX,
-  initialY,
-  texture,
+  initialPosition,
+  color,
 }: PlayerProps): JSX.Element {
-  const [position, setPosition] = useState({ x: initialX, y: initialY });
+  const meshRef = useRef<THREE.Mesh>(null);
+  const [hovered, setHovered] = useState(false);
 
-  useTick((delta: number) => {
-    // Example movement logic
-    // setPosition(prev => ({ x: prev.x + 1 * delta, y: prev.y }));
+  useFrame((state, delta) => {
+    // Example: bob up and down
+    if (meshRef.current) {
+      meshRef.current.position.y = 
+        initialPosition[1] + Math.sin(state.clock.elapsedTime) * 0.5;
+    }
   });
 
   const handleClick = useCallback(() => {
     console.log("Player clicked!");
-    // Update state or trigger game logic
   }, []);
 
   return (
-    <Sprite
-      texture={texture}
-      x={position.x}
-      y={position.y}
-      anchor={0.5}
-      interactive={true}
-      cursor="pointer"
-      onPointerDown={handleClick}
-    />
+    <mesh
+      ref={meshRef}
+      position={initialPosition}
+      onClick={handleClick}
+      onPointerOver={() => setHovered(true)}
+      onPointerOut={() => setHovered(false)}
+      scale={hovered ? 1.2 : 1}
+    >
+      <sphereGeometry args={[0.5, 32, 32]} />
+      <meshStandardMaterial 
+        color={color}
+        emissive={hovered ? color : "#000000"}
+        emissiveIntensity={0.3}
+      />
+    </mesh>
   );
 }
 ```
 
-## Security and Compliance
+### Common Patterns
 
-### Security Best Practices
+- **Lighting**: Always add lights to see your meshes
+  ```typescript
+  <ambientLight intensity={0.5} />
+  <pointLight position={[10, 10, 10]} />
+  <directionalLight position={[0, 10, 5]} intensity={1} />
+  ```
 
-- **Never commit secrets**: Use environment variables for sensitive data
-- **Validate input**: Always validate and sanitize user input
-- **Handle errors safely**: Don't expose sensitive information in error messages
-- **Dependencies**: Only use approved licenses (MIT, Apache-2.0, BSD, ISC, CC0-1.0, Unlicense)
-- **Security scanning**: CodeQL and dependency scanning run automatically on PRs
+- **Camera Controls**: Use OrbitControls for interactive camera
+  ```typescript
+  import { OrbitControls } from "@react-three/drei";
+  
+  <OrbitControls 
+    enablePan={false}
+    minDistance={3}
+    maxDistance={15}
+  />
+  ```
 
-### License Compliance
+- **HTML Overlays**: Render HTML on top of 3D scenes
+  ```typescript
+  import { Html } from "@react-three/drei";
+  
+  <Html position={[0, 1, 0]} center>
+    <div style={{ color: 'white' }}>Score: {score}</div>
+  </Html>
+  ```
 
-- Run `npm run test:licenses` to verify all dependencies comply with approved licenses
-- New dependencies must use one of the approved open-source licenses
-- The build will fail if non-compliant licenses are detected
+- **Textures and Materials**: Use proper material types
+  ```typescript
+  // Standard material (requires lighting)
+  <meshStandardMaterial color="#ff0000" metalness={0.5} roughness={0.5} />
+  
+  // Basic material (no lighting needed)
+  <meshBasicMaterial color="#ff0000" />
+  
+  // With texture
+  import { useTexture } from "@react-three/drei";
+  const texture = useTexture('/path/to/texture.png');
+  <meshStandardMaterial map={texture} />
+  ```
 
-## Pull Request Guidelines
+### Performance Tips
 
-### When Creating PRs
-
-- Write clear, descriptive PR titles
-- Include acceptance criteria and testing steps
-- Reference related issues
-- Ensure all tests pass
-- Verify license compliance
-- Check that security scans pass
-
-### Code Review Standards
-
-- All PRs require review before merging
-- Address all review comments
-- Keep PRs focused and small when possible
-- Update documentation if behavior changes
-
-## Additional Resources
-
-- Project README: `/README.md`
-- Security Policy: `/SECURITY.md`
-- TypeScript Config: `/tsconfig.json`
-- Vite Config: `/vite.config.ts`
-- Vitest Config: `/vitest.config.ts`
+- **Minimize state updates**: Avoid unnecessary re-renders by using `useFrame` for animations
+- **Use instancing**: For many similar objects, use `InstancedMesh`
+- **Optimize geometry**: Use lower polygon counts for better performance
+- **Dispose resources**: Clean up geometries, materials, and textures when components unmount

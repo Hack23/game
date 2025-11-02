@@ -301,7 +301,7 @@ graph TD
 ├── copilot-instructions.md     # Coding guidelines
 │   ├── TypeScript rules
 │   ├── React patterns
-│   ├── PixiJS conventions
+│   ├── Three.js conventions
 │   └── Testing requirements
 │
 └── workflows/
