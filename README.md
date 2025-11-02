@@ -779,4 +779,12 @@ This template provides a **secure foundation** for game development:
 
 All security workflows will automatically protect your game from common vulnerabilities and supply chain attacks, while providing full transparency through SBOM and attestations.
 
+## 📚 Documentation
+
+- **[Copilot Quick Start Guide](docs/COPILOT_QUICK_START.md)** - Get started with GitHub Copilot in this repository
+- **[MCP Configuration Guide](docs/MCP_CONFIGURATION.md)** - Model Context Protocol setup and usage
+- **[MCP Architecture](docs/MCP_ARCHITECTURE.md)** - Visual guide to MCP integration
+- **[Copilot Instructions](.github/copilot-instructions.md)** - Coding guidelines for AI assistance
+- **[Security Policy](SECURITY.md)** - Security practices and vulnerability reporting
+
 Happy gaming! 🎮🔒
