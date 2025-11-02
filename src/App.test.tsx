@@ -1,13 +1,8 @@
-import { render } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import App from "./App";
 import { it, expect, beforeAll, vi } from "vitest";
 import type { ReactNode, ReactElement } from "react";
-
-// Create a custom screen object since it's not exported
-const screen = {
-  getByTestId: (id: string): Element | null => document.querySelector(`[data-testid="${id}"]`),
-};
 
 // Add this to the top of the file to mock window.scrollTo for jsdom
 beforeAll(() => {

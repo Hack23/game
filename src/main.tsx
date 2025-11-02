@@ -1,13 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
-import type { JSX } from "react";
 import "./index.css";
 import "./App.css";
 import { ErrorBoundary } from "react-error-boundary";
 
 // Custom fallback component for error handling
-function ErrorFallback({ error }: { error: Error }): JSX.Element {
+function ErrorFallback({ error }: { error: Error }): React.ReactElement {
   return (
     <div className="error-container">
       <h2>Something went wrong:</h2>

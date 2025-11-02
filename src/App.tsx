@@ -1,4 +1,4 @@
-import { Canvas } from "@react-three/fiber";
+import { Canvas, ThreeEvent } from "@react-three/fiber";
 import { OrbitControls, Html } from "@react-three/drei";
 import { useCallback, useState, useRef } from "react";
 import type { JSX } from "react";
@@ -73,9 +73,8 @@ function TargetSphere({ position, onClick, isActive }: TargetSphereProps): JSX.E
   const meshRef = useRef<THREE.Mesh>(null);
   const [hovered, setHovered] = useState(false);
 
-  const handleClick = useCallback((e: unknown) => {
-    const event = e as { stopPropagation?: () => void };
-    event.stopPropagation?.();
+  const handleClick = useCallback((e: ThreeEvent<MouseEvent>) => {
+    e.stopPropagation();
     if (isActive) {
       onClick();
     }
