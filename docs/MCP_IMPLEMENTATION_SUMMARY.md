@@ -92,7 +92,7 @@ November 2, 2025
 1. **Enhanced Code Suggestions**
    - Context-aware completions
    - Project-specific patterns
-   - Stack-aware suggestions (React, TypeScript, PixiJS)
+   - Stack-aware suggestions (React, TypeScript, Three.js)
 
 2. **Intelligent Search**
    - Documentation lookup
@@ -273,7 +273,7 @@ README.md                         # Updated: Added MCP section
 "What changes were made to this file last week?"
 
 # With search (if API key configured)
-"Search PixiJS documentation for sprite anchors"
+"Search Three.js documentation for sprite anchors"
 ```
 
 ## Future Enhancements

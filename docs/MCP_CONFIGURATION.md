@@ -113,7 +113,7 @@ Maintains conversation history and context between agent sessions.
 
 **Package**: `@modelcontextprotocol/server-brave-search`
 
-Enables searching documentation for React, TypeScript, PixiJS, and Vite.
+Enables searching documentation for React, TypeScript, Three.js, and Vite.
 
 **Capabilities**:
 - Search web documentation
@@ -139,8 +139,8 @@ Enables searching documentation for React, TypeScript, PixiJS, and Vite.
 
 **Recommended Search Domains**:
 - react.dev - React documentation
-- pixijs.io - PixiJS website
-- pixijs.download - PixiJS API docs
+- threejs.org - Three.js website
+- threejs.org/docs - Three.js API docs
 - vitejs.dev - Vite documentation
 - vitest.dev - Vitest documentation
 - typescriptlang.org - TypeScript docs
@@ -182,7 +182,7 @@ Browser automation for testing and debugging web applications.
 1. Install GitHub Copilot extension
 2. MCP servers load automatically from `.github/mcp-config.json`
 3. Use Copilot Chat with enhanced context
-4. Example: "Search documentation for PixiJS sprite anchors"
+4. Example: "Search documentation for Three.js mesh anchors"
 
 ### With Copilot CLI
 
@@ -216,7 +216,7 @@ Standard MCP configuration file that defines available servers:
 Provides coding guidelines and project context to Copilot:
 
 - TypeScript strict mode usage
-- React and PixiJS patterns
+- React and Three.js patterns
 - Testing requirements
 - Security practices
 
@@ -234,7 +234,7 @@ Provides coding guidelines and project context to Copilot:
 - Generic type usage
 - Utility type suggestions
 
-### PixiJS Game Development
+### Three.js Game Development
 - Sprite and container patterns
 - Game loop implementation
 - Event handling

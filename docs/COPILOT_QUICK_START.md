@@ -51,7 +51,7 @@ What does the Game component do?
 
 **Get code suggestions:**
 ```
-Create a new PixiJS sprite component for a player character
+Create a new Three.js sprite component for a player character
 ```
 
 **Debug issues:**
@@ -88,7 +88,7 @@ Show me the commit history for this component
 
 **Documentation Search (if Brave API key configured):**
 ```
-Search for PixiJS sprite anchor documentation
+Search for Three.js sprite anchor documentation
 Find React 19 best practices for hooks
 ```
 
@@ -97,7 +97,7 @@ Find React 19 best practices for hooks
 ### Creating New Game Components
 
 1. Open Copilot Chat
-2. Ask: "Create a new PixiJS sprite component following the project guidelines"
+2. Ask: "Create a new Three.js sprite component following the project guidelines"
 3. Review the generated code
 4. Accept and customize as needed
 
@@ -105,7 +105,7 @@ Find React 19 best practices for hooks
 
 1. Describe your game mechanic
 2. Example: "Add collision detection between player and enemies"
-3. Copilot will suggest implementation using PixiJS patterns
+3. Copilot will suggest implementation using Three.js patterns
 
 ### Writing Tests
 
@@ -118,12 +118,12 @@ Find React 19 best practices for hooks
 ### Be Specific
 
 ❌ Bad: "Make a component"
-✅ Good: "Create a TypeScript React component for a PixiJS sprite with position state"
+✅ Good: "Create a TypeScript React component for a Three.js sprite with position state"
 
 ### Provide Context
 
 ❌ Bad: "Fix this"
-✅ Good: "This TypeScript error occurs because the texture type is not defined. How do I properly type a PixiJS texture?"
+✅ Good: "This TypeScript error occurs because the texture type is not defined. How do I properly type a Three.js texture?"
 
 ### Reference Project Guidelines
 
@@ -173,7 +173,7 @@ Find React 19 best practices for hooks
 ### `.github/copilot-instructions.md`
 - Coding guidelines for this project
 - TypeScript strict mode rules
-- PixiJS patterns
+- Three.js patterns
 - Testing requirements
 
 ### `.github/copilot-setup-steps.yml`
@@ -228,7 +228,7 @@ Find React 19 best practices for hooks
 ### External Resources
 - [GitHub Copilot Docs](https://docs.github.com/en/copilot)
 - [MCP Specification](https://github.com/modelcontextprotocol/specification)
-- [PixiJS Documentation](https://pixijs.download/release/docs/index.html)
+- [Three.js Documentation](https://pixijs.download/release/docs/index.html)
 - [React Documentation](https://react.dev)
 - [TypeScript Handbook](https://www.typescriptlang.org/docs/)
 
@@ -243,7 +243,7 @@ Find React 19 best practices for hooks
 
 2. **Implement**: Generate the component
    ```
-   Create a ScoreDisplay component using PixiJS Text
+   Create a ScoreDisplay component using Three.js Text
    ```
 
 3. **Test**: Generate unit tests
@@ -265,7 +265,7 @@ Find React 19 best practices for hooks
 
 2. **Analyze**: Get suggestions
    ```
-   What could cause incorrect sprite positioning in PixiJS?
+   What could cause incorrect sprite positioning in Three.js?
    ```
 
 3. **Fix**: Implement the solution
