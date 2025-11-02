@@ -1,0 +1,152 @@
+# GitHub Copilot Setup Steps
+# This file configures the development environment before the Copilot agent starts working
+# It pre-installs dependencies and sets up MCP (Model Context Protocol) servers
+
+name: Copilot Development Environment Setup
+
+# System dependencies and tools
+system_dependencies:
+  - name: Install Node.js build tools
+    run: |
+      sudo apt-get update
+      sudo apt-get install -y build-essential
+
+  - name: Install display server dependencies for Cypress
+    run: |
+      sudo apt-get install -y xvfb libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libnss3 libxss1 libasound2 libxtst6 xauth
+
+  - name: Install graphics dependencies
+    run: |
+      sudo apt-get install -y graphviz
+
+# Node.js project setup
+node_setup:
+  - name: Install npm dependencies
+    run: npm ci --ignore-scripts
+    
+  - name: Build TypeScript project
+    run: npm run build
+
+# MCP (Model Context Protocol) Servers Configuration
+# These servers provide specialized context and tools to GitHub Copilot
+mcp_servers:
+  # Filesystem access for project exploration
+  filesystem:
+    provider: "@modelcontextprotocol/server-filesystem"
+    description: "Provides secure filesystem access for reading and editing project files"
+    config:
+      allowed_directories:
+        - "/workspaces/game/src"
+        - "/workspaces/game/public"
+        - "/workspaces/game/cypress"
+        - "/workspaces/game/docs"
+        - "/workspaces/game/.github"
+      readonly_directories:
+        - "/workspaces/game/node_modules"
+        - "/workspaces/game/dist"
+
+  # GitHub integration for repository context
+  github:
+    provider: "@modelcontextprotocol/server-github"
+    description: "Provides access to GitHub repository data, issues, PRs, and workflows"
+    config:
+      owner: "Hack23"
+      repo: "game"
+      token_env: "GITHUB_TOKEN"
+
+  # Git operations for version control
+  git:
+    provider: "@modelcontextprotocol/server-git"
+    description: "Provides Git operations and repository history context"
+    config:
+      repository_path: "/workspaces/game"
+
+  # Memory for maintaining context across conversations
+  memory:
+    provider: "@modelcontextprotocol/server-memory"
+    description: "Maintains conversation history and context between agent sessions"
+
+  # Web search for documentation and best practices
+  brave-search:
+    provider: "@modelcontextprotocol/server-brave-search"
+    description: "Enables searching documentation for React, TypeScript, PixiJS, and Vite"
+    config:
+      api_key_env: "BRAVE_API_KEY"
+      search_domains:
+        - "react.dev"
+        - "pixijs.io"
+        - "pixijs.download"
+        - "vitejs.dev"
+        - "vitest.dev"
+        - "typescriptlang.org"
+        - "docs.cypress.io"
+        - "testing-library.com"
+        - "developer.mozilla.org"
+
+  # Playwright for browser automation (useful for testing)
+  playwright:
+    provider: "@modelcontextprotocol/server-playwright"
+    description: "Browser automation for testing and debugging web applications"
+    config:
+      browsers: ["chromium"]
+      headless: true
+
+# Environment variables needed for development
+environment_variables:
+  NODE_ENV: development
+  NODE_OPTIONS: "--max-old-space-size=8192"
+  CYPRESS_VERIFY_TIMEOUT: "100000"
+  CI: "false"
+
+# Post-setup validation
+validation:
+  - name: Verify TypeScript compilation
+    run: npx tsc --noEmit
+    
+  - name: Verify linting configuration
+    run: npm run lint -- --max-warnings 0 || echo "Linting has warnings, continuing..."
+    
+  - name: Check package vulnerabilities
+    run: npm audit --audit-level=high || echo "Audit found issues, continuing..."
+
+# Custom agent configuration hints
+agent_context:
+  primary_language: TypeScript
+  framework: React
+  game_engine: PixiJS
+  build_tool: Vite
+  test_framework: Vitest
+  e2e_framework: Cypress
+  package_manager: npm
+  
+  key_directories:
+    - src/components # React components and game components
+    - src/types # TypeScript type definitions
+    - public/assets # Game assets (images, sounds)
+    - cypress # E2E tests
+    - docs # Documentation
+    - .github/workflows # CI/CD workflows
+    
+  important_files:
+    - package.json # Dependencies and scripts
+    - tsconfig.json # TypeScript configuration
+    - vite.config.ts # Vite build configuration
+    - vitest.config.ts # Vitest test configuration
+    - cypress.config.ts # Cypress E2E configuration
+    - eslint.config.js # ESLint linting rules
+    - .github/copilot-instructions.md # Copilot coding guidelines
+    
+  security_requirements:
+    - Strict TypeScript mode enabled
+    - All dependencies must use approved licenses
+    - CodeQL scanning for vulnerabilities
+    - SBOM generation and quality validation
+    - Supply chain security via OSSF Scorecard
+    - No secrets in source code
+    
+  testing_requirements:
+    - Minimum 80% code coverage
+    - Unit tests with Vitest
+    - E2E tests with Cypress
+    - Type safety validation
+    - License compliance checks

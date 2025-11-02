@@ -8,6 +8,8 @@
       "version": "24"
     }
   },
+  // MCP Servers: See .github/mcp-config.json for Model Context Protocol configuration
+  // These enhance GitHub Copilot with filesystem, git, github, and search capabilities
   // Update system dependencies
   "onCreateCommand": "sudo apt-get update && sudo apt-get install -y graphviz libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libnss3 libxss1 libasound2 libxtst6 xauth xvfb dbus dbus-x11",
   // Improve service initialization
@@ -20,7 +22,7 @@
         // Core Development
         "dbaeumer.vscode-eslint",
 
-        // GitHub extensions
+        // GitHub extensions - Copilot with MCP server support
         "GitHub.copilot",
         "GitHub.copilot-chat",
         "github.vscode-github-actions",
