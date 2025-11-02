@@ -1,5 +1,10 @@
 import { useState, useCallback } from "react";
 
+// Game spatial boundaries for player position randomization
+const PLAYER_X_RANGE = 4; // Range: -2 to +2
+const PLAYER_Y_RANGE = 3; // Range: -1.5 to +1.5
+const PLAYER_Z_RANGE = 2; // Range: -1 to +1
+
 export interface GameState {
   score: number;
   playerX: number;
@@ -33,9 +38,9 @@ export function useGameState(initialState?: Partial<GameState>): UseGameStateRet
     setGameState((prev) => ({
       ...prev,
       score: prev.score + 1,
-      playerX: Math.random() * 4 - 2,
-      playerY: Math.random() * 3 - 1.5,
-      playerZ: Math.random() * 2 - 1,
+      playerX: Math.random() * PLAYER_X_RANGE - PLAYER_X_RANGE / 2,
+      playerY: Math.random() * PLAYER_Y_RANGE - PLAYER_Y_RANGE / 2,
+      playerZ: Math.random() * PLAYER_Z_RANGE - PLAYER_Z_RANGE / 2,
     }));
   }, []);
 
