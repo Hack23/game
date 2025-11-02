@@ -1,129 +1,30 @@
-import {
-  Application,
-  ApplicationRef,
-  extend,
-  useApplication,
-} from "@pixi/react";
-import { Container, Graphics, Text } from "pixi.js";
-import { LayoutContainer } from "@pixi/layout/components";
-import { Button, FancyButton } from "@pixi/ui";
-import "@pixi/layout/react";
-import "@pixi/layout";
-import { useCallback, useState, useRef, useEffect } from "react";
+import { Canvas } from "@react-three/fiber";
+import { OrbitControls, Html } from "@react-three/drei";
+import { useCallback, useState, useRef } from "react";
 import type { JSX } from "react";
+import * as THREE from "three";
 import "./App.css";
-
-// Extend @pixi/react with the Pixi components we want to use
-extend({
-  Container,
-  Graphics,
-  Text,
-  LayoutContainer,
-  Button,
-  FancyButton,
-});
 
 interface GameState {
   score: number;
   playerX: number;
   playerY: number;
+  playerZ: number;
   isPlaying: boolean;
 }
 
-interface LayoutResizerProps {
-  children: React.ReactNode;
-}
-
-// Add this interface to track screen dimensions
-interface ScreenDimensions {
-  width: number;
-  height: number;
-  scale: number;
-}
-
-function LayoutResizer({ children }: LayoutResizerProps): JSX.Element {
-  const layoutRef = useRef<LayoutContainer>(null);
-  const { app } = useApplication();
-  const [dimensions, setDimensions] = useState<ScreenDimensions>({
-    width: window.innerWidth,
-    height: window.innerHeight - 100, // Account for header/footer
-    scale: 1,
-  });
-
-  useEffect(() => {
-    const calculateDimensions = (): ScreenDimensions => {
-      const windowWidth = window.innerWidth;
-      const windowHeight = window.innerHeight - 100; // Account for header/footer
-
-      // Minimum content dimensions (adjust as needed for your game)
-      const minWidth = 800;
-      const minHeight = 600;
-
-      // Calculate scale factors
-      const scaleX = windowWidth < minWidth ? minWidth / windowWidth : 1;
-      const scaleY = windowHeight < minHeight ? minHeight / windowHeight : 1;
-      const scale = Math.max(scaleX, scaleY);
-
-      return {
-        width: windowWidth,
-        height: windowHeight,
-        scale: scale,
-      };
-    };
-
-    const handleResize = (): void => {
-      const newDimensions = calculateDimensions();
-      setDimensions(newDimensions);
-
-      if (layoutRef.current) {
-        layoutRef.current.layout = {
-          width: newDimensions.width,
-          height: newDimensions.height,
-        };
-      }
-
-      // Scroll to top to avoid mobile resize issues
-      window.scrollTo(0, 0);
-    };
-
-    // Initial resize
-    handleResize();
-
-    // Listen for window resize events
-    window.addEventListener("resize", handleResize);
-
-    // Also listen for PixiJS resize events if available
-    if (app?.renderer && typeof app.renderer.on === "function") {
-      app.renderer.on("resize", handleResize);
-    }
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-      if (app?.renderer && typeof app.renderer.off === "function") {
-        app.renderer.off("resize", handleResize);
-      }
-    };
-  }, [app]);
-
-  return (
-    <pixiContainer
-      ref={layoutRef}
-      layout={{
-        width: dimensions.width,
-        height: dimensions.height,
-      }}
-    >
-      {children}
-    </pixiContainer>
-  );
-}
-
 // Add a custom hook to manage game state for better testability
-function useGameState(initialState?: Partial<GameState>) {
+function useGameState(initialState?: Partial<GameState>): {
+  gameState: GameState;
+  incrementScore: () => void;
+  resetGame: () => void;
+  togglePause: () => void;
+} {
   const [gameState, setGameState] = useState<GameState>({
-    score: initialState?.score || 0,
-    playerX: initialState?.playerX || 50,
-    playerY: initialState?.playerY || 50,
+    score: initialState?.score ?? 0,
+    playerX: initialState?.playerX ?? 0,
+    playerY: initialState?.playerY ?? 0,
+    playerZ: initialState?.playerZ ?? 0,
     isPlaying: initialState?.isPlaying ?? true,
   });
 
@@ -131,16 +32,18 @@ function useGameState(initialState?: Partial<GameState>) {
     setGameState((prev) => ({
       ...prev,
       score: prev.score + 1,
-      playerX: Math.random() * 80 + 10,
-      playerY: Math.random() * 70 + 15,
+      playerX: Math.random() * 4 - 2,
+      playerY: Math.random() * 3 - 1.5,
+      playerZ: Math.random() * 2 - 1,
     }));
   }, []);
 
   const resetGame = useCallback(() => {
     setGameState({
       score: 0,
-      playerX: 50,
-      playerY: 50,
+      playerX: 0,
+      playerY: 0,
+      playerZ: 0,
       isPlaying: true,
     });
   }, []);
@@ -160,590 +63,277 @@ function useGameState(initialState?: Partial<GameState>) {
   };
 }
 
-function GameContent(): JSX.Element {
-  const { gameState, incrementScore, resetGame, togglePause } = useGameState();
-  const gameAreaRef = useRef<LayoutContainer>(null);
-  const { app } = useApplication();
+interface TargetSphereProps {
+  position: [number, number, number];
+  onClick: () => void;
+  isActive: boolean;
+}
 
-  const handlePlayerClick = useCallback(() => {
+function TargetSphere({ position, onClick, isActive }: TargetSphereProps): JSX.Element {
+  const meshRef = useRef<THREE.Mesh>(null);
+  const [hovered, setHovered] = useState(false);
+
+  const handleClick = useCallback((e: unknown) => {
+    const event = e as { stopPropagation?: () => void };
+    event.stopPropagation?.();
+    if (isActive) {
+      onClick();
+    }
+  }, [isActive, onClick]);
+
+  return (
+    <mesh
+      ref={meshRef}
+      position={position}
+      onClick={handleClick}
+      onPointerOver={() => isActive && setHovered(true)}
+      onPointerOut={() => setHovered(false)}
+      scale={isActive ? (hovered ? 1.2 : 1) : 0.6}
+      data-testid="target-sphere"
+    >
+      <sphereGeometry args={[0.5, 32, 32]} />
+      <meshStandardMaterial
+        color={isActive ? (hovered ? "#00ff88" : "#00cc66") : "#666666"}
+        emissive={isActive ? "#00ff88" : "#333333"}
+        emissiveIntensity={hovered ? 0.5 : 0.2}
+        metalness={0.3}
+        roughness={0.4}
+      />
+      {/* Rings for target effect */}
+      <mesh position={[0, 0, 0]}>
+        <torusGeometry args={[0.35, 0.02, 16, 32]} />
+        <meshStandardMaterial
+          color={isActive ? "#ffffff" : "#999999"}
+          transparent
+          opacity={0.8}
+        />
+      </mesh>
+      <mesh position={[0, 0, 0]}>
+        <torusGeometry args={[0.2, 0.02, 16, 32]} />
+        <meshStandardMaterial
+          color={isActive ? "#ffffff" : "#999999"}
+          transparent
+          opacity={0.8}
+        />
+      </mesh>
+    </mesh>
+  );
+}
+
+function GameScene(): JSX.Element {
+  const { gameState, incrementScore, resetGame, togglePause } = useGameState();
+
+  const handleTargetClick = useCallback(() => {
     if (!gameState.isPlaying) return;
     incrementScore();
   }, [gameState.isPlaying, incrementScore]);
 
-  const createButtonGraphics = useCallback(
-    (
-      color: number,
-      width: number,
-      height: number,
-      cornerRadius: number = 6
-    ): Graphics => {
-      const graphics = new Graphics();
-
-      // Try the PixiJS v8 approach first
-      if (
-        typeof graphics.setFillStyle === "function" &&
-        typeof graphics.roundRect === "function"
-      ) {
-        graphics.setFillStyle({ color });
-        graphics.roundRect(0, 0, width, height, cornerRadius);
-        graphics.fill();
-      }
-      // Fall back to older PixiJS API style that might be used in tests
-      else if (
-        typeof graphics.beginFill === "function" &&
-        typeof graphics.drawRoundedRect === "function"
-      ) {
-        graphics.beginFill(color);
-        graphics.drawRoundedRect(0, 0, width, height, cornerRadius);
-        graphics.endFill();
-      }
-      // Last resort - draw a regular rectangle if rounded corners not available
-      else if (typeof graphics.beginFill === "function") {
-        graphics.beginFill(color);
-        if (typeof graphics.drawRect === "function") {
-          graphics.drawRect(0, 0, width, height);
-        }
-        if (typeof graphics.endFill === "function") {
-          graphics.endFill();
-        }
-      }
-
-      return graphics;
-    },
-    []
-  );
-
-  // Check if app is initialized
-  const isAppReady = Boolean(app && app.renderer);
-
-  // Use safe default values when app isn't ready
-  const screenWidth = isAppReady && app?.screen ? app.screen.width : 800;
-
-  // If app is not ready, show loading state
-  if (!isAppReady) {
-    return (
-      <pixiContainer data-testid="loading-container">
-        <pixiText
-          text="Loading..."
-          style={{
-            fontFamily: "Arial",
-            fontSize: 24,
-            fill: 0xffffff,
-          }}
-          x={400}
-          y={300}
-          anchor={0.5}
-          data-testid="loading-text"
-        />
-      </pixiContainer>
-    );
-  }
-
-  // Safe access to app dimensions with fallback values
-  const gameAreaWidth = screenWidth;
-
   return (
-    <LayoutResizer>
-      {/* Main game layout container with card-style design */}
-      <layoutContainer
-        layout={{
-          width: "100%",
-          height: "100%",
-          backgroundColor: "#0d1117",
-          padding: 16,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-        data-testid="game-layout-container"
+    <>
+      {/* Lighting */}
+      <ambientLight intensity={0.5} />
+      <pointLight position={[10, 10, 10]} intensity={1} />
+      <pointLight position={[-10, -10, -5]} intensity={0.5} />
+
+      {/* Target Sphere */}
+      <TargetSphere
+        position={[gameState.playerX, gameState.playerY, gameState.playerZ]}
+        onClick={handleTargetClick}
+        isActive={gameState.isPlaying}
+      />
+
+      {/* Grid floor */}
+      <gridHelper args={[10, 10, "#30363d", "#21262d"]} position={[0, -2, 0]} />
+
+      {/* Score Display */}
+      <Html
+        position={[0, 3, 0]}
+        center
+        distanceFactor={8}
+        data-testid="score-display"
       >
-        {/* Game card container */}
-        <layoutContainer
-          layout={{
-            width: "100%", // Use full width
-            height: "100%", // Use full height
-            backgroundColor: "#161b22",
-            borderRadius: 16,
-            flexDirection: "column",
-            overflow: "hidden",
+        <div
+          style={{
+            background: "rgba(33, 38, 45, 0.9)",
+            padding: "20px 40px",
+            borderRadius: "20px",
+            textAlign: "center",
+            minWidth: "200px",
+            backdropFilter: "blur(10px)",
           }}
-          data-testid="game-card"
         >
-          {/* Header section - Game title and status */}
-          <layoutContainer
-            layout={{
-              width: "100%",
-              height: 80,
-              backgroundColor: "#21262d",
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              paddingLeft: 24,
-              paddingRight: 24,
+          <div
+            style={{
+              color: "#7d8590",
+              fontSize: "14px",
+              fontWeight: "bold",
+              marginBottom: "8px",
             }}
-            data-testid="game-header"
+            data-testid="score-label"
           >
-            {/* Game title */}
-            <layoutContainer
-              layout={{
-                flexDirection: "column",
-                alignItems: "flex-start",
-                gap: 4,
-              }}
-              data-testid="game-title-container"
-            >
-              <pixiText
-                text="Circle Clicker"
-                style={{
-                  fontFamily: "Arial",
-                  fontSize: 24,
-                  fill: 0xffffff,
-                  fontWeight: "bold",
-                }}
-                data-testid="game-title"
-                data-text="Circle Clicker"
-              />
-              <pixiText
-                text={gameState.isPlaying ? "🎯 Active" : "⏸️ Paused"}
-                style={{
-                  fontFamily: "Arial",
-                  fontSize: 12,
-                  fill: gameState.isPlaying ? 0x00ff88 : 0xffa500,
-                }}
-                data-testid="game-status"
-                data-text={gameState.isPlaying ? "🎯 Active" : "⏸️ Paused"}
-              />
-            </layoutContainer>
-
-            {/* Pause/Resume button in header */}
-            <pixiFancyButton
-              defaultView={createButtonGraphics(
-                gameState.isPlaying ? 0xff6b35 : 0x00c851,
-                100,
-                40,
-                8
-              )}
-              hoverView={createButtonGraphics(
-                gameState.isPlaying ? 0xff8a65 : 0x4caf50,
-                100,
-                40,
-                8
-              )}
-              pressedView={createButtonGraphics(
-                gameState.isPlaying ? 0xd84315 : 0x2e7d32,
-                100,
-                40,
-                8
-              )}
-              text={gameState.isPlaying ? "Pause" : "Resume"}
-              padding={8}
-              onPress={togglePause}
-              data-testid="pause-button"
-              aria-label={gameState.isPlaying ? "Pause Game" : "Resume Game"}
-            />
-          </layoutContainer>
-
-          {/* Main content area */}
-          <layoutContainer
-            layout={{
-              width: "100%",
-              flexGrow: 1,
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              position: "relative",
-              padding: 24,
+            SCORE
+          </div>
+          <div
+            style={{
+              color: "#00ff88",
+              fontSize: "48px",
+              fontWeight: "bold",
             }}
-            ref={gameAreaRef}
-            data-testid="game-content"
+            data-testid="score-value"
+            data-score={gameState.score.toString()}
           >
-            {/* Centered score display */}
-            <layoutContainer
-              layout={{
-                width: 240,
-                backgroundColor: "#30363d",
-                borderRadius: 20,
-                paddingLeft: 32,
-                paddingRight: 32,
-                paddingTop: 20,
-                paddingBottom: 20,
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 8,
-                marginBottom: 20,
-              }}
-              data-testid="score-display"
-              data-score={gameState.score.toString()}
-            >
-              <pixiText
-                text="SCORE"
-                style={{
-                  fontFamily: "Arial",
-                  fontSize: 14,
-                  fill: 0x7d8590,
-                  fontWeight: "bold",
-                }}
-                data-testid="score-label"
-                data-text="SCORE"
-              />
-              <pixiText
-                text={gameState.score.toString()}
-                style={{
-                  fontFamily: "Arial",
-                  fontSize: 48,
-                  fill: 0x00ff88,
-                  fontWeight: "bold",
-                }}
-                data-testid="score-value"
-                data-text={gameState.score.toString()}
-                data-score={gameState.score.toString()}
-              />
-            </layoutContainer>
+            {gameState.score}
+          </div>
+        </div>
+      </Html>
 
-            {/* Instructions */}
-            <layoutContainer
-              layout={{
-                width: 360,
-                backgroundColor: "#21262d",
-                borderRadius: 12,
-                paddingLeft: 20,
-                paddingRight: 20,
-                paddingTop: 12,
-                paddingBottom: 12,
-                alignItems: "center",
-                justifyContent: "center",
-                marginBottom: 30,
-              }}
-              data-testid="instructions"
-            >
-              <pixiText
-                text={
-                  gameState.isPlaying
-                    ? "🎯 Click the target to score points!"
-                    : "⏸️ Game paused - Resume to continue"
-                }
-                style={{
-                  fontFamily: "Arial",
-                  fontSize: 16,
-                  fill: gameState.isPlaying ? 0xffffff : 0x7d8590,
-                  fontWeight: "normal",
-                }}
-                data-testid="instructions-text"
-                data-text={
-                  gameState.isPlaying
-                    ? "🎯 Click the target to score points!"
-                    : "⏸️ Game paused - Resume to continue"
-                }
-              />
-            </layoutContainer>
+      {/* Status indicator */}
+      <Html
+        position={[-4, 2.5, 0]}
+        distanceFactor={10}
+        data-testid="game-status-container"
+      >
+        <div
+          style={{
+            color: gameState.isPlaying ? "#00ff88" : "#ffa500",
+            fontSize: "14px",
+            fontWeight: "bold",
+            background: "rgba(33, 38, 45, 0.9)",
+            padding: "8px 16px",
+            borderRadius: "12px",
+            backdropFilter: "blur(10px)",
+          }}
+          data-testid="game-status"
+        >
+          {gameState.isPlaying ? "🎯 Active" : "⏸️ Paused"}
+        </div>
+      </Html>
 
-            {/* Game area background */}
-            <layoutContainer
-              layout={{
-                width: "100%",
-                flexGrow: 1,
-                backgroundColor: "#0d1117",
-                borderRadius: 12,
-                position: "relative",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-              data-testid="game-play-area"
-            >
-              {/* Grid pattern background */}
-              <pixiGraphics
-                draw={(g: Graphics) => {
-                  g.clear();
-                  const areaWidth = Math.max(gameAreaWidth * 0.7, 400);
-                  const areaHeight = Math.max(200, 300);
+      {/* Instructions */}
+      <Html
+        position={[0, -3, 0]}
+        center
+        distanceFactor={10}
+        data-testid="instructions"
+      >
+        <div
+          style={{
+            color: gameState.isPlaying ? "#ffffff" : "#7d8590",
+            fontSize: "16px",
+            background: "rgba(33, 38, 45, 0.9)",
+            padding: "12px 20px",
+            borderRadius: "12px",
+            textAlign: "center",
+            backdropFilter: "blur(10px)",
+          }}
+          data-testid="instructions-text"
+        >
+          {gameState.isPlaying
+            ? "🎯 Click the target to score points!"
+            : "⏸️ Game paused - Resume to continue"}
+        </div>
+      </Html>
 
-                  // Background with subtle pattern
-                  g.setFillStyle({ color: 0x161b22 });
-                  g.roundRect(0, 0, areaWidth, areaHeight, 8);
-                  g.fill();
-
-                  // Grid pattern
-                  g.setStrokeStyle({ color: 0x21262d, width: 1, alpha: 0.6 });
-                  const gridSize = 40;
-
-                  for (let x = 0; x < areaWidth; x += gridSize) {
-                    g.moveTo(x, 0);
-                    g.lineTo(x, areaHeight);
-                    g.stroke();
-                  }
-                  for (let y = 0; y < areaHeight; y += gridSize) {
-                    g.moveTo(0, y);
-                    g.lineTo(areaWidth, y);
-                    g.stroke();
-                  }
-                }}
-                data-testid="game-area-background"
-              />
-
-              {/* Enhanced target circle */}
-              <pixiContainer
-                x={
-                  (gameState.playerX / 100) * Math.max(gameAreaWidth * 0.5, 300)
-                }
-                y={(gameState.playerY / 100) * Math.max(200, 200)}
-                interactive={gameState.isPlaying}
-                cursor={gameState.isPlaying ? "pointer" : "default"}
-                onClick={handlePlayerClick}
-                data-testid="target-circle"
-                aria-label="Clickable target"
-                scale={gameState.isPlaying ? 1 : 0.6}
-                alpha={gameState.isPlaying ? 1 : 0.3}
-                data-x={(
-                  (gameState.playerX / 100) *
-                  Math.max(gameAreaWidth * 0.5, 300)
-                ).toString()}
-                data-y={(
-                  (gameState.playerY / 100) *
-                  Math.max(200, 200)
-                ).toString()}
-                pixi-data={{ type: "target" }} // <-- Add this prop
-              >
-                <pixiGraphics
-                  draw={(g: Graphics) => {
-                    g.clear();
-
-                    if (gameState.isPlaying) {
-                      // Animated pulse rings
-                      g.setFillStyle({ color: 0x00ff88, alpha: 0.1 });
-                      g.circle(0, 0, 60);
-                      g.fill();
-
-                      g.setFillStyle({ color: 0x00ff88, alpha: 0.2 });
-                      g.circle(0, 0, 45);
-                      g.fill();
-
-                      g.setFillStyle({ color: 0x00ff88, alpha: 0.3 });
-                      g.circle(0, 0, 35);
-                      g.fill();
-                    }
-
-                    // Main target circle
-                    g.setFillStyle({
-                      color: gameState.isPlaying ? 0x00ff88 : 0x30363d,
-                    });
-                    g.circle(0, 0, 30);
-                    g.fill();
-
-                    // Inner rings for target effect
-                    g.setStrokeStyle({
-                      color: gameState.isPlaying ? 0xffffff : 0x7d8590,
-                      width: 2,
-                    });
-                    g.circle(0, 0, 25);
-                    g.stroke();
-                    g.circle(0, 0, 15);
-                    g.stroke();
-                    g.circle(0, 0, 5);
-                    g.stroke();
-
-                    // Center dot
-                    g.setFillStyle({
-                      color: gameState.isPlaying ? 0xffffff : 0x7d8590,
-                    });
-                    g.circle(0, 0, 3);
-                    g.fill();
-                  }}
-                  data-testid="target-circle-graphics"
-                />
-              </pixiContainer>
-
-              {/* Pause overlay with better design */}
-              {!gameState.isPlaying && (
-                <layoutContainer
-                  layout={{
-                    position: "absolute",
-                    width: "100%",
-                    height: "100%",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    backgroundColor: "rgba(0, 0, 0, 0.8)",
-                    borderRadius: 12,
-                  }}
-                  data-testid="pause-overlay"
-                >
-                  <layoutContainer
-                    layout={{
-                      backgroundColor: "#21262d",
-                      borderRadius: 20,
-                      paddingLeft: 48,
-                      paddingRight: 48,
-                      paddingTop: 32,
-                      paddingBottom: 32,
-                      alignItems: "center",
-                      gap: 12,
-                    }}
-                    data-testid="pause-modal"
-                  >
-                    <pixiText
-                      text="⏸️"
-                      style={{
-                        fontFamily: "Arial",
-                        fontSize: 64,
-                        fill: 0xffa500,
-                      }}
-                      data-testid="pause-icon"
-                    />
-                    <pixiText
-                      text="GAME PAUSED"
-                      style={{
-                        fontFamily: "Arial",
-                        fontSize: 28,
-                        fill: 0xffffff,
-                        fontWeight: "bold",
-                      }}
-                      data-testid="pause-title"
-                    />
-                  </layoutContainer>
-                </layoutContainer>
-              )}
-            </layoutContainer>
-          </layoutContainer>
-
-          {/* Bottom section - Reset button centered */}
-          <layoutContainer
-            layout={{
-              width: "100%",
-              height: 80,
-              backgroundColor: "#21262d",
-              justifyContent: "center",
-              alignItems: "center",
+      {/* Control buttons */}
+      <Html
+        position={[4, 2.5, 0]}
+        distanceFactor={10}
+        data-testid="controls-container"
+      >
+        <div style={{ display: "flex", gap: "10px" }}>
+          <button
+            onClick={togglePause}
+            data-testid="pause-button"
+            style={{
+              background: gameState.isPlaying ? "#ff6b35" : "#00c851",
+              color: "white",
+              border: "none",
+              padding: "10px 20px",
+              borderRadius: "8px",
+              cursor: "pointer",
+              fontWeight: "bold",
+              fontSize: "14px",
             }}
-            data-testid="game-footer"
           >
-            <pixiFancyButton
-              defaultView={createButtonGraphics(0x7c3aed, 140, 50, 12)}
-              hoverView={createButtonGraphics(0x8b5cf6, 140, 50, 12)}
-              pressedView={createButtonGraphics(0x6d28d9, 140, 50, 12)}
-              text="🔄 Reset Game"
-              padding={12}
-              onPress={resetGame}
-              data-testid="reset-button"
-              aria-label="Reset Game"
-            />
-          </layoutContainer>
-
-          {/* Footer stats */}
-          <layoutContainer
-            layout={{
-              width: "100%",
-              height: 40,
-              backgroundColor: "#0d1117",
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              paddingLeft: 20,
-              paddingRight: 20,
+            {gameState.isPlaying ? "Pause" : "Resume"}
+          </button>
+          <button
+            onClick={resetGame}
+            data-testid="reset-button"
+            style={{
+              background: "#7c3aed",
+              color: "white",
+              border: "none",
+              padding: "10px 20px",
+              borderRadius: "8px",
+              cursor: "pointer",
+              fontWeight: "bold",
+              fontSize: "14px",
             }}
-            data-testid="game-stats"
           >
-            <pixiText
-              text={`Total Clicks: ${gameState.score}`}
+            🔄 Reset
+          </button>
+        </div>
+      </Html>
+
+      {/* Pause overlay */}
+      {!gameState.isPlaying && (
+        <Html position={[0, 0, 0]} center distanceFactor={5}>
+          <div
+            style={{
+              background: "rgba(0, 0, 0, 0.8)",
+              padding: "40px 60px",
+              borderRadius: "20px",
+              textAlign: "center",
+              backdropFilter: "blur(10px)",
+            }}
+            data-testid="pause-overlay"
+          >
+            <div style={{ fontSize: "64px", marginBottom: "16px" }}>⏸️</div>
+            <div
               style={{
-                fontFamily: "Arial",
-                fontSize: 12,
-                fill: 0x7d8590,
+                color: "#ffffff",
+                fontSize: "28px",
+                fontWeight: "bold",
               }}
-              data-testid="total-clicks"
-              data-text={`Total Clicks: ${gameState.score}`}
-            />
-            <pixiText
-              text="Built with PixiJS + Layout"
-              style={{
-                fontFamily: "Arial",
-                fontSize: 12,
-                fill: 0x58a6ff,
-              }}
-              data-testid="footer-built-with"
-              data-text="Built with PixiJS + Layout"
-            />
-            <pixiText
-              text={gameState.isPlaying ? "🟢 Active" : "🟡 Paused"}
-              style={{
-                fontFamily: "Arial",
-                fontSize: 12,
-                fill: gameState.isPlaying ? 0x00ff88 : 0xffa500,
-              }}
-              data-testid="footer-status"
-              data-text={gameState.isPlaying ? "🟢 Active" : "🟡 Paused"}
-            />
-          </layoutContainer>
-        </layoutContainer>
-      </layoutContainer>
-    </LayoutResizer>
+              data-testid="pause-title"
+            >
+              GAME PAUSED
+            </div>
+          </div>
+        </Html>
+      )}
+
+      {/* Camera controls */}
+      <OrbitControls
+        enablePan={false}
+        enableZoom={true}
+        minDistance={3}
+        maxDistance={15}
+        maxPolarAngle={Math.PI / 2}
+      />
+    </>
   );
 }
 
-// Update the App component for proper sizing
 function App(): JSX.Element {
-  const [dimensions, setDimensions] = useState({
-    width: window.innerWidth,
-    height: window.innerHeight - 100,
-  });
-
-  // Use a ref to store the PixiJS Application instance
-  const appRef = useRef<ApplicationRef>(null);
-
-  // Set window.pixiApp as soon as the Application instance is available (for Cypress E2E)
-  useEffect(() => {
-    // Poll for the Application instance and set window.pixiApp as soon as possible
-    const interval = setInterval(() => {
-      const instance = appRef.current as { app?: unknown } | null;
-      if (
-        typeof window !== "undefined" &&
-        (window as { Cypress?: boolean }).Cypress &&
-        instance &&
-        instance.app &&
-        !(window as any).pixiApp
-      ) {
-        (window as any).pixiApp = instance.app;
-        clearInterval(interval);
-      }
-    }, 50);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setDimensions({
-        width: window.innerWidth,
-        height: window.innerHeight - 100,
-      });
-      window.scrollTo(0, 0);
-    };
-
-    handleResize();
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
   return (
     <div className="app-container" data-testid="app-container">
-      <h1 data-testid="app-title">PixiJS React Game</h1>
-      <div data-testid="pixi-application">
-        <Application
-          ref={appRef}
-          width={dimensions.width}
-          height={dimensions.height}
-          backgroundColor={0x242424}
-          antialias={true}
-          resizeTo={window}
-          autoDensity={true}
-          resolution={window.devicePixelRatio || 1}
-          powerPreference="high-performance"
+      <h1 data-testid="app-title">Three.js React Game</h1>
+      <div
+        data-testid="threejs-canvas-container"
+        style={{ width: "100%", height: "600px" }}
+      >
+        <Canvas
+          camera={{ position: [0, 2, 8], fov: 50 }}
+          style={{ background: "#0d1117" }}
+          data-testid="threejs-canvas"
         >
-          <GameContent />
-        </Application>
+          <GameScene />
+        </Canvas>
       </div>
       <p className="instructions" data-testid="app-instructions">
-        A minimal PixiJS game built with @pixi/react and @pixi/layout
+        A minimal Three.js game built with @react-three/fiber and @react-three/drei
       </p>
     </div>
   );

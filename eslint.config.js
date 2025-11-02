@@ -39,6 +39,7 @@ export default tseslint.config(
       "@typescript-eslint/no-explicit-any": "error",
       "@typescript-eslint/prefer-nullish-coalescing": "error",
       "@typescript-eslint/prefer-optional-chain": "error",
+      "@typescript-eslint/unified-signatures": "off", // Disabled due to compatibility issue with React 19
     },
   },
   {
