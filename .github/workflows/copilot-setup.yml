@@ -87,10 +87,10 @@ jobs:
       - name: Install System Dependencies
         run: |
           echo "### Installing System Dependencies"
-          sudo apt-get update
-          sudo apt-get install -y build-essential
-          sudo apt-get install -y xvfb libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libnss3 libxss1 libasound2 libxtst6 xauth
-          sudo apt-get install -y graphviz
+          sudo apt-get update || exit 1
+          sudo apt-get install -y build-essential || exit 1
+          sudo apt-get install -y xvfb libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libnss3 libxss1 libasound2 libxtst6 xauth || exit 1
+          sudo apt-get install -y graphviz || exit 1
           echo "✅ System dependencies installed"
 
       - name: Install Node Dependencies
@@ -121,8 +121,14 @@ jobs:
           echo "### Testing MCP Server Availability"
           echo "Note: MCP servers are installed on-demand when Copilot needs them"
           echo ""
-          echo "Available MCP server packages:"
-          npm search @modelcontextprotocol/server --parseable | head -10 || echo "MCP servers available in npm registry"
+          echo "Verifying key MCP server packages:"
+          for pkg in filesystem github git memory playwright; do
+            if npm view @modelcontextprotocol/server-$pkg version > /dev/null 2>&1; then
+              echo "✅ @modelcontextprotocol/server-$pkg is available"
+            else
+              echo "⚠️ @modelcontextprotocol/server-$pkg not found"
+            fi
+          done
 
       - name: Display Setup Summary
         run: |

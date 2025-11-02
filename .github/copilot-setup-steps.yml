@@ -83,13 +83,6 @@ mcp_servers:
         - "testing-library.com"
         - "developer.mozilla.org"
 
-  # NPM package information
-  npm:
-    provider: "@modelcontextprotocol/server-npm"
-    description: "Provides NPM package information and dependency management"
-    config:
-      registry: "https://registry.npmjs.org"
-
   # Playwright for browser automation (useful for testing)
   playwright:
     provider: "@modelcontextprotocol/server-playwright"
