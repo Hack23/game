@@ -29,6 +29,10 @@ vi.mock("@react-three/drei", (): object => ({
   Html: ({ children }: { children: ReactNode }): ReactElement => (
     <div data-testid="mocked-html">{children}</div>
   ),
+  Sparkles: (): ReactElement => <div data-testid="mocked-sparkles" />,
+  Trail: ({ children }: { children: ReactNode }): ReactElement => (
+    <div data-testid="mocked-trail">{children}</div>
+  ),
 }));
 
 // Mock THREE
@@ -46,7 +50,7 @@ describe("App Component", () => {
 
   it("renders the app title with Three.js", () => {
     render(<App />);
-    expect(screen.getByTestId("app-title")).toHaveTextContent("Three.js React Game");
+    expect(screen.getByTestId("app-title")).toHaveTextContent("Target Shooter");
   });
 
   it("renders the Three.js canvas container", () => {
@@ -57,7 +61,7 @@ describe("App Component", () => {
   it("renders app instructions", () => {
     render(<App />);
     expect(screen.getByTestId("app-instructions")).toHaveTextContent(
-      "A minimal Three.js game built with @react-three/fiber and @react-three/drei"
+      "An immersive 3D target shooting game with combos, levels, and time pressure!"
     );
   });
 
