@@ -1,20 +1,30 @@
-import { Canvas, ThreeEvent } from "@react-three/fiber";
-import { OrbitControls, Html } from "@react-three/drei";
+import { Canvas, ThreeEvent, useFrame } from "@react-three/fiber";
+import { OrbitControls, Sparkles, Trail } from "@react-three/drei";
 import { useRef, useState, useCallback } from "react";
 import type { JSX } from "react";
 import * as THREE from "three";
-import { useGameState } from "./hooks/useGameState";
+import { useGameState, type GameState } from "./hooks/useGameState";
 import "./App.css";
 
 interface TargetSphereProps {
   position: [number, number, number];
   onClick: () => void;
   isActive: boolean;
+  size: number;
 }
 
-function TargetSphere({ position, onClick, isActive }: TargetSphereProps): JSX.Element {
+function TargetSphere({ position, onClick, isActive, size }: TargetSphereProps): JSX.Element {
   const meshRef = useRef<THREE.Mesh>(null);
   const [hovered, setHovered] = useState(false);
+
+  // Animate target - rotate and float (only when active)
+  useFrame((state) => {
+    if (!isActive || !meshRef.current) return;
+    
+    meshRef.current.rotation.y += 0.02;
+    meshRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 2) * 0.1;
+    meshRef.current.position.y = position[1] + Math.sin(state.clock.elapsedTime * 3) * 0.1;
+  });
 
   const handleClick = useCallback((e: ThreeEvent<MouseEvent>) => {
     e.stopPropagation();
@@ -24,227 +34,124 @@ function TargetSphere({ position, onClick, isActive }: TargetSphereProps): JSX.E
   }, [isActive, onClick]);
 
   return (
-    <mesh
-      ref={meshRef}
-      position={position}
-      onClick={handleClick}
-      onPointerOver={() => isActive && setHovered(true)}
-      onPointerOut={() => setHovered(false)}
-      scale={isActive ? (hovered ? 1.2 : 1) : 0.6}
-      data-testid="target-sphere"
-    >
-      <sphereGeometry args={[0.5, 32, 32]} />
-      <meshStandardMaterial
-        color={isActive ? (hovered ? "#00ff88" : "#00cc66") : "#666666"}
-        emissive={isActive ? "#00ff88" : "#333333"}
-        emissiveIntensity={hovered ? 0.5 : 0.2}
-        metalness={0.3}
-        roughness={0.4}
-      />
-      {/* Rings for target effect */}
-      <mesh position={[0, 0, 0]}>
-        <torusGeometry args={[0.35, 0.02, 16, 32]} />
-        <meshStandardMaterial
-          color={isActive ? "#ffffff" : "#999999"}
-          transparent
-          opacity={0.8}
+    <group position={position}>
+      <Trail
+        width={3}
+        length={6}
+        color={isActive ? "#00ff88" : "#666666"}
+        attenuation={(t) => t * t}
+      >
+        <mesh
+          ref={meshRef}
+          onClick={handleClick}
+          onPointerOver={() => isActive && setHovered(true)}
+          onPointerOut={() => setHovered(false)}
+          scale={isActive ? (hovered ? 1.3 : 1) : 0.6}
+          data-testid="target-sphere"
+        >
+          <sphereGeometry args={[size, 32, 32]} />
+          <meshStandardMaterial
+            color={isActive ? (hovered ? "#00ff88" : "#00cc66") : "#666666"}
+            emissive={isActive ? "#00ff88" : "#333333"}
+            emissiveIntensity={hovered ? 0.8 : 0.4}
+            metalness={0.5}
+            roughness={0.2}
+          />
+          {/* Animated rings for target effect */}
+          <mesh position={[0, 0, 0]}>
+            <torusGeometry args={[size * 0.7, 0.02, 16, 32]} />
+            <meshStandardMaterial
+              color={isActive ? "#ffffff" : "#999999"}
+              transparent
+              opacity={0.8}
+              emissive="#ffffff"
+              emissiveIntensity={hovered ? 0.5 : 0.2}
+            />
+          </mesh>
+          <mesh position={[0, 0, 0]}>
+            <torusGeometry args={[size * 0.4, 0.02, 16, 32]} />
+            <meshStandardMaterial
+              color={isActive ? "#ffffff" : "#999999"}
+              transparent
+              opacity={0.8}
+              emissive="#ffffff"
+              emissiveIntensity={hovered ? 0.5 : 0.2}
+            />
+          </mesh>
+        </mesh>
+      </Trail>
+      {/* Sparkle effect around target */}
+      {isActive && (
+        <Sparkles
+          count={20}
+          scale={size * 3}
+          size={2}
+          speed={0.4}
+          color="#00ff88"
         />
-      </mesh>
-      <mesh position={[0, 0, 0]}>
-        <torusGeometry args={[0.2, 0.02, 16, 32]} />
-        <meshStandardMaterial
-          color={isActive ? "#ffffff" : "#999999"}
-          transparent
-          opacity={0.8}
-        />
-      </mesh>
-    </mesh>
+      )}
+    </group>
   );
 }
 
-function GameScene(): JSX.Element {
-  const { gameState, incrementScore, resetGame, togglePause } = useGameState();
+function BackgroundParticles(): JSX.Element {
+  return (
+    <Sparkles
+      count={100}
+      scale={15}
+      size={1}
+      speed={0.2}
+      opacity={0.3}
+      color="#646cff"
+    />
+  );
+}
 
+interface GameSceneProps {
+  gameState: GameState;
+  onTargetClick: () => void;
+}
+
+function GameScene({ gameState, onTargetClick }: GameSceneProps): JSX.Element {
   const handleTargetClick = useCallback(() => {
-    if (!gameState.isPlaying) return;
-    incrementScore();
-  }, [gameState.isPlaying, incrementScore]);
+    if (!gameState.isPlaying || gameState.timeLeft <= 0) return;
+    onTargetClick();
+  }, [gameState.isPlaying, gameState.timeLeft, onTargetClick]);
+
+  const isGameOver = gameState.timeLeft <= 0;
 
   return (
     <>
-      {/* Lighting */}
-      <ambientLight intensity={0.5} />
-      <pointLight position={[10, 10, 10]} intensity={1} />
-      <pointLight position={[-10, -10, -5]} intensity={0.5} />
+      {/* Enhanced Lighting */}
+      <ambientLight intensity={0.3} />
+      <pointLight position={[10, 10, 10]} intensity={1} color="#ffffff" />
+      <pointLight position={[-10, -10, -5]} intensity={0.5} color="#646cff" />
+      <spotLight
+        position={[0, 10, 0]}
+        angle={0.6}
+        penumbra={1}
+        intensity={0.5}
+        castShadow
+        color="#00ff88"
+      />
+
+      {/* Background particles */}
+      <BackgroundParticles />
 
       {/* Target Sphere */}
       <TargetSphere
         position={[gameState.playerX, gameState.playerY, gameState.playerZ]}
         onClick={handleTargetClick}
-        isActive={gameState.isPlaying}
+        isActive={gameState.isPlaying && !isGameOver}
+        size={gameState.targetSize}
       />
 
-      {/* Grid floor */}
+      {/* Improved Grid floor with glow */}
       <gridHelper args={[10, 10, "#30363d", "#21262d"]} position={[0, -2, 0]} />
-
-      {/* Score Display */}
-      <Html
-        position={[0, 3, 0]}
-        center
-        distanceFactor={8}
-        data-testid="score-display"
-      >
-        <div
-          style={{
-            background: "rgba(33, 38, 45, 0.9)",
-            padding: "20px 40px",
-            borderRadius: "20px",
-            textAlign: "center",
-            minWidth: "200px",
-            backdropFilter: "blur(10px)",
-          }}
-        >
-          <div
-            style={{
-              color: "#7d8590",
-              fontSize: "14px",
-              fontWeight: "bold",
-              marginBottom: "8px",
-            }}
-            data-testid="score-label"
-          >
-            SCORE
-          </div>
-          <div
-            style={{
-              color: "#00ff88",
-              fontSize: "48px",
-              fontWeight: "bold",
-            }}
-            data-testid="score-value"
-            data-score={gameState.score.toString()}
-          >
-            {gameState.score}
-          </div>
-        </div>
-      </Html>
-
-      {/* Status indicator */}
-      <Html
-        position={[-4, 2.5, 0]}
-        distanceFactor={10}
-        data-testid="game-status-container"
-      >
-        <div
-          style={{
-            color: gameState.isPlaying ? "#00ff88" : "#ffa500",
-            fontSize: "14px",
-            fontWeight: "bold",
-            background: "rgba(33, 38, 45, 0.9)",
-            padding: "8px 16px",
-            borderRadius: "12px",
-            backdropFilter: "blur(10px)",
-          }}
-          data-testid="game-status"
-        >
-          {gameState.isPlaying ? "🎯 Active" : "⏸️ Paused"}
-        </div>
-      </Html>
-
-      {/* Instructions */}
-      <Html
-        position={[0, -3, 0]}
-        center
-        distanceFactor={10}
-        data-testid="instructions"
-      >
-        <div
-          style={{
-            color: gameState.isPlaying ? "#ffffff" : "#7d8590",
-            fontSize: "16px",
-            background: "rgba(33, 38, 45, 0.9)",
-            padding: "12px 20px",
-            borderRadius: "12px",
-            textAlign: "center",
-            backdropFilter: "blur(10px)",
-          }}
-          data-testid="instructions-text"
-        >
-          {gameState.isPlaying
-            ? "🎯 Click the target to score points!"
-            : "⏸️ Game paused - Resume to continue"}
-        </div>
-      </Html>
-
-      {/* Control buttons */}
-      <Html
-        position={[4, 2.5, 0]}
-        distanceFactor={10}
-        data-testid="controls-container"
-      >
-        <div style={{ display: "flex", gap: "10px" }}>
-          <button
-            onClick={togglePause}
-            data-testid="pause-button"
-            style={{
-              background: gameState.isPlaying ? "#ff6b35" : "#00c851",
-              color: "white",
-              border: "none",
-              padding: "10px 20px",
-              borderRadius: "8px",
-              cursor: "pointer",
-              fontWeight: "bold",
-              fontSize: "14px",
-            }}
-          >
-            {gameState.isPlaying ? "Pause" : "Resume"}
-          </button>
-          <button
-            onClick={resetGame}
-            data-testid="reset-button"
-            style={{
-              background: "#7c3aed",
-              color: "white",
-              border: "none",
-              padding: "10px 20px",
-              borderRadius: "8px",
-              cursor: "pointer",
-              fontWeight: "bold",
-              fontSize: "14px",
-            }}
-          >
-            🔄 Reset
-          </button>
-        </div>
-      </Html>
-
-      {/* Pause overlay */}
-      {!gameState.isPlaying && (
-        <Html position={[0, 0, 0]} center distanceFactor={5}>
-          <div
-            style={{
-              background: "rgba(0, 0, 0, 0.8)",
-              padding: "40px 60px",
-              borderRadius: "20px",
-              textAlign: "center",
-              backdropFilter: "blur(10px)",
-            }}
-            data-testid="pause-overlay"
-          >
-            <div style={{ fontSize: "64px", marginBottom: "16px" }}>⏸️</div>
-            <div
-              style={{
-                color: "#ffffff",
-                fontSize: "28px",
-                fontWeight: "bold",
-              }}
-              data-testid="pause-title"
-            >
-              GAME PAUSED
-            </div>
-          </div>
-        </Html>
-      )}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -2.01, 0]} receiveShadow>
+        <planeGeometry args={[10, 10]} />
+        <meshStandardMaterial color="#0d1117" opacity={0.8} transparent />
+      </mesh>
 
       {/* Camera controls */}
       <OrbitControls
@@ -259,23 +166,121 @@ function GameScene(): JSX.Element {
 }
 
 function App(): JSX.Element {
+  const { gameState, incrementScore, resetGame, togglePause } = useGameState();
+
   return (
     <div className="app-container" data-testid="app-container">
-      <h1 data-testid="app-title">Three.js React Game</h1>
+      <h1 data-testid="app-title">🎯 Target Shooter</h1>
+      
+      {/* HUD Overlay for testing - outside canvas */}
+      <div style={{ position: "absolute", top: "60px", left: "20px", zIndex: 10, display: "flex", gap: "20px" }}>
+        <div data-testid="timer-display" style={{ background: "rgba(33, 38, 45, 0.7)", padding: "10px 20px", borderRadius: "8px", backdropFilter: "blur(10px)" }}>
+          <div style={{ color: "#7d8590", fontSize: "10px", marginBottom: "4px" }}>TIME</div>
+          <div style={{ color: gameState.timeLeft <= 10 ? "#ff4444" : "#00ff88", fontSize: "24px", fontWeight: "bold" }}>{gameState.timeLeft}s</div>
+        </div>
+        
+        <div data-testid="score-display" style={{ background: "rgba(33, 38, 45, 0.7)", padding: "10px 20px", borderRadius: "8px", backdropFilter: "blur(10px)" }}>
+          <div data-testid="score-label" style={{ color: "#7d8590", fontSize: "10px", marginBottom: "4px" }}>SCORE</div>
+          <div data-testid="score-value" style={{ color: "#00ff88", fontSize: "24px", fontWeight: "bold" }}>{gameState.score}</div>
+          {gameState.combo > 0 && <div style={{ color: "#ffa500", fontSize: "12px" }}>🔥 COMBO x{gameState.combo}</div>}
+        </div>
+        
+        <div data-testid="level-display" style={{ background: "rgba(33, 38, 45, 0.7)", padding: "10px 20px", borderRadius: "8px", backdropFilter: "blur(10px)" }}>
+          <div style={{ color: "#7d8590", fontSize: "10px", marginBottom: "4px" }}>LEVEL</div>
+          <div style={{ color: "#646cff", fontSize: "24px", fontWeight: "bold" }}>{gameState.level}</div>
+          {gameState.highScore > 0 && <div style={{ color: "#ffa500", fontSize: "10px" }}>HIGH: {gameState.highScore}</div>}
+        </div>
+      </div>
+      
+      {/* Game Status and Controls */}
+      <div style={{ position: "absolute", top: "60px", right: "20px", zIndex: 10, display: "flex", gap: "10px", alignItems: "center" }}>
+        <div data-testid="game-status" style={{ background: "rgba(33, 38, 45, 0.7)", padding: "8px 16px", borderRadius: "8px", backdropFilter: "blur(10px)", color: gameState.isPlaying && gameState.timeLeft > 0 ? "#00ff88" : "#ffa500", fontSize: "14px", fontWeight: "bold" }}>
+          {gameState.timeLeft <= 0 ? "⏱️ Time's Up!" : gameState.isPlaying ? "🎯 Active" : "⏸️ Paused"}
+        </div>
+        <button
+          onClick={togglePause}
+          data-testid="pause-button"
+          disabled={gameState.timeLeft <= 0}
+          style={{
+            background: gameState.timeLeft <= 0 ? "#666666" : gameState.isPlaying ? "#ff6b35" : "#00c851",
+            color: "white",
+            border: "none",
+            padding: "8px 16px",
+            borderRadius: "8px",
+            cursor: gameState.timeLeft <= 0 ? "not-allowed" : "pointer",
+            fontWeight: "bold",
+            fontSize: "14px",
+          }}
+        >
+          {gameState.isPlaying ? "⏸️ Pause" : "▶️ Resume"}
+        </button>
+        <button
+          onClick={resetGame}
+          data-testid="reset-button"
+          style={{
+            background: "#7c3aed",
+            color: "white",
+            border: "none",
+            padding: "8px 16px",
+            borderRadius: "8px",
+            cursor: "pointer",
+            fontWeight: "bold",
+            fontSize: "14px",
+          }}
+        >
+          🔄 Reset
+        </button>
+      </div>
+      
+      {/* Instructions */}
+      <div data-testid="instructions-text" style={{ position: "absolute", bottom: "80px", left: "50%", transform: "translateX(-50%)", zIndex: 10, background: "rgba(33, 38, 45, 0.7)", padding: "12px 20px", borderRadius: "12px", backdropFilter: "blur(10px)", color: gameState.isPlaying && gameState.timeLeft > 0 ? "#ffffff" : "#7d8590", fontSize: "16px", textAlign: "center" }}>
+        {gameState.timeLeft <= 0
+          ? `🎮 Game Over! Final Score: ${gameState.score} - Click Reset to play again`
+          : gameState.isPlaying
+          ? "🎯 Click the target to score! Build combos for bonus points!"
+          : "⏸️ Game paused - Resume to continue"}
+      </div>
+      
+      {/* Pause overlay */}
+      {!gameState.isPlaying && gameState.timeLeft > 0 && (
+        <div data-testid="pause-overlay" style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", zIndex: 20, background: "rgba(0, 0, 0, 0.85)", padding: "40px 60px", borderRadius: "20px", textAlign: "center", backdropFilter: "blur(20px)", border: "2px solid rgba(100, 108, 255, 0.5)" }}>
+          <div style={{ fontSize: "64px", marginBottom: "16px" }}>⏸️</div>
+          <div style={{ color: "#ffffff", fontSize: "28px", fontWeight: "bold" }}>GAME PAUSED</div>
+        </div>
+      )}
+      
+      {/* Game Over overlay */}
+      {gameState.timeLeft <= 0 && (
+        <div data-testid="gameover-overlay" style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", zIndex: 20, background: "rgba(0, 0, 0, 0.85)", padding: "40px 60px", borderRadius: "20px", textAlign: "center", backdropFilter: "blur(20px)", border: "2px solid rgba(255, 68, 68, 0.5)" }}>
+          <div style={{ fontSize: "64px", marginBottom: "16px" }}>🎮</div>
+          <div style={{ color: "#ffffff", fontSize: "28px", fontWeight: "bold", marginBottom: "16px" }}>GAME OVER</div>
+          <div style={{ color: "#00ff88", fontSize: "48px", fontWeight: "bold", marginBottom: "8px" }}>{gameState.score}</div>
+          <div style={{ color: "#7d8590", fontSize: "16px" }}>
+            {gameState.isNewHighScore && gameState.score > 0
+              ? "🏆 New High Score!"
+              : `High Score: ${gameState.highScore}`}
+          </div>
+        </div>
+      )}
+      
       <div
         data-testid="threejs-canvas-container"
         style={{ width: "100%", height: "600px" }}
       >
         <Canvas
           camera={{ position: [0, 2, 8], fov: 50 }}
-          style={{ background: "#0d1117" }}
+          style={{ background: "linear-gradient(135deg, #0d1117 0%, #1a1f2e 100%)" }}
           data-testid="threejs-canvas"
+          shadows
         >
-          <GameScene />
+          <GameScene 
+            gameState={gameState}
+            onTargetClick={incrementScore}
+          />
         </Canvas>
       </div>
       <p className="instructions" data-testid="app-instructions">
-        A minimal Three.js game built with @react-three/fiber and @react-three/drei
+        An immersive 3D target shooting game with combos, levels, and time pressure!
       </p>
     </div>
   );

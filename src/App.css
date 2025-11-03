@@ -140,6 +140,28 @@ html {
   color: #8b949e;
 }
 
+/* Animation for pulse effect */
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+}
+
+/* Animation for glow effect */
+@keyframes glow {
+  0%, 100% {
+    text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+  }
+  50% {
+    text-shadow: 0 0 20px rgba(0, 255, 136, 0.8), 0 0 30px rgba(0, 255, 136, 0.5);
+  }
+}
+
 @media (max-width: 900px) {
   .app-container {
     padding: 1rem;

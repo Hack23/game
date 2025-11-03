@@ -29,6 +29,10 @@ vi.mock("@react-three/drei", (): object => ({
   Html: ({ children }: { children: ReactNode }): ReactElement => (
     <div data-testid="mocked-html">{children}</div>
   ),
+  Sparkles: (): ReactElement => <div data-testid="mocked-sparkles" />,
+  Trail: ({ children }: { children: ReactNode }): ReactElement => (
+    <div data-testid="mocked-trail">{children}</div>
+  ),
 }));
 
 // Mock THREE
@@ -46,7 +50,7 @@ describe("App Component", () => {
 
   it("renders the app title with Three.js", () => {
     render(<App />);
-    expect(screen.getByTestId("app-title")).toHaveTextContent("Three.js React Game");
+    expect(screen.getByTestId("app-title")).toHaveTextContent("Target Shooter");
   });
 
   it("renders the Three.js canvas container", () => {
@@ -57,21 +61,21 @@ describe("App Component", () => {
   it("renders app instructions", () => {
     render(<App />);
     expect(screen.getByTestId("app-instructions")).toHaveTextContent(
-      "A minimal Three.js game built with @react-three/fiber and @react-three/drei"
+      "An immersive 3D target shooting game with combos, levels, and time pressure!"
     );
   });
 
   it("renders the score display", () => {
     render(<App />);
-    const scoreDisplays = screen.getAllByTestId("mocked-html");
-    expect(scoreDisplays.length).toBeGreaterThan(0);
+    expect(screen.getByTestId("score-display")).toBeInTheDocument();
+    expect(screen.getByTestId("score-label")).toHaveTextContent("SCORE");
+    expect(screen.getByTestId("score-value")).toBeInTheDocument();
   });
 
   it("renders game controls", () => {
     render(<App />);
-    // The controls are rendered inside Html components which are mocked
-    const htmlElements = screen.getAllByTestId("mocked-html");
-    expect(htmlElements.length).toBeGreaterThan(0);
+    expect(screen.getByTestId("pause-button")).toBeInTheDocument();
+    expect(screen.getByTestId("reset-button")).toBeInTheDocument();
   });
 
   it("renders the target sphere", () => {
