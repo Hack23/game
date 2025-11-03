@@ -7,6 +7,10 @@ import { useGameState, type GameState } from "./hooks/useGameState";
 import { useAudioManager } from "./hooks/useAudioManager";
 import "./App.css";
 
+// Constants for game mechanics
+const PARTICLE_EXPLOSION_DURATION_MS = 600; // Duration of particle explosion animation in milliseconds
+const HIT_AREA_MULTIPLIER = 2.5; // Multiplier for invisible hit area to make clicking easier
+
 /**
  * Generate particle positions and colors for explosion effect
  * Called once outside the component render cycle
@@ -60,7 +64,7 @@ function ParticleExplosion({ position, active }: ParticleExplosionProps): JSX.El
     }
 
     const elapsed = state.clock.elapsedTime - startTimeRef.current;
-    const duration = 0.6;
+    const duration = PARTICLE_EXPLOSION_DURATION_MS / 1000; // Convert ms to seconds
 
     if (elapsed < duration) {
       const scale = 1 + elapsed * 8;
@@ -69,7 +73,7 @@ function ParticleExplosion({ position, active }: ParticleExplosionProps): JSX.El
       const geometry = particlesRef.current.geometry;
       const positionAttr = geometry.attributes.position;
       
-      if (positionAttr && positionAttr.array) {
+      if (positionAttr?.array) {
         const positions = positionAttr.array as Float32Array;
         
         for (let i = 1; i < positions.length; i += 3) {
@@ -127,6 +131,13 @@ function TargetSphere({ position, onClick, isActive, size }: TargetSphereProps):
   const middleRingRef = useRef<THREE.Mesh>(null);
   const [hovered, setHovered] = useState(false);
   const [pulseScale, setPulseScale] = useState(1);
+
+  // Cleanup cursor on unmount
+  useEffect(() => {
+    return (): void => {
+      document.body.style.cursor = 'default';
+    };
+  }, []);
 
   // Enhanced rotation and pulse animation
   useFrame((state) => {
@@ -234,7 +245,7 @@ function TargetSphere({ position, onClick, isActive, size }: TargetSphereProps):
         onPointerOut={handlePointerOut}
         visible={false}
       >
-        <sphereGeometry args={[size * 2.5, 16, 16]} />
+        <sphereGeometry args={[size * HIT_AREA_MULTIPLIER, 16, 16]} />
         <meshBasicMaterial transparent opacity={0} />
       </mesh>
       
@@ -296,7 +307,7 @@ function GameScene({ gameState, onTargetClick, showExplosion, explosionPosition 
     shakeTimeRef.current = 0.3; // Shake for 300ms
   }, [gameState.isPlaying, gameState.timeLeft, onTargetClick]);
 
-  // Camera shake effect using useThree
+  // Camera shake effect using state.camera from useFrame
   useFrame((state, delta) => {
     const camera = state.camera;
     
@@ -412,7 +423,7 @@ function App(): JSX.Element {
     // Trigger explosion effect
     setExplosionPosition([gameState.playerX, gameState.playerY, gameState.playerZ]);
     setShowExplosion(true);
-    setTimeout(() => setShowExplosion(false), 600);
+    setTimeout(() => setShowExplosion(false), PARTICLE_EXPLOSION_DURATION_MS);
     
     incrementScore();
     if (!isMuted) {

@@ -158,6 +158,11 @@ function generateToneDataURL(frequency: number, duration: number, amplitude = 0.
   const buffer = audioContext.createBuffer(1, numSamples, sampleRate);
   const channelData = buffer.getChannelData(0);
 
+  // Cache angular frequency multipliers for performance
+  const omega = 2 * Math.PI * frequency;
+  const omega2 = omega * 2;
+  const omega3 = omega * 3;
+
   // Generate a sine wave with envelope and harmonics for richer sound
   for (let i = 0; i < numSamples; i++) {
     const t = i / sampleRate;
@@ -179,9 +184,9 @@ function generateToneDataURL(frequency: number, duration: number, amplitude = 0.
     }
     
     // Add fundamental and harmonics for richer sound
-    const fundamental = Math.sin(2 * Math.PI * frequency * t);
-    const harmonic2 = Math.sin(2 * Math.PI * frequency * 2 * t) * 0.3;
-    const harmonic3 = Math.sin(2 * Math.PI * frequency * 3 * t) * 0.15;
+    const fundamental = Math.sin(omega * t);
+    const harmonic2 = Math.sin(omega2 * t) * 0.3;
+    const harmonic3 = Math.sin(omega3 * t) * 0.15;
     
     channelData[i] = (fundamental + harmonic2 + harmonic3) * envelope * amplitude;
   }
