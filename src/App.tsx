@@ -1,9 +1,10 @@
 import { Canvas, ThreeEvent, useFrame } from "@react-three/fiber";
 import { OrbitControls, Sparkles, Trail } from "@react-three/drei";
-import { useRef, useState, useCallback } from "react";
+import { useRef, useState, useCallback, useEffect } from "react";
 import type { JSX } from "react";
 import * as THREE from "three";
 import { useGameState, type GameState } from "./hooks/useGameState";
+import { useAudioManager } from "./hooks/useAudioManager";
 import "./App.css";
 
 interface TargetSphereProps {
@@ -17,13 +18,12 @@ function TargetSphere({ position, onClick, isActive, size }: TargetSphereProps):
   const meshRef = useRef<THREE.Mesh>(null);
   const [hovered, setHovered] = useState(false);
 
-  // Animate target - rotate and float (only when active)
-  useFrame((state) => {
+  // Only rotate the target - position is controlled by parent
+  useFrame(() => {
     if (!isActive || !meshRef.current) return;
     
     meshRef.current.rotation.y += 0.02;
-    meshRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 2) * 0.1;
-    meshRef.current.position.y = position[1] + Math.sin(state.clock.elapsedTime * 3) * 0.1;
+    meshRef.current.rotation.x += 0.01;
   });
 
   const handleClick = useCallback((e: ThreeEvent<MouseEvent>) => {
@@ -167,6 +167,59 @@ function GameScene({ gameState, onTargetClick }: GameSceneProps): JSX.Element {
 
 function App(): JSX.Element {
   const { gameState, incrementScore, resetGame, togglePause } = useGameState();
+  const audioManager = useAudioManager();
+  const [isMuted, setIsMuted] = useState(false);
+  const prevLevelRef = useRef(gameState.level);
+  const prevComboRef = useRef(gameState.combo);
+
+  // Play background music when game starts
+  useEffect(() => {
+    if (gameState.isPlaying && gameState.timeLeft > 0 && !isMuted) {
+      audioManager.startBackgroundMusic();
+    } else {
+      audioManager.stopBackgroundMusic();
+    }
+
+    return (): void => {
+      audioManager.stopBackgroundMusic();
+    };
+  }, [gameState.isPlaying, gameState.timeLeft, isMuted, audioManager]);
+
+  // Play game over sound
+  useEffect(() => {
+    if (gameState.timeLeft === 0 && !isMuted) {
+      audioManager.playGameOverSound();
+    }
+  }, [gameState.timeLeft, isMuted, audioManager]);
+
+  // Play level up sound
+  useEffect(() => {
+    if (gameState.level > prevLevelRef.current && !isMuted) {
+      audioManager.playLevelUpSound();
+    }
+    prevLevelRef.current = gameState.level;
+  }, [gameState.level, isMuted, audioManager]);
+
+  // Play combo sound (on every 5th combo)
+  useEffect(() => {
+    if (gameState.combo > 0 && gameState.combo % 5 === 0 && gameState.combo !== prevComboRef.current && !isMuted) {
+      audioManager.playComboSound();
+    }
+    prevComboRef.current = gameState.combo;
+  }, [gameState.combo, isMuted, audioManager]);
+
+  const handleTargetClick = useCallback(() => {
+    incrementScore();
+    if (!isMuted) {
+      audioManager.playHitSound();
+    }
+  }, [incrementScore, isMuted, audioManager]);
+
+  const handleMuteToggle = useCallback(() => {
+    const newMuted = !isMuted;
+    setIsMuted(newMuted);
+    audioManager.setMuted(newMuted);
+  }, [isMuted, audioManager]);
 
   return (
     <div className="app-container" data-testid="app-container">
@@ -230,6 +283,22 @@ function App(): JSX.Element {
         >
           🔄 Reset
         </button>
+        <button
+          onClick={handleMuteToggle}
+          data-testid="mute-button"
+          style={{
+            background: isMuted ? "#666666" : "#10b981",
+            color: "white",
+            border: "none",
+            padding: "8px 16px",
+            borderRadius: "8px",
+            cursor: "pointer",
+            fontWeight: "bold",
+            fontSize: "14px",
+          }}
+        >
+          {isMuted ? "🔇 Unmute" : "🔊 Mute"}
+        </button>
       </div>
       
       {/* Instructions */}
@@ -275,7 +344,7 @@ function App(): JSX.Element {
         >
           <GameScene 
             gameState={gameState}
-            onTargetClick={incrementScore}
+            onTargetClick={handleTargetClick}
           />
         </Canvas>
       </div>
