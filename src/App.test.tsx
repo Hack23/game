@@ -42,6 +42,19 @@ vi.mock("three", () => ({
   },
 }));
 
+// Mock useAudioManager hook to avoid AudioContext issues in tests
+vi.mock("./hooks/useAudioManager", (): object => ({
+  useAudioManager: (): object => ({
+    playHitSound: vi.fn(),
+    playComboSound: vi.fn(),
+    playLevelUpSound: vi.fn(),
+    playGameOverSound: vi.fn(),
+    startBackgroundMusic: vi.fn(),
+    stopBackgroundMusic: vi.fn(),
+    setMuted: vi.fn(),
+  }),
+}));
+
 describe("App Component", () => {
   it("renders the app container", () => {
     render(<App />);
@@ -76,6 +89,7 @@ describe("App Component", () => {
     render(<App />);
     expect(screen.getByTestId("pause-button")).toBeInTheDocument();
     expect(screen.getByTestId("reset-button")).toBeInTheDocument();
+    expect(screen.getByTestId("mute-button")).toBeInTheDocument();
   });
 
   it("renders the target sphere", () => {
