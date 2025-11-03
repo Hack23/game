@@ -22,6 +22,7 @@ export interface GameState {
   highScore: number;
   targetSize: number;
   level: number;
+  isNewHighScore: boolean;
 }
 
 export interface UseGameStateReturn {
@@ -48,10 +49,23 @@ export function useGameState(initialState?: Partial<GameState>): UseGameStateRet
     highScore: initialState?.highScore ?? 0,
     targetSize: initialState?.targetSize ?? BASE_TARGET_SIZE,
     level: initialState?.level ?? 1,
+    isNewHighScore: initialState?.isNewHighScore ?? false,
   });
 
   const comboTimerRef = useRef<NodeJS.Timeout | null>(null);
   const gameTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Cleanup timers on unmount
+  useEffect(() => {
+    return (): void => {
+      if (comboTimerRef.current !== null) {
+        clearTimeout(comboTimerRef.current);
+      }
+      if (gameTimerRef.current !== null) {
+        clearInterval(gameTimerRef.current);
+      }
+    };
+  }, []);
 
   // Game timer effect
   useEffect(() => {
@@ -60,11 +74,13 @@ export function useGameState(initialState?: Partial<GameState>): UseGameStateRet
         setGameState((prev) => {
           const newTimeLeft = prev.timeLeft - 1;
           if (newTimeLeft <= 0) {
+            const isNewHigh = prev.score > prev.highScore;
             return {
               ...prev,
               timeLeft: 0,
               isPlaying: false,
               highScore: Math.max(prev.highScore, prev.score),
+              isNewHighScore: isNewHigh,
             };
           }
           return { ...prev, timeLeft: newTimeLeft };
@@ -80,7 +96,7 @@ export function useGameState(initialState?: Partial<GameState>): UseGameStateRet
         clearInterval(gameTimerRef.current);
       }
     };
-  }, [gameState.isPlaying, gameState.timeLeft]);
+  }, [gameState.isPlaying]);
 
   const incrementScore = useCallback(() => {
     setGameState((prev) => {
@@ -116,7 +132,7 @@ export function useGameState(initialState?: Partial<GameState>): UseGameStateRet
     }, COMBO_TIMEOUT);
   }, []);
 
-  const resetGame = useCallback(() => {
+  const resetGame = useCallback((): void => {
     if (comboTimerRef.current !== null) {
       clearTimeout(comboTimerRef.current);
     }
@@ -135,6 +151,7 @@ export function useGameState(initialState?: Partial<GameState>): UseGameStateRet
       highScore: prev.highScore,
       targetSize: BASE_TARGET_SIZE,
       level: 1,
+      isNewHighScore: false,
     }));
   }, []);
 

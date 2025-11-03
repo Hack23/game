@@ -25,6 +25,7 @@ describe("useGameState Hook", () => {
     expect(result.current.gameState.highScore).toBe(0);
     expect(result.current.gameState.targetSize).toBe(0.5);
     expect(result.current.gameState.level).toBe(1);
+    expect(result.current.gameState.isNewHighScore).toBe(false);
   });
 
   it("initializes with custom values", () => {
@@ -161,6 +162,7 @@ describe("useGameState Hook", () => {
     expect(result.current.gameState.timeLeft).toBe(0);
     expect(result.current.gameState.isPlaying).toBe(false);
     expect(result.current.gameState.highScore).toBe(score);
+    expect(result.current.gameState.isNewHighScore).toBe(true);
   });
 
   it("does not decrement time when paused", () => {
@@ -195,6 +197,7 @@ describe("useGameState Hook", () => {
     expect(result.current.gameState.isPlaying).toBe(false);
     const highScore = result.current.gameState.highScore;
     expect(highScore).toBeGreaterThan(0);
+    expect(result.current.gameState.isNewHighScore).toBe(true);
     
     act(() => {
       result.current.resetGame();
@@ -210,6 +213,7 @@ describe("useGameState Hook", () => {
     expect(result.current.gameState.highScore).toBe(highScore);
     expect(result.current.gameState.level).toBe(1);
     expect(result.current.gameState.targetSize).toBe(0.5);
+    expect(result.current.gameState.isNewHighScore).toBe(false);
   });
 
   it("toggles pause state", () => {

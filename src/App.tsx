@@ -17,13 +17,13 @@ function TargetSphere({ position, onClick, isActive, size }: TargetSphereProps):
   const meshRef = useRef<THREE.Mesh>(null);
   const [hovered, setHovered] = useState(false);
 
-  // Animate target - rotate and float
+  // Animate target - rotate and float (only when active)
   useFrame((state) => {
-    if (meshRef.current && isActive) {
-      meshRef.current.rotation.y += 0.02;
-      meshRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 2) * 0.1;
-      meshRef.current.position.y = position[1] + Math.sin(state.clock.elapsedTime * 3) * 0.1;
-    }
+    if (!isActive || !meshRef.current) return;
+    
+    meshRef.current.rotation.y += 0.02;
+    meshRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 2) * 0.1;
+    meshRef.current.position.y = position[1] + Math.sin(state.clock.elapsedTime * 3) * 0.1;
   });
 
   const handleClick = useCallback((e: ThreeEvent<MouseEvent>) => {
@@ -465,7 +465,7 @@ function GameScene(): JSX.Element {
               {gameState.score}
             </div>
             <div style={{ color: "#7d8590", fontSize: "16px" }}>
-              {gameState.score === gameState.highScore && gameState.score > 0
+              {gameState.isNewHighScore && gameState.score > 0
                 ? "🏆 New High Score!"
                 : `High Score: ${gameState.highScore}`}
             </div>
