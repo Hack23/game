@@ -67,15 +67,15 @@ describe("App Component", () => {
 
   it("renders the score display", () => {
     render(<App />);
-    const scoreDisplays = screen.getAllByTestId("mocked-html");
-    expect(scoreDisplays.length).toBeGreaterThan(0);
+    expect(screen.getByTestId("score-display")).toBeInTheDocument();
+    expect(screen.getByTestId("score-label")).toHaveTextContent("SCORE");
+    expect(screen.getByTestId("score-value")).toBeInTheDocument();
   });
 
   it("renders game controls", () => {
     render(<App />);
-    // The controls are rendered inside Html components which are mocked
-    const htmlElements = screen.getAllByTestId("mocked-html");
-    expect(htmlElements.length).toBeGreaterThan(0);
+    expect(screen.getByTestId("pause-button")).toBeInTheDocument();
+    expect(screen.getByTestId("reset-button")).toBeInTheDocument();
   });
 
   it("renders the target sphere", () => {
