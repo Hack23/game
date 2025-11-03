@@ -69,13 +69,13 @@ function ParticleExplosion({ position, active }: ParticleExplosionProps): JSX.El
       const geometry = particlesRef.current.geometry;
       const positionAttr = geometry.attributes.position;
       
-      if (positionAttr) {
+      if (positionAttr && positionAttr.array) {
         const positions = positionAttr.array as Float32Array;
         
-        for (let i = 0; i < positions.length; i += 3) {
-          const current = positions[i + 1];
+        for (let i = 1; i < positions.length; i += 3) {
+          const current = positions[i];
           if (current !== undefined) {
-            positions[i + 1] = current + 0.02; // particles rise up
+            positions[i] = current + 0.02; // particles rise up (Y coordinate)
           }
         }
         positionAttr.needsUpdate = true;
@@ -96,16 +96,10 @@ function ParticleExplosion({ position, active }: ParticleExplosionProps): JSX.El
       <bufferGeometry>
         <bufferAttribute
           attach="attributes-position"
-          count={particleData.particleCount}
-          array={particleData.positions}
-          itemSize={3}
           args={[particleData.positions, 3]}
         />
         <bufferAttribute
           attach="attributes-color"
-          count={particleData.particleCount}
-          array={particleData.colors}
-          itemSize={3}
           args={[particleData.colors, 3]}
         />
       </bufferGeometry>
@@ -293,9 +287,8 @@ interface GameSceneProps {
 }
 
 function GameScene({ gameState, onTargetClick, showExplosion, explosionPosition }: GameSceneProps): JSX.Element {
-  const cameraRef = useRef<THREE.Camera>(null);
-  const basePosition = useRef<THREE.Vector3>(new THREE.Vector3(0, 2, 8));
   const shakeTimeRef = useRef(0);
+  const basePositionRef = useRef(new THREE.Vector3(0, 2, 8));
 
   const handleTargetClick = useCallback(() => {
     if (!gameState.isPlaying || gameState.timeLeft <= 0) return;
@@ -303,16 +296,18 @@ function GameScene({ gameState, onTargetClick, showExplosion, explosionPosition 
     shakeTimeRef.current = 0.3; // Shake for 300ms
   }, [gameState.isPlaying, gameState.timeLeft, onTargetClick]);
 
-  // Camera shake effect
-  useFrame((_state, delta) => {
-    if (shakeTimeRef.current > 0 && cameraRef.current) {
+  // Camera shake effect using useThree
+  useFrame((state, delta) => {
+    const camera = state.camera;
+    
+    if (shakeTimeRef.current > 0) {
       shakeTimeRef.current -= delta;
       const intensity = shakeTimeRef.current * 0.3;
-      cameraRef.current.position.x = basePosition.current.x + (Math.random() - 0.5) * intensity;
-      cameraRef.current.position.y = basePosition.current.y + (Math.random() - 0.5) * intensity;
-      cameraRef.current.position.z = basePosition.current.z + (Math.random() - 0.5) * intensity;
-    } else if (cameraRef.current && shakeTimeRef.current <= 0) {
-      cameraRef.current.position.lerp(basePosition.current, 0.1);
+      camera.position.x = basePositionRef.current.x + (Math.random() - 0.5) * intensity;
+      camera.position.y = basePositionRef.current.y + (Math.random() - 0.5) * intensity;
+      camera.position.z = basePositionRef.current.z + (Math.random() - 0.5) * intensity;
+    } else if (shakeTimeRef.current <= 0) {
+      camera.position.lerp(basePositionRef.current, 0.1);
     }
   });
 
@@ -320,9 +315,6 @@ function GameScene({ gameState, onTargetClick, showExplosion, explosionPosition 
 
   return (
     <>
-      {/* Store camera reference for shake effect */}
-      <primitive object={cameraRef} />
-      
       {/* Enhanced Lighting */}
       <ambientLight intensity={0.4} />
       <pointLight position={[10, 10, 10]} intensity={1.5} color="#ffffff" castShadow />

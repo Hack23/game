@@ -135,11 +135,6 @@ html {
   cursor: crosshair;
 }
 
-/* Custom crosshair cursor */
-.app-container canvas:hover {
-  cursor: crosshair;
-}
-
 .instructions {
   margin: 8px 0;
   font-size: 14px;
