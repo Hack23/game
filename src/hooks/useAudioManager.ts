@@ -167,7 +167,7 @@ function generateToneDataURL(frequency: number, duration: number, amplitude = 0.
     const sustain = 0.7;
     const release = 0.2;
     
-    let envelope = 1;
+    let envelope;
     if (t < attack) {
       envelope = t / attack;
     } else if (t < attack + decay) {
