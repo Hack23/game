@@ -12,6 +12,14 @@ const BASE_TARGET_SIZE = 0.5;
 const MIN_TARGET_SIZE = 0.25; // Made smaller for increased difficulty
 const BASE_SPEED = 0.02; // Base speed for ball movement
 
+/**
+ * Generate a random velocity for ball movement
+ * @returns Random velocity value
+ */
+function generateRandomVelocity(): number {
+  return (Math.random() - 0.5) * BASE_SPEED * 2;
+}
+
 export interface GameState {
   score: number;
   playerX: number;
@@ -42,11 +50,6 @@ export interface UseGameStateReturn {
  * @returns Game state and control functions
  */
 export function useGameState(initialState?: Partial<GameState>): UseGameStateReturn {
-  // Helper to generate random velocity
-  const generateRandomVelocity = (): number => {
-    return (Math.random() - 0.5) * BASE_SPEED * 2;
-  };
-
   const [gameState, setGameState] = useState<GameState>(() => ({
     score: initialState?.score ?? 0,
     playerX: initialState?.playerX ?? 0,
@@ -185,11 +188,6 @@ export function useGameState(initialState?: Partial<GameState>): UseGameStateRet
   }, [gameState.isPlaying, gameState.timeLeft]);
 
   const incrementScore = useCallback(() => {
-    // Helper to generate random velocity
-    const generateRandomVelocity = (): number => {
-      return (Math.random() - 0.5) * BASE_SPEED * 2;
-    };
-
     setGameState((prev) => {
       const newCombo = prev.combo + 1;
       const comboBonus = Math.floor(newCombo / 5); // Bonus point every 5 combo
@@ -227,11 +225,6 @@ export function useGameState(initialState?: Partial<GameState>): UseGameStateRet
   }, []);
 
   const resetGame = useCallback((): void => {
-    // Helper to generate random velocity
-    const generateRandomVelocity = (): number => {
-      return (Math.random() - 0.5) * BASE_SPEED * 2;
-    };
-
     if (comboTimerRef.current !== null) {
       clearTimeout(comboTimerRef.current);
     }

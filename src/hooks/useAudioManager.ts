@@ -134,6 +134,13 @@ export function useAudioManager(): AudioManager {
 }
 
 /**
+ * Get AudioContext constructor (handles browser compatibility)
+ */
+function getAudioContext(): typeof AudioContext {
+  return window.AudioContext || (window as typeof window & { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+}
+
+/**
  * Generate a simple tone as a data URL for use with Howler
  * @param frequency - Frequency in Hz
  * @param duration - Duration in seconds
@@ -141,7 +148,8 @@ export function useAudioManager(): AudioManager {
  */
 function generateToneDataURL(frequency: number, duration: number): string {
   // Create an AudioContext
-  const audioContext = new (window.AudioContext || (window as typeof window & { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
+  const AudioContextConstructor = getAudioContext();
+  const audioContext = new AudioContextConstructor();
   const sampleRate = audioContext.sampleRate;
   const numSamples = Math.floor(sampleRate * duration);
 
