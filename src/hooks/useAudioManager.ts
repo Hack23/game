@@ -35,34 +35,34 @@ export function useAudioManager(): AudioManager {
 
   // Generate simple tones using Web Audio API for game sounds
   useEffect(() => {
-    // Create hit sound - short high-pitched beep
+    // Create hit sound - punchy beep with harmonics
     soundsRef.current.hit = new Howl({
-      src: [generateToneDataURL(440, 0.1)], // A4 note, 100ms
-      volume: 0.3,
+      src: [generateToneDataURL(880, 0.12, 0.8)], // A5 note, 120ms, louder
+      volume: 0.7,
     });
 
-    // Create combo sound - ascending tone
+    // Create combo sound - bright ascending tone
     soundsRef.current.combo = new Howl({
-      src: [generateToneDataURL(880, 0.15)], // A5 note, 150ms
-      volume: 0.4,
+      src: [generateToneDataURL(1320, 0.2, 0.9)], // E6 note, 200ms
+      volume: 0.8,
     });
 
-    // Create level up sound - triumphant tone
+    // Create level up sound - triumphant chord-like tone
     soundsRef.current.levelUp = new Howl({
-      src: [generateToneDataURL(660, 0.3)], // E5 note, 300ms
-      volume: 0.5,
+      src: [generateToneDataURL(784, 0.4, 1)], // G5 note, 400ms
+      volume: 0.85,
     });
 
-    // Create game over sound - descending tone
+    // Create game over sound - deep descending tone
     soundsRef.current.gameOver = new Howl({
-      src: [generateToneDataURL(220, 0.5)], // A3 note, 500ms
-      volume: 0.4,
+      src: [generateToneDataURL(196, 0.6, 0.8)], // G3 note, 600ms
+      volume: 0.7,
     });
 
-    // Create background ambient sound - low frequency hum
+    // Create background ambient sound - rhythmic pulse
     soundsRef.current.background = new Howl({
-      src: [generateToneDataURL(110, 2)], // A2 note, 2s looped
-      volume: 0.1,
+      src: [generateToneDataURL(110, 1.5, 0.4)], // A2 note, 1.5s looped
+      volume: 0.2,
       loop: true,
     });
 
@@ -144,9 +144,10 @@ function getAudioContext(): typeof AudioContext {
  * Generate a simple tone as a data URL for use with Howler
  * @param frequency - Frequency in Hz
  * @param duration - Duration in seconds
+ * @param amplitude - Amplitude multiplier (0-1)
  * @returns Data URL containing the audio
  */
-function generateToneDataURL(frequency: number, duration: number): string {
+function generateToneDataURL(frequency: number, duration: number, amplitude = 0.5): string {
   // Create an AudioContext
   const AudioContextConstructor = getAudioContext();
   const audioContext = new AudioContextConstructor();
@@ -157,12 +158,37 @@ function generateToneDataURL(frequency: number, duration: number): string {
   const buffer = audioContext.createBuffer(1, numSamples, sampleRate);
   const channelData = buffer.getChannelData(0);
 
-  // Generate a sine wave with envelope for smoother sound
+  // Cache angular frequency multipliers for performance
+  const omega = 2 * Math.PI * frequency;
+  const omega2 = omega * 2;
+  const omega3 = omega * 3;
+
+  // Generate a sine wave with envelope and harmonics for richer sound
   for (let i = 0; i < numSamples; i++) {
     const t = i / sampleRate;
-    // Apply ADSR envelope (simple fade in/out)
-    const envelope = Math.min(1, t * 10) * Math.max(0, 1 - (t / duration) * 2);
-    channelData[i] = Math.sin(2 * Math.PI * frequency * t) * envelope * 0.5;
+    // Apply ADSR envelope (attack-decay-sustain-release)
+    const attack = 0.02;
+    const decay = 0.1;
+    const sustain = 0.7;
+    const release = 0.2;
+    
+    let envelope;
+    if (t < attack) {
+      envelope = t / attack;
+    } else if (t < attack + decay) {
+      envelope = 1 - ((t - attack) / decay) * (1 - sustain);
+    } else if (t < duration - release) {
+      envelope = sustain;
+    } else {
+      envelope = sustain * (1 - (t - (duration - release)) / release);
+    }
+    
+    // Add fundamental and harmonics for richer sound
+    const fundamental = Math.sin(omega * t);
+    const harmonic2 = Math.sin(omega2 * t) * 0.3;
+    const harmonic3 = Math.sin(omega3 * t) * 0.15;
+    
+    channelData[i] = (fundamental + harmonic2 + harmonic3) * envelope * amplitude;
   }
 
   // Convert buffer to WAV format data URL

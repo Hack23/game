@@ -40,6 +40,10 @@ vi.mock("three", () => ({
   default: {
     Mesh: vi.fn(),
   },
+  Vector3: vi.fn().mockImplementation(function(this: object, x = 0, y = 0, z = 0) {
+    return { x, y, z };
+  }),
+  AdditiveBlending: 2,
 }));
 
 // Mock useAudioManager hook to avoid AudioContext issues in tests
