@@ -75,7 +75,7 @@ export function useGameState(initialState?: Partial<GameState>): UseGameStateRet
       gameTimerRef.current = null;
     }
 
-    return () => {
+    return (): void => {
       if (gameTimerRef.current !== null) {
         clearInterval(gameTimerRef.current);
       }
