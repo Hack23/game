@@ -18,6 +18,13 @@
       "description": "Provides access to GitHub repository data, issues, PRs, and workflows",
       "disabled": false
     },
+    "sequential-thinking": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ]
+    },
     "git": {
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-git", "--repository", "/workspaces/game"],
