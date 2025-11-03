@@ -70,6 +70,9 @@ export function useGameState(initialState?: Partial<GameState>): UseGameStateRet
   // Game timer effect
   useEffect(() => {
     if (gameState.isPlaying && gameState.timeLeft > 0) {
+      if (gameTimerRef.current !== null) {
+        clearInterval(gameTimerRef.current);
+      }
       gameTimerRef.current = setInterval(() => {
         setGameState((prev) => {
           const newTimeLeft = prev.timeLeft - 1;
@@ -96,7 +99,7 @@ export function useGameState(initialState?: Partial<GameState>): UseGameStateRet
         clearInterval(gameTimerRef.current);
       }
     };
-  }, [gameState.isPlaying]);
+  }, [gameState.isPlaying, gameState.timeLeft]);
 
   const incrementScore = useCallback(() => {
     setGameState((prev) => {
