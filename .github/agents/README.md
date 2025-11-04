@@ -64,12 +64,26 @@ The coding agent will automatically apply the specialized knowledge and guidelin
 
 ## Agent Configuration
 
-Each agent is configured with:
-- **name:** Unique identifier for the agent
-- **description:** Brief summary of the agent's expertise
-- **prompt:** Detailed instructions and guidelines for the agent
+Each agent is configured with YAML frontmatter containing:
+- **name:** Unique identifier for the agent (lowercase with hyphens)
+- **description:** Brief summary of the agent's expertise (max 200 characters)
+- **tools:** Array of tools the agent can use (e.g., `["view", "edit", "create", "bash"]`)
+
+The agent's instructions and guidelines are provided in the markdown body after the frontmatter.
 
 Agents follow the project's coding standards defined in `.github/copilot-instructions.md` and add specialized domain knowledge on top.
+
+### Example Agent Structure
+
+```yaml
+---
+name: agent-name
+description: Brief description of agent expertise
+tools: ["view", "edit", "create", "bash"]
+---
+
+Agent instructions and guidelines go here in the markdown body...
+```
 
 ## More Information
 
