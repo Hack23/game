@@ -57,6 +57,7 @@ export function useAudioManager(): AudioManager {
       // Create hit sound - punchy beep with harmonics
       soundsRef.current.hit = new Howl({
         src: [generateToneDataURL(880, 0.12, 0.8)], // A5 note, 120ms, louder
+        format: ['wav'],
         volume: 0.7,
         onloaderror: (_id, error) => {
           console.error('Failed to load hit sound:', error);
@@ -66,6 +67,7 @@ export function useAudioManager(): AudioManager {
       // Create combo sound - bright ascending tone
       soundsRef.current.combo = new Howl({
         src: [generateToneDataURL(1320, 0.2, 0.9)], // E6 note, 200ms
+        format: ['wav'],
         volume: 0.8,
         onloaderror: (_id, error) => {
           console.error('Failed to load combo sound:', error);
@@ -75,6 +77,7 @@ export function useAudioManager(): AudioManager {
       // Create level up sound - triumphant chord-like tone
       soundsRef.current.levelUp = new Howl({
         src: [generateToneDataURL(784, 0.4, 1)], // G5 note, 400ms
+        format: ['wav'],
         volume: 0.85,
         onloaderror: (_id, error) => {
           console.error('Failed to load level up sound:', error);
@@ -84,6 +87,7 @@ export function useAudioManager(): AudioManager {
       // Create game over sound - deep descending tone
       soundsRef.current.gameOver = new Howl({
         src: [generateToneDataURL(196, 0.6, 0.8)], // G3 note, 600ms
+        format: ['wav'],
         volume: 0.7,
         onloaderror: (_id, error) => {
           console.error('Failed to load game over sound:', error);
@@ -93,6 +97,7 @@ export function useAudioManager(): AudioManager {
       // Create background ambient sound - rhythmic pulse
       soundsRef.current.background = new Howl({
         src: [generateToneDataURL(110, 1.5, 0.4)], // A2 note, 1.5s looped
+        format: ['wav'],
         volume: 0.2,
         loop: true,
         onloaderror: (_id, error) => {

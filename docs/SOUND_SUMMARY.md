@@ -36,6 +36,7 @@ The sound system works in all modern browsers:
 - Proper Web Audio API with HTML5 Audio fallback
 - Handles browser autoplay restrictions correctly
 - No external audio files to load (procedurally generated)
+- Explicit format declaration for data URL audio sources
 
 ### ✅ Sound Effects: PERFECT FOR GAME
 
@@ -179,6 +180,27 @@ npm run coverage
 The sound integration in this game is **production-ready** and demonstrates best practices for web game audio. The use of Howler.js combined with procedurally generated sounds creates a robust, performant, and browser-compatible audio system.
 
 **No changes are required.** The system works perfectly in all modern browsers and provides excellent audio feedback that enhances the game experience.
+
+---
+
+## Recent Updates
+
+### 2025-11-04: Chrome Codec Compatibility Fix
+
+**Issue**: Chrome was reporting "No codec support for selected audio sources" errors when loading dynamically generated audio.
+
+**Root Cause**: Howler.js requires explicit format declaration when using data URLs (blob URLs) since it cannot infer format from file extensions.
+
+**Fix**: Added `format: ['wav']` parameter to all Howl instances in `src/hooks/useAudioManager.ts`. This explicitly tells Howler.js that the data URLs contain WAV format audio.
+
+**Impact**: 
+- ✅ Resolves codec errors in Chrome and all Chromium-based browsers
+- ✅ Maintains full backward compatibility
+- ✅ No changes to existing functionality
+- ✅ All 46 tests continue to pass
+
+**Files Modified**: 
+- `src/hooks/useAudioManager.ts` - Added format parameter to 5 Howl instances
 
 ---
 
