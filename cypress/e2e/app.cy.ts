@@ -91,4 +91,29 @@ describe("App E2E", () => {
     cy.get("[data-testid=mute-button]").click();
     cy.get("[data-testid=mute-button]").should("contain", "Mute");
   });
+
+  it("can adjust volume with slider", () => {
+    cy.visit("/");
+    
+    // Check volume slider exists
+    cy.get("[data-testid=volume-slider]").should("exist");
+    
+    // The slider should show 100% initially
+    cy.contains("100%").should("exist");
+    
+    // Set volume to 50%
+    cy.get("[data-testid=volume-slider]")
+      .invoke("val", "0.5")
+      .trigger("change", { force: true });
+    
+    // Verify the volume display shows 50%
+    cy.contains("50%").should("exist");
+    
+    // Set volume to 0%
+    cy.get("[data-testid=volume-slider]")
+      .invoke("val", "0")
+      .trigger("change", { force: true });
+    
+    cy.contains("0%").should("exist");
+  });
 });

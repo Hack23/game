@@ -9,6 +9,8 @@ interface AudioManager {
   startBackgroundMusic: () => void;
   stopBackgroundMusic: () => void;
   setMuted: (muted: boolean) => void;
+  setVolume: (volume: number) => void;
+  getVolume: () => number;
 }
 
 /**
@@ -32,6 +34,7 @@ export function useAudioManager(): AudioManager {
   });
 
   const isMutedRef = useRef(false);
+  const volumeRef = useRef(1.0); // Default volume at 100%
 
   // Generate simple tones using Web Audio API for game sounds
   useEffect(() => {
@@ -82,7 +85,7 @@ export function useAudioManager(): AudioManager {
         },
       });
 
-      console.log('✓ All sounds initialized successfully');
+      console.debug('✓ All sounds initialized successfully');
     } catch (error) {
       console.error('Error initializing audio:', error);
     }
@@ -163,6 +166,23 @@ export function useAudioManager(): AudioManager {
     }
   }, []);
 
+  const setVolume = useCallback((volume: number): void => {
+    // Clamp volume between 0 and 1
+    const clampedVolume = Math.max(0, Math.min(1, volume));
+    volumeRef.current = clampedVolume;
+    
+    // Update volume for all sounds
+    Object.values(soundsRef.current).forEach((sound) => {
+      if (sound !== null) {
+        sound.volume(clampedVolume);
+      }
+    });
+  }, []);
+
+  const getVolume = useCallback((): number => {
+    return volumeRef.current;
+  }, []);
+
   return {
     playHitSound,
     playComboSound,
@@ -171,6 +191,8 @@ export function useAudioManager(): AudioManager {
     startBackgroundMusic,
     stopBackgroundMusic,
     setMuted,
+    setVolume,
+    getVolume,
   };
 }
 

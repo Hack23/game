@@ -7,6 +7,7 @@ const mockPlay = vi.fn();
 const mockStop = vi.fn();
 const mockPause = vi.fn();
 const mockUnload = vi.fn();
+const mockVolume = vi.fn();
 
 vi.mock("howler", () => {
   class MockHowl {
@@ -14,18 +15,11 @@ vi.mock("howler", () => {
     stop = mockStop;
     pause = mockPause;
     unload = mockUnload;
+    volume = mockVolume;
   }
   
   return {
     Howl: MockHowl,
-  };
-});
-
-// Mock AudioContext
-vi.mock("./useAudioManager", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("./useAudioManager")>();
-  return {
-    ...actual,
   };
 });
 
@@ -64,6 +58,8 @@ describe("useAudioManager", () => {
     expect(result.current).toHaveProperty("startBackgroundMusic");
     expect(result.current).toHaveProperty("stopBackgroundMusic");
     expect(result.current).toHaveProperty("setMuted");
+    expect(result.current).toHaveProperty("setVolume");
+    expect(result.current).toHaveProperty("getVolume");
 
     expect(typeof result.current.playHitSound).toBe("function");
     expect(typeof result.current.playComboSound).toBe("function");
@@ -72,6 +68,8 @@ describe("useAudioManager", () => {
     expect(typeof result.current.startBackgroundMusic).toBe("function");
     expect(typeof result.current.stopBackgroundMusic).toBe("function");
     expect(typeof result.current.setMuted).toBe("function");
+    expect(typeof result.current.setVolume).toBe("function");
+    expect(typeof result.current.getVolume).toBe("function");
   });
 
   it("should play hit sound when not muted", () => {
@@ -312,6 +310,8 @@ describe("useAudioManager", () => {
       startBackgroundMusic: result.current.startBackgroundMusic,
       stopBackgroundMusic: result.current.stopBackgroundMusic,
       setMuted: result.current.setMuted,
+      setVolume: result.current.setVolume,
+      getVolume: result.current.getVolume,
     };
 
     rerender();
@@ -323,5 +323,35 @@ describe("useAudioManager", () => {
     expect(result.current.startBackgroundMusic).toBe(initialFunctions.startBackgroundMusic);
     expect(result.current.stopBackgroundMusic).toBe(initialFunctions.stopBackgroundMusic);
     expect(result.current.setMuted).toBe(initialFunctions.setMuted);
+    expect(result.current.setVolume).toBe(initialFunctions.setVolume);
+    expect(result.current.getVolume).toBe(initialFunctions.getVolume);
+  });
+
+  it("should set and get volume correctly", () => {
+    const { result } = renderHook(() => useAudioManager());
+
+    expect(result.current.getVolume()).toBe(1.0);
+
+    act(() => {
+      result.current.setVolume(0.5);
+    });
+
+    expect(result.current.getVolume()).toBe(0.5);
+  });
+
+  it("should clamp volume between 0 and 1", () => {
+    const { result } = renderHook(() => useAudioManager());
+
+    act(() => {
+      result.current.setVolume(1.5);
+    });
+
+    expect(result.current.getVolume()).toBe(1.0);
+
+    act(() => {
+      result.current.setVolume(-0.5);
+    });
+
+    expect(result.current.getVolume()).toBe(0.0);
   });
 });
