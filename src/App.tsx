@@ -11,6 +11,48 @@ import "./App.css";
 const PARTICLE_EXPLOSION_DURATION_MS = 600; // Duration of particle explosion animation in milliseconds
 const HIT_AREA_MULTIPLIER = 2.5; // Multiplier for invisible hit area to make clicking easier
 
+// Style constants for UI elements
+const OVERLAY_STYLES = {
+  position: "absolute" as const,
+  background: "rgba(33, 38, 45, 0.7)",
+  padding: "12px 20px",
+  borderRadius: "12px",
+  backdropFilter: "blur(10px)",
+  zIndex: 10,
+};
+
+const INSTRUCTIONS_STYLES = {
+  ...OVERLAY_STYLES,
+  bottom: "80px",
+  left: "50%",
+  transform: "translateX(-50%)",
+  fontSize: "16px",
+  textAlign: "center" as const,
+};
+
+const AUDIO_STATUS_STYLES = {
+  position: "absolute" as const,
+  bottom: "40px",
+  left: "50%",
+  transform: "translateX(-50%)",
+  zIndex: 10,
+  background: "rgba(33, 38, 45, 0.5)",
+  padding: "6px 12px",
+  borderRadius: "8px",
+  color: "#00ff88",
+  fontSize: "12px",
+};
+
+const VOLUME_CONTROL_STYLES = {
+  display: "flex",
+  alignItems: "center",
+  gap: "8px",
+  background: "rgba(33, 38, 45, 0.7)",
+  padding: "8px 16px",
+  borderRadius: "8px",
+  backdropFilter: "blur(10px)",
+};
+
 /**
  * Generate particle positions and colors for explosion effect
  * Called once outside the component render cycle
@@ -378,6 +420,7 @@ function App(): JSX.Element {
   const { gameState, incrementScore, resetGame, togglePause } = useGameState();
   const audioManager = useAudioManager();
   const [isMuted, setIsMuted] = useState(false);
+  const [volume, setVolume] = useState(1.0);
   const [showExplosion, setShowExplosion] = useState(false);
   const [explosionPosition, setExplosionPosition] = useState<[number, number, number]>([0, 0, 0]);
   const prevLevelRef = useRef(gameState.level);
@@ -436,6 +479,12 @@ function App(): JSX.Element {
     setIsMuted(newMuted);
     audioManager.setMuted(newMuted);
   }, [isMuted, audioManager]);
+
+  const handleVolumeChange = useCallback((event: React.ChangeEvent<HTMLInputElement> | React.FormEvent<HTMLInputElement>) => {
+    const newVolume = parseFloat((event.target as HTMLInputElement).value);
+    setVolume(newVolume);
+    audioManager.setVolume(newVolume);
+  }, [audioManager]);
 
   return (
     <div className="app-container" data-testid="app-container">
@@ -515,16 +564,46 @@ function App(): JSX.Element {
         >
           {isMuted ? "🔇 Unmute" : "🔊 Mute"}
         </button>
+        <div style={VOLUME_CONTROL_STYLES}>
+          <label htmlFor="volume-slider" style={{ color: "white", fontSize: "14px", fontWeight: "bold" }}>
+            🔊
+          </label>
+          <input
+            id="volume-slider"
+            type="range"
+            min="0"
+            max="1"
+            step="0.01"
+            value={volume}
+            onChange={handleVolumeChange}
+            onInput={handleVolumeChange}
+            data-testid="volume-slider"
+            style={{
+              width: "100px",
+              cursor: "pointer",
+            }}
+          />
+          <span style={{ color: "white", fontSize: "12px", minWidth: "35px" }}>
+            {Math.round(volume * 100)}%
+          </span>
+        </div>
       </div>
       
       {/* Instructions */}
-      <div data-testid="instructions-text" style={{ position: "absolute", bottom: "80px", left: "50%", transform: "translateX(-50%)", zIndex: 10, background: "rgba(33, 38, 45, 0.7)", padding: "12px 20px", borderRadius: "12px", backdropFilter: "blur(10px)", color: gameState.isPlaying && gameState.timeLeft > 0 ? "#ffffff" : "#7d8590", fontSize: "16px", textAlign: "center" }}>
+      <div data-testid="instructions-text" style={{ ...INSTRUCTIONS_STYLES, color: gameState.isPlaying && gameState.timeLeft > 0 ? "#ffffff" : "#7d8590" }}>
         {gameState.timeLeft <= 0
           ? `🎮 Game Over! Final Score: ${gameState.score} - Click Reset to play again`
           : gameState.isPlaying
           ? "🎯 Click the target to score! Build combos for bonus points!"
           : "⏸️ Game paused - Resume to continue"}
       </div>
+      
+      {/* Audio status note */}
+      {!isMuted && (
+        <div style={AUDIO_STATUS_STYLES}>
+          🔊 Sound enabled - Click target to hear effects
+        </div>
+      )}
       
       {/* Pause overlay */}
       {!gameState.isPlaying && gameState.timeLeft > 0 && (

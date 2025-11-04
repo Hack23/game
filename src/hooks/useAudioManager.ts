@@ -9,6 +9,8 @@ interface AudioManager {
   startBackgroundMusic: () => void;
   stopBackgroundMusic: () => void;
   setMuted: (muted: boolean) => void;
+  setVolume: (volume: number) => void;
+  getVolume: () => number;
 }
 
 /**
@@ -31,40 +33,77 @@ export function useAudioManager(): AudioManager {
     background: null,
   });
 
+  // Store original volume levels for each sound to preserve hierarchy
+  const originalVolumesRef = useRef<{
+    hit: number;
+    combo: number;
+    levelUp: number;
+    gameOver: number;
+    background: number;
+  }>({
+    hit: 0.7,
+    combo: 0.8,
+    levelUp: 0.85,
+    gameOver: 0.7,
+    background: 0.2,
+  });
+
   const isMutedRef = useRef(false);
+  const volumeRef = useRef(1.0); // Default volume at 100%
 
   // Generate simple tones using Web Audio API for game sounds
   useEffect(() => {
-    // Create hit sound - punchy beep with harmonics
-    soundsRef.current.hit = new Howl({
-      src: [generateToneDataURL(880, 0.12, 0.8)], // A5 note, 120ms, louder
-      volume: 0.7,
-    });
+    try {
+      // Create hit sound - punchy beep with harmonics
+      soundsRef.current.hit = new Howl({
+        src: [generateToneDataURL(880, 0.12, 0.8)], // A5 note, 120ms, louder
+        volume: 0.7,
+        onloaderror: (_id, error) => {
+          console.error('Failed to load hit sound:', error);
+        },
+      });
 
-    // Create combo sound - bright ascending tone
-    soundsRef.current.combo = new Howl({
-      src: [generateToneDataURL(1320, 0.2, 0.9)], // E6 note, 200ms
-      volume: 0.8,
-    });
+      // Create combo sound - bright ascending tone
+      soundsRef.current.combo = new Howl({
+        src: [generateToneDataURL(1320, 0.2, 0.9)], // E6 note, 200ms
+        volume: 0.8,
+        onloaderror: (_id, error) => {
+          console.error('Failed to load combo sound:', error);
+        },
+      });
 
-    // Create level up sound - triumphant chord-like tone
-    soundsRef.current.levelUp = new Howl({
-      src: [generateToneDataURL(784, 0.4, 1)], // G5 note, 400ms
-      volume: 0.85,
-    });
+      // Create level up sound - triumphant chord-like tone
+      soundsRef.current.levelUp = new Howl({
+        src: [generateToneDataURL(784, 0.4, 1)], // G5 note, 400ms
+        volume: 0.85,
+        onloaderror: (_id, error) => {
+          console.error('Failed to load level up sound:', error);
+        },
+      });
 
-    // Create game over sound - deep descending tone
-    soundsRef.current.gameOver = new Howl({
-      src: [generateToneDataURL(196, 0.6, 0.8)], // G3 note, 600ms
-      volume: 0.7,
-    });
+      // Create game over sound - deep descending tone
+      soundsRef.current.gameOver = new Howl({
+        src: [generateToneDataURL(196, 0.6, 0.8)], // G3 note, 600ms
+        volume: 0.7,
+        onloaderror: (_id, error) => {
+          console.error('Failed to load game over sound:', error);
+        },
+      });
 
-    // Create background ambient sound - rhythmic pulse
-    soundsRef.current.background = new Howl({
-      src: [generateToneDataURL(110, 1.5, 0.4)], // A2 note, 1.5s looped
-      volume: 0.2,
-      loop: true,
-    });
+      // Create background ambient sound - rhythmic pulse
+      soundsRef.current.background = new Howl({
+        src: [generateToneDataURL(110, 1.5, 0.4)], // A2 note, 1.5s looped
+        volume: 0.2,
+        loop: true,
+        onloaderror: (_id, error) => {
+          console.error('Failed to load background sound:', error);
+        },
+      });
+
+      console.debug('✓ All sounds initialized successfully');
+    } catch (error) {
+      console.error('Error initializing audio:', error);
+    }
 
     // Cleanup on unmount - capture sounds ref for cleanup
     const sounds = soundsRef.current;
@@ -79,31 +118,51 @@ export function useAudioManager(): AudioManager {
 
   const playHitSound = useCallback((): void => {
     if (soundsRef.current.hit !== null && !isMutedRef.current) {
-      soundsRef.current.hit.play();
+      try {
+        soundsRef.current.hit.play();
+      } catch (error) {
+        console.error('Error playing hit sound:', error);
+      }
     }
   }, []);
 
   const playComboSound = useCallback((): void => {
     if (soundsRef.current.combo !== null && !isMutedRef.current) {
-      soundsRef.current.combo.play();
+      try {
+        soundsRef.current.combo.play();
+      } catch (error) {
+        console.error('Error playing combo sound:', error);
+      }
     }
   }, []);
 
   const playLevelUpSound = useCallback((): void => {
     if (soundsRef.current.levelUp !== null && !isMutedRef.current) {
-      soundsRef.current.levelUp.play();
+      try {
+        soundsRef.current.levelUp.play();
+      } catch (error) {
+        console.error('Error playing level up sound:', error);
+      }
     }
   }, []);
 
   const playGameOverSound = useCallback((): void => {
     if (soundsRef.current.gameOver !== null && !isMutedRef.current) {
-      soundsRef.current.gameOver.play();
+      try {
+        soundsRef.current.gameOver.play();
+      } catch (error) {
+        console.error('Error playing game over sound:', error);
+      }
     }
   }, []);
 
   const startBackgroundMusic = useCallback((): void => {
     if (soundsRef.current.background !== null && !isMutedRef.current) {
-      soundsRef.current.background.play();
+      try {
+        soundsRef.current.background.play();
+      } catch (error) {
+        console.error('Error starting background music:', error);
+      }
     }
   }, []);
 
@@ -122,6 +181,33 @@ export function useAudioManager(): AudioManager {
     }
   }, []);
 
+  const setVolume = useCallback((volume: number): void => {
+    // Clamp volume between 0 and 1
+    const clampedVolume = Math.max(0, Math.min(1, volume));
+    volumeRef.current = clampedVolume;
+    
+    // Update volume for all sounds, preserving their original relative volumes
+    if (soundsRef.current.hit !== null) {
+      soundsRef.current.hit.volume(originalVolumesRef.current.hit * clampedVolume);
+    }
+    if (soundsRef.current.combo !== null) {
+      soundsRef.current.combo.volume(originalVolumesRef.current.combo * clampedVolume);
+    }
+    if (soundsRef.current.levelUp !== null) {
+      soundsRef.current.levelUp.volume(originalVolumesRef.current.levelUp * clampedVolume);
+    }
+    if (soundsRef.current.gameOver !== null) {
+      soundsRef.current.gameOver.volume(originalVolumesRef.current.gameOver * clampedVolume);
+    }
+    if (soundsRef.current.background !== null) {
+      soundsRef.current.background.volume(originalVolumesRef.current.background * clampedVolume);
+    }
+  }, []);
+
+  const getVolume = useCallback((): number => {
+    return volumeRef.current;
+  }, []);
+
   return {
     playHitSound,
     playComboSound,
@@ -130,6 +216,8 @@ export function useAudioManager(): AudioManager {
     startBackgroundMusic,
     stopBackgroundMusic,
     setMuted,
+    setVolume,
+    getVolume,
   };
 }
 

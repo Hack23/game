@@ -75,4 +75,45 @@ describe("App E2E", () => {
     // Verify game is reset (active and timer is back to 60)
     cy.get("[data-testid=game-status]").should("contain", "Active");
   });
+
+  it("can toggle mute button", () => {
+    cy.visit("/");
+    
+    // Check mute button exists
+    cy.get("[data-testid=mute-button]").should("exist");
+    cy.get("[data-testid=mute-button]").should("contain", "Mute");
+    
+    // Click to mute
+    cy.get("[data-testid=mute-button]").click();
+    cy.get("[data-testid=mute-button]").should("contain", "Unmute");
+    
+    // Click to unmute
+    cy.get("[data-testid=mute-button]").click();
+    cy.get("[data-testid=mute-button]").should("contain", "Mute");
+  });
+
+  it("can adjust volume with slider", () => {
+    cy.visit("/");
+    
+    // Check volume slider exists
+    cy.get("[data-testid=volume-slider]").should("exist");
+    
+    // The slider should show 100% initially
+    cy.contains("100%").should("exist");
+    
+    // Set volume to 50% - use invoke to set value then trigger input event
+    cy.get("[data-testid=volume-slider]")
+      .invoke("val", 0.5)
+      .trigger("input");
+    
+    // Verify the volume display shows 50%
+    cy.contains("50%").should("exist");
+    
+    // Set volume to 0%
+    cy.get("[data-testid=volume-slider]")
+      .invoke("val", 0)
+      .trigger("input");
+    
+    cy.contains("0%").should("exist");
+  });
 });
