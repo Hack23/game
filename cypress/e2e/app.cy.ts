@@ -101,18 +101,18 @@ describe("App E2E", () => {
     // The slider should show 100% initially
     cy.contains("100%").should("exist");
     
-    // Set volume to 50%
+    // Set volume to 50% - use invoke to set value then trigger input event
     cy.get("[data-testid=volume-slider]")
-      .invoke("val", "0.5")
-      .trigger("change", { force: true });
+      .invoke("val", 0.5)
+      .trigger("input");
     
     // Verify the volume display shows 50%
     cy.contains("50%").should("exist");
     
     // Set volume to 0%
     cy.get("[data-testid=volume-slider]")
-      .invoke("val", "0")
-      .trigger("change", { force: true });
+      .invoke("val", 0)
+      .trigger("input");
     
     cy.contains("0%").should("exist");
   });

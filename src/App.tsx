@@ -476,6 +476,12 @@ function App(): JSX.Element {
     audioManager.setVolume(newVolume);
   }, [audioManager]);
 
+  const handleVolumeInput = useCallback((event: React.FormEvent<HTMLInputElement>) => {
+    const newVolume = parseFloat((event.target as HTMLInputElement).value);
+    setVolume(newVolume);
+    audioManager.setVolume(newVolume);
+  }, [audioManager]);
+
   return (
     <div className="app-container" data-testid="app-container">
       <h1 data-testid="app-title">🎯 Target Shooter</h1>
@@ -566,6 +572,7 @@ function App(): JSX.Element {
             step="0.01"
             value={volume}
             onChange={handleVolumeChange}
+            onInput={handleVolumeInput}
             data-testid="volume-slider"
             style={{
               width: "100px",
