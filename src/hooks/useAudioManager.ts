@@ -33,6 +33,21 @@ export function useAudioManager(): AudioManager {
     background: null,
   });
 
+  // Store original volume levels for each sound to preserve hierarchy
+  const originalVolumesRef = useRef<{
+    hit: number;
+    combo: number;
+    levelUp: number;
+    gameOver: number;
+    background: number;
+  }>({
+    hit: 0.7,
+    combo: 0.8,
+    levelUp: 0.85,
+    gameOver: 0.7,
+    background: 0.2,
+  });
+
   const isMutedRef = useRef(false);
   const volumeRef = useRef(1.0); // Default volume at 100%
 
@@ -171,12 +186,22 @@ export function useAudioManager(): AudioManager {
     const clampedVolume = Math.max(0, Math.min(1, volume));
     volumeRef.current = clampedVolume;
     
-    // Update volume for all sounds
-    Object.values(soundsRef.current).forEach((sound) => {
-      if (sound !== null) {
-        sound.volume(clampedVolume);
-      }
-    });
+    // Update volume for all sounds, preserving their original relative volumes
+    if (soundsRef.current.hit !== null) {
+      soundsRef.current.hit.volume(originalVolumesRef.current.hit * clampedVolume);
+    }
+    if (soundsRef.current.combo !== null) {
+      soundsRef.current.combo.volume(originalVolumesRef.current.combo * clampedVolume);
+    }
+    if (soundsRef.current.levelUp !== null) {
+      soundsRef.current.levelUp.volume(originalVolumesRef.current.levelUp * clampedVolume);
+    }
+    if (soundsRef.current.gameOver !== null) {
+      soundsRef.current.gameOver.volume(originalVolumesRef.current.gameOver * clampedVolume);
+    }
+    if (soundsRef.current.background !== null) {
+      soundsRef.current.background.volume(originalVolumesRef.current.background * clampedVolume);
+    }
   }, []);
 
   const getVolume = useCallback((): number => {

@@ -43,6 +43,16 @@ const AUDIO_STATUS_STYLES = {
   fontSize: "12px",
 };
 
+const VOLUME_CONTROL_STYLES = {
+  display: "flex",
+  alignItems: "center",
+  gap: "8px",
+  background: "rgba(33, 38, 45, 0.7)",
+  padding: "8px 16px",
+  borderRadius: "8px",
+  backdropFilter: "blur(10px)",
+};
+
 /**
  * Generate particle positions and colors for explosion effect
  * Called once outside the component render cycle
@@ -470,13 +480,7 @@ function App(): JSX.Element {
     audioManager.setMuted(newMuted);
   }, [isMuted, audioManager]);
 
-  const handleVolumeChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    const newVolume = parseFloat(event.target.value);
-    setVolume(newVolume);
-    audioManager.setVolume(newVolume);
-  }, [audioManager]);
-
-  const handleVolumeInput = useCallback((event: React.FormEvent<HTMLInputElement>) => {
+  const handleVolumeChange = useCallback((event: React.ChangeEvent<HTMLInputElement> | React.FormEvent<HTMLInputElement>) => {
     const newVolume = parseFloat((event.target as HTMLInputElement).value);
     setVolume(newVolume);
     audioManager.setVolume(newVolume);
@@ -560,7 +564,7 @@ function App(): JSX.Element {
         >
           {isMuted ? "🔇 Unmute" : "🔊 Mute"}
         </button>
-        <div style={{ display: "flex", alignItems: "center", gap: "8px", background: "rgba(33, 38, 45, 0.7)", padding: "8px 16px", borderRadius: "8px", backdropFilter: "blur(10px)" }}>
+        <div style={VOLUME_CONTROL_STYLES}>
           <label htmlFor="volume-slider" style={{ color: "white", fontSize: "14px", fontWeight: "bold" }}>
             🔊
           </label>
@@ -572,7 +576,7 @@ function App(): JSX.Element {
             step="0.01"
             value={volume}
             onChange={handleVolumeChange}
-            onInput={handleVolumeInput}
+            onInput={handleVolumeChange}
             data-testid="volume-slider"
             style={{
               width: "100px",

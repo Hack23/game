@@ -354,4 +354,28 @@ describe("useAudioManager", () => {
 
     expect(result.current.getVolume()).toBe(0.0);
   });
+
+  it("should preserve volume hierarchy when setting master volume", () => {
+    const { result } = renderHook(() => useAudioManager());
+
+    // Clear the mocks from initialization
+    mockVolume.mockClear();
+
+    // Set master volume to 50%
+    act(() => {
+      result.current.setVolume(0.5);
+    });
+
+    // Verify that volume() was called 5 times (once for each sound)
+    expect(mockVolume).toHaveBeenCalledTimes(5);
+    
+    // Verify that the original volume hierarchy is preserved
+    // Original volumes: hit=0.7, combo=0.8, levelUp=0.85, gameOver=0.7, background=0.2
+    // At 50% master volume: hit=0.35, combo=0.4, levelUp=0.425, gameOver=0.35, background=0.1
+    expect(mockVolume).toHaveBeenNthCalledWith(1, 0.35); // hit: 0.7 * 0.5
+    expect(mockVolume).toHaveBeenNthCalledWith(2, 0.4);  // combo: 0.8 * 0.5
+    expect(mockVolume).toHaveBeenNthCalledWith(3, 0.425); // levelUp: 0.85 * 0.5
+    expect(mockVolume).toHaveBeenNthCalledWith(4, 0.35); // gameOver: 0.7 * 0.5
+    expect(mockVolume).toHaveBeenNthCalledWith(5, 0.1);  // background: 0.2 * 0.5
+  });
 });
