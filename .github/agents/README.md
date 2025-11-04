@@ -14,14 +14,14 @@ Specialized in:
 - Frontend testing with Vitest and React Testing Library
 
 ### 🎮 game-developer
-**Purpose:** PixiJS 8.x game development with React integration
+**Purpose:** Three.js game development with React integration
 
 Specialized in:
-- PixiJS with @pixi/react components
-- Game loop implementation with useTick
-- Event handling and user input
-- Audio integration with @pixi/sound and Howler.js
-- Performance optimization for games
+- Three.js with @react-three/fiber and @react-three/drei
+- Game loop implementation with useFrame
+- 3D scene composition and event handling
+- Audio integration with Howler.js
+- Performance optimization for 3D games
 
 ### 🧪 test-engineer
 **Purpose:** Comprehensive testing strategies

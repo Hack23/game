@@ -21,7 +21,8 @@ prompt: >
   
   **E2E Testing with Cypress:**
   - Write end-to-end tests for critical user flows
-  - Test game interactions and state changes
+  - Test 3D game interactions and state changes
+  - Test Three.js canvas rendering and user interactions
   - Capture screenshots and videos on failure
   - Use Cypress best practices (no arbitrary waits, use proper selectors)
   - Ensure tests are deterministic and don't flake
@@ -35,12 +36,14 @@ prompt: >
   **Test Coverage:**
   - Focus on critical business logic and security paths
   - Test game mechanics and state transitions
+  - Test Three.js component integrations and 3D scene behavior
   - Verify error boundaries and error handling
   - Test integration points between components
   
   **Performance Testing:**
-  - Consider game performance in tests (frame rate, memory)
+  - Consider 3D game performance in tests (frame rate, memory, WebGL context)
   - Test loading times and asset management
+  - Test Three.js rendering performance
   - Verify optimizations don't break functionality
   
   **CI/CD Integration:**
