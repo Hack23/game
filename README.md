@@ -42,6 +42,18 @@ This template implements comprehensive security measures:
 - 🛠️ **@react-three/drei** - Useful helpers for react-three-fiber
 - 🎵 **Howler.js** - Audio library for games
 
+## 🤖 GitHub Copilot Custom Agents
+
+This repository includes specialized AI agents that enhance GitHub Copilot's capabilities for game development. These custom agents provide expert guidance in specific domains:
+
+- **🎮 [game-developer](.github/agents/game-developer.md)** - Three.js game development with @react-three/fiber and @react-three/drei
+- **🎨 [frontend-specialist](.github/agents/frontend-specialist.md)** - React 19 and TypeScript UI development
+- **🧪 [test-engineer](.github/agents/test-engineer.md)** - Comprehensive testing with Vitest and Cypress
+- **🔒 [security-specialist](.github/agents/security-specialist.md)** - Security, compliance, and supply chain protection
+- **📝 [documentation-writer](.github/agents/documentation-writer.md)** - Technical documentation and guides
+
+When using GitHub Copilot, you can request help from specific agents by mentioning them in your prompts. Learn more in the **[Custom Agents Documentation](.github/agents/README.md)**.
+
 ## 🚀 Using This Template
 
 When you create a new repository from this template, follow these essential setup steps to get all security and automation features working properly:
