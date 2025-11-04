@@ -75,4 +75,20 @@ describe("App E2E", () => {
     // Verify game is reset (active and timer is back to 60)
     cy.get("[data-testid=game-status]").should("contain", "Active");
   });
+
+  it("can toggle mute button", () => {
+    cy.visit("/");
+    
+    // Check mute button exists
+    cy.get("[data-testid=mute-button]").should("exist");
+    cy.get("[data-testid=mute-button]").should("contain", "Mute");
+    
+    // Click to mute
+    cy.get("[data-testid=mute-button]").click();
+    cy.get("[data-testid=mute-button]").should("contain", "Unmute");
+    
+    // Click to unmute
+    cy.get("[data-testid=mute-button]").click();
+    cy.get("[data-testid=mute-button]").should("contain", "Mute");
+  });
 });
