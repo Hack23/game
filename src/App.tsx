@@ -526,6 +526,13 @@ function App(): JSX.Element {
           : "⏸️ Game paused - Resume to continue"}
       </div>
       
+      {/* Audio status note */}
+      {!isMuted && (
+        <div style={{ position: "absolute", bottom: "40px", left: "50%", transform: "translateX(-50%)", zIndex: 10, background: "rgba(33, 38, 45, 0.5)", padding: "6px 12px", borderRadius: "8px", color: "#00ff88", fontSize: "12px" }}>
+          🔊 Sound enabled - Click target to hear effects
+        </div>
+      )}
+      
       {/* Pause overlay */}
       {!gameState.isPlaying && gameState.timeLeft > 0 && (
         <div data-testid="pause-overlay" style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", zIndex: 20, background: "rgba(0, 0, 0, 0.85)", padding: "40px 60px", borderRadius: "20px", textAlign: "center", backdropFilter: "blur(20px)", border: "2px solid rgba(100, 108, 255, 0.5)" }}>
