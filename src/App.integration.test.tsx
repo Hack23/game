@@ -129,10 +129,6 @@ describe("App Game Integration Tests", () => {
 
   describe("Level Progression", () => {
     it("should play level up sound when reaching new level", () => {
-      // Start with a custom hook to test level up
-      
-      
-      
       const { result } = renderHook(() => useGameState());
       
       mockPlayLevelUpSound.mockClear();
@@ -149,9 +145,6 @@ describe("App Game Integration Tests", () => {
     });
 
     it("should increase level every 10 points", () => {
-      
-      
-      
       const { result } = renderHook(() => useGameState());
       
       expect(result.current.gameState.level).toBe(1);
@@ -176,9 +169,6 @@ describe("App Game Integration Tests", () => {
     });
 
     it("should decrease target size as level increases", () => {
-      
-      
-      
       const { result } = renderHook(() => useGameState());
       
       const initialSize = result.current.gameState.targetSize;
@@ -196,9 +186,6 @@ describe("App Game Integration Tests", () => {
 
   describe("Combo System", () => {
     it("should play combo sound on every 5th hit", () => {
-      
-      
-      
       const { result } = renderHook(() => useGameState());
       
       mockPlayComboSound.mockClear();
@@ -215,9 +202,6 @@ describe("App Game Integration Tests", () => {
     });
 
     it("should give bonus point on every 5th hit", () => {
-      
-      
-      
       const { result } = renderHook(() => useGameState());
       
       // Score 5 times
@@ -233,9 +217,6 @@ describe("App Game Integration Tests", () => {
     });
 
     it("should give bonus points on multiple combo milestones", () => {
-      
-      
-      
       const { result } = renderHook(() => useGameState());
       
       // Score 10 times
@@ -251,9 +232,6 @@ describe("App Game Integration Tests", () => {
     });
 
     it("should reset combo after timeout", () => {
-      
-      
-      
       const { result } = renderHook(() => useGameState());
       
       // Score once to start combo
@@ -274,9 +252,6 @@ describe("App Game Integration Tests", () => {
 
   describe("Game Flow", () => {
     it("should handle complete game cycle", () => {
-      
-      
-      
       const { result } = renderHook(() => useGameState({ timeLeft: 5 }));
       
       expect(result.current.gameState.isPlaying).toBe(true);
@@ -309,9 +284,6 @@ describe("App Game Integration Tests", () => {
     });
 
     it("should track high score across resets", () => {
-      
-      
-      
       const { result } = renderHook(() => useGameState({ timeLeft: 2 }));
       
       // Play first game
@@ -354,9 +326,6 @@ describe("App Game Integration Tests", () => {
 
   describe("Ball Movement Integration", () => {
     it("should randomize ball position after scoring", () => {
-      
-      
-      
       const { result } = renderHook(() => useGameState());
       
       const initialPos = {
@@ -384,9 +353,6 @@ describe("App Game Integration Tests", () => {
     });
 
     it("should reset ball position and velocity on game reset", () => {
-      
-      
-      
       const { result } = renderHook(() => useGameState());
       
       // Score to move ball
