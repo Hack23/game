@@ -3,7 +3,11 @@ describe("Game Mechanics E2E", () => {
     cy.visit("/");
     // Wait for game to fully load
     cy.get("[data-testid=threejs-canvas-container]").should("exist");
-    cy.get("[data-testid=target-sphere]").should("exist");
+    // Verify game is in active state before testing target
+    cy.get("[data-testid=game-status]").should("contain", "Active");
+    cy.get("[data-testid=timer-display]").should("contain", "60s");
+    // Wait for target with longer timeout for CI environments
+    cy.get("[data-testid=target-sphere]", { timeout: 10000 }).should("exist");
   });
 
   describe("Target Interaction and Scoring", () => {

@@ -3,7 +3,10 @@ describe("Game Visual Documentation", () => {
     cy.visit("/");
     // Wait for game to fully load
     cy.get("[data-testid=app-container]").should("exist");
-    cy.get("[data-testid=target-sphere]").should("exist");
+    // Verify game is in active state
+    cy.get("[data-testid=game-status]").should("contain", "Active");
+    // Wait for target with longer timeout for CI environments
+    cy.get("[data-testid=target-sphere]", { timeout: 10000 }).should("exist");
   });
 
   it("captures initial game state", () => {

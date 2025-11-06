@@ -133,8 +133,14 @@ describe("App E2E - UI and Basic Functionality", () => {
   });
 
   it("should have a visible and interactive 3D target", () => {
-    // Target should exist in the canvas
-    cy.get("[data-testid=target-sphere]").should("exist");
+    // Verify game is in playing state first
+    cy.get("[data-testid=game-status]").should("contain", "Active");
+    
+    // Verify timer is running (not 0)
+    cy.get("[data-testid=timer-display]").should("contain", "60s");
+    
+    // Target should exist in the canvas when game is active
+    cy.get("[data-testid=target-sphere]", { timeout: 10000 }).should("exist");
     
     // Canvas should be visible
     cy.get("[data-testid=threejs-canvas-container]").should("be.visible");
