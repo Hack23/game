@@ -79,16 +79,22 @@ describe("Game Mechanics E2E", () => {
         win.dispatchEvent(new CustomEvent('test:targetClick'));
       });
       
+      // Wait for event processing
+      cy.wait(100);
+      
       // Verify score increased (target was hit and repositioned by game logic)
-      cy.get("[data-testid=score-value]").should("not.contain", "0");
+      cy.get("[data-testid=score-value]", { timeout: 3000 }).should("contain", "1");
       
       // Click again - should still be able to hit target at new position
       cy.window().then((win) => {
         win.dispatchEvent(new CustomEvent('test:targetClick'));
       });
       
+      // Wait for event processing
+      cy.wait(100);
+      
       // Score should continue to increase
-      cy.get("[data-testid=score-value]").then(($score) => {
+      cy.get("[data-testid=score-value]", { timeout: 3000 }).then(($score) => {
         const score = parseInt($score.text());
         expect(score).to.be.at.least(2);
       });
