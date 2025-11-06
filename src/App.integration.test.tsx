@@ -133,7 +133,7 @@ describe("App Game Integration Tests", () => {
       
       mockPlayLevelUpSound.mockClear();
       
-      // Score 10 times to reach level 2
+      // Score 10 times (with combo bonuses at hits 5 and 10, total score will be 12) to reach level 2
       act(() => {
         for (let i = 0; i < 10; i++) {
           result.current.incrementScore();
@@ -144,7 +144,7 @@ describe("App Game Integration Tests", () => {
       expect(result.current.gameState.level).toBe(2);
     });
 
-    it("should increase level every 10 points", () => {
+    it("should increase level based on score thresholds (every 10 score points)", () => {
       const { result } = renderHook(() => useGameState());
       
       expect(result.current.gameState.level).toBe(1);
