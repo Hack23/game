@@ -190,7 +190,8 @@ export function useGameState(initialState?: Partial<GameState>): UseGameStateRet
   const incrementScore = useCallback(() => {
     setGameState((prev) => {
       const newCombo = prev.combo + 1;
-      const comboBonus = Math.floor(newCombo / 5); // Bonus point every 5 combo
+      // Only give bonus when reaching exactly a multiple of 5
+      const comboBonus = newCombo % 5 === 0 ? 1 : 0;
       const newScore = prev.score + 1 + comboBonus;
       
       // Increase difficulty: smaller target and higher level
