@@ -49,7 +49,23 @@ export default defineConfig({
       on: Cypress.PluginEvents,
       config: Cypress.PluginConfigOptions
     ): Cypress.PluginConfigOptions {
-      // Add any plugins here if needed
+      // Add browser launch options to suppress WebGL warnings
+      on("before:browser:launch", (browser, launchOptions) => {
+        if (browser.family === "chromium" && browser.name !== "electron") {
+          // Add flags to suppress WebGL warnings and enable software rendering
+          launchOptions.args.push("--enable-unsafe-swiftshader");
+          launchOptions.args.push("--disable-web-security");
+          launchOptions.args.push("--disable-features=VizDisplayCompositor");
+          launchOptions.args.push("--disable-gpu");
+          launchOptions.args.push("--no-sandbox");
+          launchOptions.args.push("--disable-dev-shm-usage");
+          // Suppress specific WebGL warnings
+          launchOptions.args.push("--disable-logging");
+          launchOptions.args.push("--silent");
+          launchOptions.args.push("--log-level=3");
+        }
+        return launchOptions;
+      });
       return config;
     },
   },
