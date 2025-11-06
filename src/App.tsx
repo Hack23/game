@@ -473,6 +473,19 @@ function App(): JSX.Element {
     }
   }, [incrementScore, isMuted, audioManager, gameState.playerX, gameState.playerY, gameState.playerZ]);
 
+  // Expose test API for E2E tests to trigger target clicks
+  // This bypasses Three.js raycasting which doesn't work reliably in headless CI
+  useEffect(() => {
+    const handleTestTargetClick = () => {
+      if (gameState.isPlaying && gameState.timeLeft > 0) {
+        handleTargetClick();
+      }
+    };
+
+    window.addEventListener('test:targetClick', handleTestTargetClick);
+    return () => window.removeEventListener('test:targetClick', handleTestTargetClick);
+  }, [handleTargetClick, gameState.isPlaying, gameState.timeLeft]);
+
   const handleMuteToggle = useCallback(() => {
     const newMuted = !isMuted;
     setIsMuted(newMuted);
