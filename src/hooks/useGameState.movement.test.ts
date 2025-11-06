@@ -49,12 +49,6 @@ describe("useGameState Ball Movement and Bouncing", () => {
         result.current.incrementScore();
       });
       
-      const velocityBeforeReset = {
-        x: result.current.gameState.velocityX,
-        y: result.current.gameState.velocityY,
-        z: result.current.gameState.velocityZ,
-      };
-      
       act(() => {
         result.current.resetGame();
       });
@@ -146,12 +140,6 @@ describe("useGameState Ball Movement and Bouncing", () => {
       act(() => {
         result.current.togglePause();
       });
-      
-      const positionBeforePause = {
-        x: result.current.gameState.playerX,
-        y: result.current.gameState.playerY,
-        z: result.current.gameState.playerZ,
-      };
       
       // Advance time
       act(() => {
