@@ -269,7 +269,7 @@ describe("useGameState Ball Movement and Bouncing", () => {
       });
       
       // Game should still be in valid state
-      // 50 base hits + 10 combo bonuses (at every 5th hit) = 60
+      // 50 base points + 10 bonus points (one for every 5th hit) = 60
       expect(result.current.gameState.score).toBe(60);
       expect(Number.isFinite(result.current.gameState.playerX)).toBe(true);
       expect(Number.isFinite(result.current.gameState.playerY)).toBe(true);

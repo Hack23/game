@@ -133,9 +133,9 @@ describe("App Game Integration Tests", () => {
       
       mockPlayLevelUpSound.mockClear();
       
-      // Score 10 times (with combo bonuses at hits 5 and 10, total score will be 12) to reach level 2
+      // Score 9 times (with a combo bonus at hit 5, total score will be 10) to reach level 2
       act(() => {
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 9; i++) {
           result.current.incrementScore();
         }
       });

@@ -76,8 +76,8 @@ describe("Game Mechanics E2E", () => {
       // Initial level should be 1
       cy.get("[data-testid=level-display]").should("contain", "1");
       
-      // Click target 12 times to reach level 2 (score will be 14: 12 base + 2 combo bonuses at hits 5 and 10; level 2 requires 10 points)
-      for (let i = 0; i < 12; i++) {
+      // Click target 10 times to reach level 2 (score will be 12: 10 base + 2 combo bonuses at hits 5 and 10; level 2 requires 10 points)
+      for (let i = 0; i < 10; i++) {
         cy.get("[data-testid=target-sphere]").click({ force: true });
         cy.wait(300);
       }
