@@ -57,6 +57,9 @@ export default defineConfig({
           launchOptions.args.push("--disable-features=VizDisplayCompositor");
           launchOptions.args.push("--disable-gpu");
           // Only disable sandbox in CI environments (required for containerized environments)
+          // Security trade-off: --no-sandbox disables Chrome's security sandbox, which is necessary
+          // for running Chrome in Docker/containerized CI but reduces security isolation.
+          // This is safe in ephemeral CI containers but should not be used in persistent environments.
           if (process.env.CI) {
             launchOptions.args.push("--no-sandbox");
           }
@@ -87,6 +90,9 @@ export default defineConfig({
           launchOptions.args.push("--disable-features=VizDisplayCompositor");
           launchOptions.args.push("--disable-gpu");
           // Only disable sandbox in CI environments (required for containerized environments)
+          // Security trade-off: --no-sandbox disables Chrome's security sandbox, which is necessary
+          // for running Chrome in Docker/containerized CI but reduces security isolation.
+          // This is safe in ephemeral CI containers but should not be used in persistent environments.
           if (process.env.CI) {
             launchOptions.args.push("--no-sandbox");
           }
