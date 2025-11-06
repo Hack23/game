@@ -54,10 +54,12 @@ export default defineConfig({
         if (browser.family === "chromium" && browser.name !== "electron") {
           // Add flags to suppress WebGL warnings and enable software rendering
           launchOptions.args.push("--enable-unsafe-swiftshader");
-          launchOptions.args.push("--disable-web-security");
           launchOptions.args.push("--disable-features=VizDisplayCompositor");
           launchOptions.args.push("--disable-gpu");
-          launchOptions.args.push("--no-sandbox");
+          // Only disable sandbox in CI environments (required for containerized environments)
+          if (process.env.CI) {
+            launchOptions.args.push("--no-sandbox");
+          }
           launchOptions.args.push("--disable-dev-shm-usage");
           // Suppress specific WebGL warnings
           launchOptions.args.push("--disable-logging");
@@ -82,10 +84,12 @@ export default defineConfig({
         if (browser.family === "chromium" && browser.name !== "electron") {
           // Add flags to suppress WebGL warnings and enable software rendering
           launchOptions.args.push("--enable-unsafe-swiftshader");
-          launchOptions.args.push("--disable-web-security");
           launchOptions.args.push("--disable-features=VizDisplayCompositor");
           launchOptions.args.push("--disable-gpu");
-          launchOptions.args.push("--no-sandbox");
+          // Only disable sandbox in CI environments (required for containerized environments)
+          if (process.env.CI) {
+            launchOptions.args.push("--no-sandbox");
+          }
           launchOptions.args.push("--disable-dev-shm-usage");
           // Suppress specific WebGL warnings
           launchOptions.args.push("--disable-logging");
