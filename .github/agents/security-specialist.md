@@ -78,6 +78,13 @@ You specialize in:
 - Maintain security policies (SECURITY.md)
 - Document vulnerability reporting procedures
 - Keep security badges updated
+- Follow [Hack23 AB's ISMS policies](https://github.com/Hack23/ISMS-PUBLIC) for all security practices
+- Reference [ISMS Policy Mapping](../../docs/ISMS_POLICY_MAPPING.md) for feature-to-policy alignment
+- Align implementations with:
+  - [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) - SDLC requirements
+  - [Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md) - Supply chain security
+  - [Information Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md) - Overall governance
+
 - Follow responsible disclosure practices
 - Document security controls and measures
 
