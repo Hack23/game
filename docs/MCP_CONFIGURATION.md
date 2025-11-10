@@ -320,6 +320,25 @@ npx @modelcontextprotocol/server-git --repository .
 - [MCP Servers Repository](https://github.com/modelcontextprotocol/servers)
 - [Copilot Best Practices](https://docs.github.com/en/copilot/using-github-copilot/getting-started-with-github-copilot)
 
+## 🔒 Security Considerations
+
+### API Key Security
+
+When configuring MCP servers that require API keys (e.g., Brave Search):
+
+- **Never commit API keys to the repository**
+- Store keys in environment variables per [Access Control Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Access_Control_Policy.md)
+- Use GitHub Codespaces secrets for secure storage
+- Rotate keys regularly following security best practices
+- Reference [Information Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md) for credential management
+
+### Secure Development Environment
+
+This project follows [Hack23 AB's ISMS](https://github.com/Hack23/ISMS-PUBLIC):
+- MCP servers operate in a hardened development environment
+- All configurations follow [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md)
+- For security questions, consult the **🔒 security-specialist** agent
+
 ## Contributing
 
 To add new MCP servers:

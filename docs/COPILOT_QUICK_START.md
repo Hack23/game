@@ -222,8 +222,18 @@ Find React 19 best practices for hooks
 
 ### Project Documentation
 - [MCP Configuration Guide](MCP_CONFIGURATION.md)
-- [Copilot Instructions](.github/copilot-instructions.md)
+- [Copilot Instructions](../.github/copilot-instructions.md)
 - [README](../README.md)
+- [Security Policy](../SECURITY.md)
+- [ISMS Policy Mapping](ISMS_POLICY_MAPPING.md)
+
+### Security & Compliance
+This project follows [Hack23 AB's Information Security Management System (ISMS)](https://github.com/Hack23/ISMS-PUBLIC):
+- 🔐 [Information Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md) - Overall security governance
+- 🛠️ [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) - SDLC and testing requirements
+- 📦 [Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md) - Supply chain security
+
+For security questions, use the **🔒 security-specialist** agent.
 
 ### External Resources
 - [GitHub Copilot Docs](https://docs.github.com/en/copilot)

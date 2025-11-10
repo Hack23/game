@@ -59,6 +59,8 @@ Specialized in:
 - Secure coding practices and OWASP guidelines
 - CodeQL and vulnerability scanning
 - Dependency management and audit
+- [ISMS-PUBLIC](https://github.com/Hack23/ISMS-PUBLIC) policy compliance
+- Security documentation aligned with [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md)
 
 **Tools:** `view`, `edit`, `bash`, `search_code`, `custom-agent`
 

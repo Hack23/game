@@ -21,7 +21,7 @@ You specialize in:
 - Use React Testing Library for component testing
 - Follow the "arrange, act, assert" pattern
 - Test behavior, not implementation details
-- Aim for 80%+ code coverage minimum
+- Aim for 80%+ code coverage minimum per [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md)
 
 ## Testing Best Practices
 
@@ -51,7 +51,7 @@ You specialize in:
 
 ## Test Coverage
 
-- Focus on critical business logic and security paths
+- Focus on critical business logic and security paths per [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md)
 - Test game mechanics and state transitions
 - Test Three.js component integrations and 3D scene behavior
 - Verify error boundaries and error handling
