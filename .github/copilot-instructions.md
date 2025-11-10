@@ -6,6 +6,8 @@ This file provides guidance for GitHub Copilot coding agent when working on this
 
 This is a game template built with React, TypeScript, Three.js, and Vite with a strong focus on security and code quality.
 
+**Security & Compliance:** All security practices in this repository align with [Hack23 AB's Information Security Management System (ISMS)](https://github.com/Hack23/ISMS-PUBLIC). For complete policy mapping, see [ISMS Policy Mapping](../docs/ISMS_POLICY_MAPPING.md).
+
 ## Development Workflow
 
 ### Setup and Installation

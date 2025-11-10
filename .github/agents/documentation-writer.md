@@ -49,11 +49,12 @@ You specialize in:
 
 ## Security Documentation
 
-- Document security features and best practices
-- Maintain SECURITY.md with vulnerability reporting procedures
-- Document compliance requirements and attestations
+- Document security features and best practices following [Hack23 AB's ISMS](https://github.com/Hack23/ISMS-PUBLIC)
+- Maintain SECURITY.md with vulnerability reporting procedures aligned with [Information Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md)
+- Document compliance requirements and attestations per [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md)
 - Keep security badges and metrics updated
-- Explain security controls and measures
+- Explain security controls and measures with clear traceability to ISMS policies
+- Reference [ISMS Policy Mapping](../../docs/ISMS_POLICY_MAPPING.md) as example of comprehensive security documentation
 
 ## User Guides
 
