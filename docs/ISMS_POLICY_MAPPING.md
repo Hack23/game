@@ -61,18 +61,18 @@ This document provides a comprehensive mapping between the Hack23 AB game templa
 | Feature | Implementation | ISMS Policy Reference | Evidence |
 |---------|---------------|----------------------|----------|
 | **OSSF Scorecard** | Automated supply chain security assessment | [Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md)<br>[Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/Hack23/game/badge)](https://scorecard.dev/viewer/?uri=github.com/Hack23/game) |
-| **Dependency Review** | Automated dependency vulnerability checks | [Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md) | [Dependency Review Workflow](.github/workflows/dependency-review.yml) |
+| **Dependency Review** | Automated dependency vulnerability checks | [Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md) | [Dependency Review Workflow](../.github/workflows/dependency-review.yml) |
 | **License Compliance** | Automated checking of dependency licenses | [Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md) | `npm run test:licenses` |
 | **SBOM Generation** | Software Bill of Materials for transparency | [Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md)<br>[Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) | SPDX format in releases |
 | **SBOM Quality Validation** | Automated SBOM quality scoring (min 7.0/10) | [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) | SBOMQS validation in CI |
-| **Pinned Dependencies** | All GitHub Actions pinned to SHA hashes | [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) | `.github/workflows/*.yml` |
+| **Pinned Dependencies** | All GitHub Actions pinned to SHA hashes | [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) | `../.github/workflows/*.yml` |
 
 ### 🔍 Static and Dynamic Analysis
 
 | Feature | Implementation | ISMS Policy Reference | Evidence |
 |---------|---------------|----------------------|----------|
-| **CodeQL Scanning** | Static code analysis for vulnerabilities | [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md)<br>[Information Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md) | [CodeQL Workflow](.github/workflows/codeql.yml) |
-| **ZAP Security Scanning** | OWASP ZAP dynamic application security testing | [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) | [ZAP Workflow](.github/workflows/zap-scan.yml) |
+| **CodeQL Scanning** | Static code analysis for vulnerabilities | [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md)<br>[Information Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md) | [CodeQL Workflow](../.github/workflows/codeql.yml) |
+| **ZAP Security Scanning** | OWASP ZAP dynamic application security testing | [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) | [ZAP Workflow](../.github/workflows/zap-scan.yml) |
 | **ESLint** | Code quality and security linting | [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) | `npm run lint` |
 
 ### 🧪 Testing and Quality Assurance
@@ -82,7 +82,7 @@ This document provides a comprehensive mapping between the Hack23 AB game templa
 | **Unit Testing** | Vitest with 80%+ coverage requirement | [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) | `npm run test` |
 | **E2E Testing** | Cypress end-to-end testing | [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) | `npm run test:e2e` |
 | **Coverage Reporting** | Automated coverage reports in CI/CD | [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) | Vitest coverage reports |
-| **Lighthouse Audits** | Performance and accessibility audits | [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) | [Lighthouse Workflow](.github/workflows/lighthouse.yml) |
+| **Lighthouse Audits** | Performance and accessibility audits | [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) | [Lighthouse Workflow](../.github/workflows/lighthouse-performance.yml) |
 
 ### 🔏 Build Integrity and Attestations
 
@@ -96,7 +96,7 @@ This document provides a comprehensive mapping between the Hack23 AB game templa
 
 | Feature | Implementation | ISMS Policy Reference | Evidence |
 |---------|---------------|----------------------|----------|
-| **Runner Hardening** | All CI/CD runners hardened with audit logging | [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md)<br>[Access Control Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Access_Control_Policy.md) | [Workflow configurations](.github/workflows/) |
+| **Runner Hardening** | All CI/CD runners hardened with audit logging | [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md)<br>[Access Control Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Access_Control_Policy.md) | [Workflow configurations](../.github/workflows/) |
 | **Security Advisories** | GitHub security advisories and vulnerability reporting | [Information Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md) | [SECURITY.md](../SECURITY.md) |
 | **Security Policies** | Documented security practices and reporting | [Information Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md) | [SECURITY.md](../SECURITY.md) |
 
@@ -104,9 +104,9 @@ This document provides a comprehensive mapping between the Hack23 AB game templa
 
 | Feature | Implementation | ISMS Policy Reference | Evidence |
 |---------|---------------|----------------------|----------|
-| **GitHub Codespaces** | Secure, hardened development environment | [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md)<br>[Access Control Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Access_Control_Policy.md) | [.devcontainer](.devcontainer/) |
-| **GitHub Copilot** | AI-assisted development with security guidelines | [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) | [copilot-instructions.md](.github/copilot-instructions.md) |
-| **Custom Agents** | Specialized agents including security specialist | [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) | [.github/agents](.github/agents/) |
+| **GitHub Codespaces** | Secure, hardened development environment | [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md)<br>[Access Control Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Access_Control_Policy.md) | [.devcontainer](../.devcontainer/) |
+| **GitHub Copilot** | AI-assisted development with security guidelines | [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) | [copilot-instructions.md](../.github/copilot-instructions.md) |
+| **Custom Agents** | Specialized agents including security specialist | [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) | [.github/agents](../.github/agents/) |
 
 ### 🏷️ Data Classification
 

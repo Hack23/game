@@ -13,7 +13,7 @@ A clean, minimal template for building games with React, TypeScript, Three.js, a
 This template implements comprehensive security measures aligned with **[Hack23 AB's Information Security Management System (ISMS)](https://github.com/Hack23/ISMS-PUBLIC)**:
 
 ### 🛡️ Supply Chain Security
-- **🛡️ Supply Chain Security** - OSSF Scorecard analysis and dependency review ([Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md))
+- **🛡️ OSSF Scorecard** - Automated supply chain security assessment ([Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md))
 - **🔍 Static Analysis** - CodeQL scanning for vulnerabilities ([Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md))
 - **📦 Dependency Protection** - Automated dependency vulnerability checks ([Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md))
 - **📜 License Compliance** - Automated checking of dependency licenses (MIT, Apache-2.0, BSD variants, ISC, CC0-1.0, Unlicense) ([Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md))
@@ -149,7 +149,7 @@ Your repository includes these automated workflows:
 
 Once configured, your repository automatically provides comprehensive security aligned with **[Hack23 AB's ISMS](https://github.com/Hack23/ISMS-PUBLIC)**:
 
-- **🛡️ Supply Chain Security** - OSSF Scorecard analysis and dependency review ([Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md))
+- **🛡️ OSSF Scorecard** - Automated supply chain security assessment ([Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md))
 - **🔍 Static Analysis** - CodeQL scanning for vulnerabilities ([Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md))
 - **📦 Dependency Protection** - Automated dependency vulnerability checks ([Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md))
 - **📜 License Compliance** - Automated checking of dependency licenses ([Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md))

@@ -124,7 +124,7 @@ This template implements comprehensive security measures aligned with our **[Sec
 
 - **⚡ Performance Testing** - Lighthouse audits (90+ score target)
   - Policy: [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md)
-  - Implementation: [Lighthouse Workflow](.github/workflows/lighthouse.yml)
+  - Implementation: [Lighthouse Workflow](.github/workflows/lighthouse-performance.yml)
 
 ### 🔐 Security Infrastructure
 

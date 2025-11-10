@@ -222,7 +222,7 @@ Find React 19 best practices for hooks
 
 ### Project Documentation
 - [MCP Configuration Guide](MCP_CONFIGURATION.md)
-- [Copilot Instructions](.github/copilot-instructions.md)
+- [Copilot Instructions](../.github/copilot-instructions.md)
 - [README](../README.md)
 - [Security Policy](../SECURITY.md)
 - [ISMS Policy Mapping](ISMS_POLICY_MAPPING.md)
