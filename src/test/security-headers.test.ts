@@ -3,8 +3,8 @@ import * as fs from "fs";
 import * as path from "path";
 
 describe("Security Headers in Built HTML", () => {
-  const htmlPath = path.resolve(__dirname, "../../index.html");
-  const htmlContent = fs.readFileSync(htmlPath, "utf-8");
+  const htmlPath: string = path.resolve(__dirname, "../../index.html");
+  const htmlContent: string = fs.readFileSync(htmlPath, "utf-8");
 
   it("should include Content Security Policy meta tag", () => {
     expect(htmlContent).toContain('http-equiv="Content-Security-Policy"');
