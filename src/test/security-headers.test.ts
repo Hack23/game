@@ -1,10 +1,20 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, beforeAll } from "vitest";
 import * as fs from "fs";
 import * as path from "path";
 
 describe("Security Headers in Built HTML", () => {
   const htmlPath: string = path.resolve(__dirname, "../../index.html");
-  const htmlContent: string = fs.readFileSync(htmlPath, "utf-8");
+  let htmlContent: string;
+
+  beforeAll(() => {
+    try {
+      htmlContent = fs.readFileSync(htmlPath, "utf-8");
+    } catch (err) {
+      throw new Error(
+        `Could not read index.html at ${htmlPath}. Did you run the build? Original error: ${err instanceof Error ? err.message : String(err)}`
+      );
+    }
+  });
 
   it("should include Content Security Policy meta tag", () => {
     expect(htmlContent).toContain('http-equiv="Content-Security-Policy"');
