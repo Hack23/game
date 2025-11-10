@@ -10,24 +10,35 @@ A clean, minimal template for building games with React, TypeScript, Three.js, a
 
 ## 🔒 Security Features
 
-This template implements comprehensive security measures:
+This template implements comprehensive security measures aligned with **[Hack23 AB's Information Security Management System (ISMS)](https://github.com/Hack23/ISMS-PUBLIC)**:
 
-- **🛡️ Supply Chain Security** - OSSF Scorecard analysis and dependency review
-- **🔍 Static Analysis** - CodeQL scanning for vulnerabilities
-- **📦 Dependency Protection** - Automated dependency vulnerability checks
-- **� License Compliance** - Automated checking of dependency licenses (MIT, Apache-2.0, BSD variants, ISC, CC0-1.0, Unlicense)
-- **📋 SBOM Quality Validation** - Automated SBOM quality scoring with minimum 7.0/10 threshold using SBOMQS
-- **�🔐 Runner Hardening** - All CI/CD runners are hardened with audit logging
-- **📋 Security Policies** - GitHub security advisories and vulnerability reporting
-- **🏷️ Pinned Dependencies** - All GitHub Actions pinned to specific SHA hashes
-- **📄 SBOM Generation** - Software Bill of Materials for transparency
-- **🔏 Build Attestations** - Cryptographic proof of build integrity
-- **🛡️ Immutable Releases** - Artifacts cannot be tampered with
+### 🛡️ Supply Chain Security
+- **🛡️ Supply Chain Security** - OSSF Scorecard analysis and dependency review ([Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md))
+- **🔍 Static Analysis** - CodeQL scanning for vulnerabilities ([Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md))
+- **📦 Dependency Protection** - Automated dependency vulnerability checks ([Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md))
+- **📜 License Compliance** - Automated checking of dependency licenses (MIT, Apache-2.0, BSD variants, ISC, CC0-1.0, Unlicense) ([Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md))
+- **📋 SBOM Quality Validation** - Automated SBOM quality scoring with minimum 7.0/10 threshold using SBOMQS ([Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md))
+- **🔐 Runner Hardening** - All CI/CD runners are hardened with audit logging ([Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md))
+- **📋 Security Policies** - GitHub security advisories and vulnerability reporting ([Information Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md))
+- **🏷️ Pinned Dependencies** - All GitHub Actions pinned to specific SHA hashes ([Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md))
+
+### 🔏 Build Integrity & Attestations
+- **📄 SBOM Generation** - Software Bill of Materials for transparency ([Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md))
+- **🔏 Build Attestations** - Cryptographic proof of build integrity ([Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md))
+- **🛡️ Immutable Releases** - Artifacts cannot be tampered with ([Data Classification Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Data_Classification_Policy.md))
 - **🔐 Build Integrity** - Original builds remain unchanged
 - **📋 Audit Trail** - Complete release history
 - **🏆 Artifact Verification** - SLSA-compliant build provenance
-- **🕷️ ZAP Security Scanning** - OWASP ZAP dynamic application security testing
-- **⚡ Lighthouse Performance** - Automated performance and accessibility audits
+
+### 🧪 Security Testing
+- **🕷️ ZAP Security Scanning** - OWASP ZAP dynamic application security testing ([Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md))
+- **⚡ Lighthouse Performance** - Automated performance and accessibility audits ([Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md))
+
+### 📚 Security Documentation
+For complete security policy mapping and detailed compliance information, see:
+- 📊 **[ISMS Policy Mapping](docs/ISMS_POLICY_MAPPING.md)** - Comprehensive feature-to-policy mapping
+- 🔒 **[SECURITY.md](SECURITY.md)** - Security policy and vulnerability reporting
+- 🔐 **[ISMS-PUBLIC Repository](https://github.com/Hack23/ISMS-PUBLIC)** - Complete ISMS documentation
 
 ## Features
 
@@ -136,24 +147,26 @@ Your repository includes these automated workflows:
 
 ### 🛡️ Security Features Ready to Use
 
-Once configured, your repository automatically provides:
+Once configured, your repository automatically provides comprehensive security aligned with **[Hack23 AB's ISMS](https://github.com/Hack23/ISMS-PUBLIC)**:
 
-- **🛡️ Supply Chain Security** - OSSF Scorecard analysis and dependency review
-- **🔍 Static Analysis** - CodeQL scanning for vulnerabilities
-- **📦 Dependency Protection** - Automated dependency vulnerability checks
-- **� License Compliance** - Automated checking of dependency licenses (MIT, Apache-2.0, BSD variants, ISC, CC0-1.0, Unlicense)
-- **📋 SBOM Quality Validation** - Automated SBOM quality scoring with minimum 7.0/10 threshold using SBOMQS
-- **�🔐 Runner Hardening** - All CI/CD runners are hardened with audit logging
-- **📋 Security Policies** - GitHub security advisories and vulnerability reporting
-- **🏷️ Pinned Dependencies** - All GitHub Actions pinned to specific SHA hashes
-- **📄 SBOM Generation** - Software Bill of Materials for transparency
-- **🔏 Build Attestations** - Cryptographic proof of build integrity
-- **🛡️ Immutable Releases** - Artifacts cannot be tampered with
+- **🛡️ Supply Chain Security** - OSSF Scorecard analysis and dependency review ([Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md))
+- **🔍 Static Analysis** - CodeQL scanning for vulnerabilities ([Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md))
+- **📦 Dependency Protection** - Automated dependency vulnerability checks ([Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md))
+- **📜 License Compliance** - Automated checking of dependency licenses ([Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md))
+- **📋 SBOM Quality Validation** - Automated SBOM quality scoring ([Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md))
+- **🔐 Runner Hardening** - All CI/CD runners are hardened ([Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md))
+- **📋 Security Policies** - GitHub security advisories and vulnerability reporting ([Information Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md))
+- **🏷️ Pinned Dependencies** - All GitHub Actions pinned to specific SHA hashes ([Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md))
+- **📄 SBOM Generation** - Software Bill of Materials for transparency ([Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md))
+- **🔏 Build Attestations** - Cryptographic proof of build integrity ([Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md))
+- **🛡️ Immutable Releases** - Artifacts cannot be tampered with ([Data Classification Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Data_Classification_Policy.md))
 - **🔐 Build Integrity** - Original builds remain unchanged
 - **📋 Audit Trail** - Complete release history
 - **🏆 Artifact Verification** - SLSA-compliant build provenance
-- **🕷️ ZAP Security Scanning** - OWASP ZAP dynamic application security testing
-- **⚡ Lighthouse Performance** - Automated performance and accessibility audits
+- **🕷️ ZAP Security Scanning** - OWASP ZAP dynamic application security testing ([Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md))
+- **⚡ Lighthouse Performance** - Automated performance and accessibility audits ([Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md))
+
+See **[ISMS Policy Mapping](docs/ISMS_POLICY_MAPPING.md)** for complete feature-to-policy mapping.
 
 ### 🎯 Next Steps
 
@@ -794,10 +807,23 @@ All security workflows will automatically protect your game from common vulnerab
 
 ## 📚 Documentation
 
+### Development Guides
 - **[Copilot Quick Start Guide](docs/COPILOT_QUICK_START.md)** - Get started with GitHub Copilot in this repository
 - **[MCP Configuration Guide](docs/MCP_CONFIGURATION.md)** - Model Context Protocol setup and usage
 - **[MCP Architecture](docs/MCP_ARCHITECTURE.md)** - Visual guide to MCP integration
 - **[Copilot Instructions](.github/copilot-instructions.md)** - Coding guidelines for AI assistance
-- **[Security Policy](SECURITY.md)** - Security practices and vulnerability reporting
+
+### Security & Compliance
+- 🔒 **[SECURITY.md](SECURITY.md)** - Security policy and vulnerability reporting
+- 📊 **[ISMS Policy Mapping](docs/ISMS_POLICY_MAPPING.md)** - Complete feature-to-policy mapping
+- 🔐 **[ISMS-PUBLIC Repository](https://github.com/Hack23/ISMS-PUBLIC)** - Hack23 AB's complete ISMS
+
+### ISMS Core Policies
+- 🔐 **[Information Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md)** - Overall security governance
+- 🛠️ **[Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md)** - SDLC and CI/CD requirements
+- 📦 **[Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md)** - Supply chain security
+- 🏷️ **[Data Classification Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Data_Classification_Policy.md)** - Data handling requirements
+- 🔒 **[Privacy Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Privacy_Policy.md)** - Privacy and GDPR compliance
+- 🔑 **[Access Control Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Access_Control_Policy.md)** - Authentication and authorization
 
 Happy gaming! 🎮🔒
