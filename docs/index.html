@@ -4,6 +4,30 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="./vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    
+    <!-- Security Headers -->
+    <!-- Content Security Policy: Define strict resource loading policies -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; media-src 'self' blob:; worker-src 'self' blob:; frame-ancestors 'none'; base-uri 'self'; form-action 'self';" />
+    
+    <!-- Prevent clickjacking attacks -->
+    <meta http-equiv="X-Frame-Options" content="DENY" />
+    
+    <!-- Prevent MIME type sniffing -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    
+    <!-- Control referrer information -->
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    
+    <!-- Enable browser XSS protection -->
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
+    
+    <!-- Permissions Policy: Restrict browser features -->
+    <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=()" />
+    
+    <!-- Cross-Origin Policies for Spectre mitigation -->
+    <meta http-equiv="Cross-Origin-Opener-Policy" content="same-origin" />
+    <meta http-equiv="Cross-Origin-Resource-Policy" content="same-origin" />
+    
     <title>Three.js React Game</title>
     <script type="module" crossorigin src="./assets/index-Du2FLQ5P.js"></script>
     <link rel="modulepreload" crossorigin href="./assets/three-CgGye7FH.js">
