@@ -1,18 +1,11 @@
 describe("Game Visual Documentation", () => {
   beforeEach(() => {
     cy.visit("/");
-    // Wait for game to fully load
-    cy.get("[data-testid=app-container]").should("exist");
-    // Verify game is in active state
-    cy.get("[data-testid=game-status]").should("contain", "Active");
-    // Wait for target with longer timeout for CI environments
+    // Wait for game to fully load - target-sphere check ensures game is ready
     cy.get("[data-testid=target-sphere]", { timeout: 10000 }).should("exist");
   });
 
   it("captures initial game state", () => {
-    // Wait for game to stabilize
-    cy.wait(1000);
-    
     // Take screenshot of initial state
     cy.screenshot("01-game-initial-state", {
       capture: "viewport",
@@ -23,7 +16,7 @@ describe("Game Visual Documentation", () => {
   it("captures game with paused state", () => {
     // Pause the game
     cy.get("[data-testid=pause-button]").click();
-    cy.wait(500);
+    cy.get("[data-testid=game-status]").should("contain", "Paused");
     
     // Take screenshot of paused state
     cy.screenshot("02-game-paused", {
@@ -38,7 +31,8 @@ describe("Game Visual Documentation", () => {
       .invoke("val", 0.5)
       .trigger("input");
     
-    cy.wait(500);
+    // Verify volume changed
+    cy.contains("50%").should("exist");
     
     // Take screenshot with adjusted volume
     cy.screenshot("03-game-with-volume-at-50", {
@@ -50,7 +44,7 @@ describe("Game Visual Documentation", () => {
   it("captures game with muted audio", () => {
     // Mute the audio
     cy.get("[data-testid=mute-button]").click();
-    cy.wait(500);
+    cy.get("[data-testid=mute-button]").should("contain", "Unmute");
     
     // Take screenshot with muted state
     cy.screenshot("04-game-muted", {
@@ -60,13 +54,15 @@ describe("Game Visual Documentation", () => {
   });
 
   it("captures game during active play", () => {
-    // Click target a few times to show score and combo
-    cy.get("[data-testid=target-sphere]").click({ force: true });
-    cy.wait(300);
-    cy.get("[data-testid=target-sphere]").click({ force: true });
-    cy.wait(300);
-    cy.get("[data-testid=target-sphere]").click({ force: true });
-    cy.wait(500);
+    // Click target via test API to show score and combo
+    cy.window().then((win) => {
+      win.dispatchEvent(new CustomEvent('test:targetClick'));
+      win.dispatchEvent(new CustomEvent('test:targetClick'));
+      win.dispatchEvent(new CustomEvent('test:targetClick'));
+    });
+    
+    // Verify score updated
+    cy.get("[data-testid=score-value]").should("not.contain", "0");
     
     // Take screenshot during gameplay
     cy.screenshot("05-game-active-with-score", {
@@ -76,8 +72,10 @@ describe("Game Visual Documentation", () => {
   });
 
   it("captures game after timer countdown", () => {
-    // Wait for some time to pass
-    cy.wait(3000);
+    // Advance timer deterministically
+    cy.clock();
+    cy.tick(2000);
+    cy.get("[data-testid=timer-display]").should("not.contain", "60s");
     
     // Take screenshot with reduced timer
     cy.screenshot("06-game-with-timer-counting", {
