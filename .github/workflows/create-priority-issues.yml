@@ -1,0 +1,538 @@
+name: Create Priority Issues for Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      milestone:
+        description: 'Milestone to assign (optional)'
+        required: false
+        type: string
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  create-issues:
+    name: Create Top 5 Priority Issues
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@95d9a5deda9de15063e7595e9719c11c38c90ae2 # v2.13.2
+        with:
+          egress-policy: audit
+
+      - name: Checkout repository
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+
+      - name: Setup GitHub CLI
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
+
+      - name: Create Issue 1 - Security Headers Enhancement
+        id: issue1
+        run: |
+          ISSUE_BODY=$(cat <<'EOF'
+          ## 🎯 Objective
+          
+          Address ZAP security scan findings by implementing proper security headers for production deployment.
+          
+          ## 📋 Background
+          
+          The recent ZAP Full Scan Report (Issue #320) identified multiple security header issues that need to be resolved before the next release:
+          - CSP directive failures and unsafe-inline usage
+          - CORS misconfiguration
+          - Missing anti-clickjacking headers
+          - Missing X-Content-Type-Options
+          - Missing Strict-Transport-Security
+          - Missing Permissions-Policy
+          
+          These security headers are critical for protecting users from common web vulnerabilities including XSS, clickjacking, and MIME-sniffing attacks.
+          
+          ## ✅ Acceptance Criteria
+          
+          - [ ] Update `index.html` to include comprehensive security headers via meta tags
+          - [ ] Configure CSP without unsafe-inline for styles (use nonces or external stylesheets)
+          - [ ] Add X-Frame-Options header properly (via response headers, not meta)
+          - [ ] Document security headers in SECURITY_HEADERS.md
+          - [ ] Verify all security headers with ZAP scan showing significant improvement
+          - [ ] Ensure headers comply with ISMS Secure Development Policy
+          
+          ## 🛠️ Implementation Guidance
+          
+          ### Files to Modify
+          - `index.html` - Add/update meta tags for CSP, X-Content-Type-Options
+          - `SECURITY_HEADERS.md` - Document implemented headers and rationale
+          - Consider adding `_headers` file for GitHub Pages deployment
+          
+          ### Approach
+          1. Review current ZAP scan findings in Issue #320
+          2. Implement Content-Security-Policy without unsafe-inline
+          3. Add X-Content-Type-Options: nosniff
+          4. Document Permissions-Policy restrictions
+          5. Note: Some headers (HSTS, X-Frame-Options) require server-side configuration
+          6. Re-run ZAP scan workflow to verify improvements
+          
+          ### Example CSP Header
+          ```html
+          <meta http-equiv="Content-Security-Policy" 
+                content="default-src 'self'; 
+                         script-src 'self' 'nonce-{random}'; 
+                         style-src 'self' 'nonce-{random}'; 
+                         img-src 'self' data:; 
+                         connect-src 'self'">
+          ```
+          
+          ## 🔗 Related Resources
+          
+          - [ZAP Full Scan Report - Issue #320](https://github.com/Hack23/game/issues/320)
+          - [SECURITY_HEADERS.md](https://github.com/Hack23/game/blob/main/SECURITY_HEADERS.md)
+          - [OWASP Secure Headers Project](https://owasp.org/www-project-secure-headers/)
+          - [Hack23 ISMS - Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md)
+          - [Content Security Policy Reference](https://content-security-policy.com/)
+          
+          ## 📊 Metadata
+          
+          **Priority:** High
+          **Effort:** Medium (4-6 hours)
+          **Impact:** Critical - Production security requirement
+          **Related Issue:** #320
+          EOF
+          )
+          
+          ISSUE_URL=$(gh issue create \
+            --title "🔒 Enhance security headers based on ZAP scan findings" \
+            --body "$ISSUE_BODY" \
+            --label "type:security,priority:high,size:medium,domain:infrastructure" \
+            --assignee "" \
+            2>&1)
+          
+          echo "Created: $ISSUE_URL"
+          echo "issue1=$ISSUE_URL" >> $GITHUB_OUTPUT
+          sleep 2
+
+      - name: Create Issue 2 - TypeScript Strict Typing
+        id: issue2
+        run: |
+          ISSUE_BODY=$(cat <<'EOF'
+          ## 🎯 Objective
+          
+          Fix all 8 ESLint warnings related to missing explicit return types to achieve 100% TypeScript strict typing compliance.
+          
+          ## 📋 Background
+          
+          The project has TypeScript strict mode enabled with `@typescript-eslint/explicit-function-return-type` rule, but currently has 8 violations:
+          - 2 warnings in `src/App.tsx` (lines 479, 486)
+          - 5 warnings in `src/hooks/useAudioManager.ts` (lines 62, 72, 82, 92, 103)
+          - 1 warning in `src/main.tsx` (line 9)
+          
+          Explicit return types improve code maintainability, catch type errors earlier, and serve as inline documentation.
+          
+          ## ✅ Acceptance Criteria
+          
+          - [ ] Add explicit return types to all functions in `App.tsx` (2 locations)
+          - [ ] Add explicit return types to all functions in `useAudioManager.ts` (5 locations)
+          - [ ] Fix fast-refresh warning in `main.tsx` by restructuring exports
+          - [ ] Run `npm run lint` with zero warnings
+          - [ ] Verify no type-checking errors with `tsc -b`
+          - [ ] Update tests if necessary (no test changes expected)
+          
+          ## 🛠️ Implementation Guidance
+          
+          ### Files to Modify
+          - `src/App.tsx` - Add return types to functions at lines 479 and 486
+          - `src/hooks/useAudioManager.ts` - Add return types to 5 functions
+          - `src/main.tsx` - Restructure to fix fast-refresh warning
+          
+          ### Approach
+          1. Run `npm run lint` to see exact line numbers and functions
+          2. For each function, determine the return type by examining the return statement
+          3. Add explicit `: ReturnType` annotation after function parameters
+          4. For React components, use `: JSX.Element` or appropriate React type
+          5. For hooks returning objects, use object type or interface
+          6. Verify with `npm run lint` and `npm test`
+          
+          ### Example Fixes
+          ```typescript
+          // Before
+          const handleClick = () => {
+            console.log('clicked');
+          }
+          
+          // After  
+          const handleClick = (): void => {
+            console.log('clicked');
+          }
+          
+          // Before (hook)
+          const playSound = () => {
+            sound.play();
+          }
+          
+          // After (hook)
+          const playSound = (): void => {
+            sound.play();
+          }
+          ```
+          
+          ## 🔗 Related Resources
+          
+          - [TypeScript Handbook - Functions](https://www.typescriptlang.org/docs/handbook/2/functions.html)
+          - [ESLint Rule - explicit-function-return-type](https://typescript-eslint.io/rules/explicit-function-return-type/)
+          - [Repository Copilot Instructions](.github/copilot-instructions.md)
+          - Current lint output showing 8 warnings
+          
+          ## 📊 Metadata
+          
+          **Priority:** High  
+          **Effort:** Small (1-2 hours)
+          **Impact:** High - Code quality and maintainability
+          **Type:** Code quality improvement
+          EOF
+          )
+          
+          ISSUE_URL=$(gh issue create \
+            --title "🔷 Fix TypeScript explicit return type warnings (8 locations)" \
+            --body "$ISSUE_BODY" \
+            --label "type:refactor,priority:high,size:small,domain:frontend" \
+            --assignee "" \
+            2>&1)
+          
+          echo "Created: $ISSUE_URL"
+          echo "issue2=$ISSUE_URL" >> $GITHUB_OUTPUT
+          sleep 2
+
+      - name: Create Issue 3 - Bundle Size Optimization
+        id: issue3
+        run: |
+          ISSUE_BODY=$(cat <<'EOF'
+          ## 🎯 Objective
+          
+          Optimize bundle size by implementing code-splitting for Three.js to reduce initial load from 1.1MB to under 500KB.
+          
+          ## 📋 Background
+          
+          The current build produces a warning:
+          ```
+          (!) Some chunks are larger than 500 kB after minification
+          dist/assets/three-rZOyD2Np.js   1,102.04 kB │ gzip: 309.34 kB
+          ```
+          
+          Three.js is a large library (1.1MB), but most games don't need all Three.js features immediately. By implementing dynamic imports and code-splitting, we can:
+          - Reduce initial bundle size by 50-70%
+          - Improve initial page load time
+          - Load Three.js components on-demand
+          - Maintain full functionality
+          
+          ## ✅ Acceptance Criteria
+          
+          - [ ] Implement dynamic import for Three.js Canvas component
+          - [ ] Configure Vite manual chunks for Three.js, react-three-fiber, and drei
+          - [ ] Initial bundle size reduced to under 500KB
+          - [ ] No regression in functionality - all tests pass
+          - [ ] Add loading state during Three.js initialization
+          - [ ] Verify build no longer shows chunk size warning
+          - [ ] Document code-splitting strategy in README or docs
+          
+          ## 🛠️ Implementation Guidance
+          
+          ### Files to Modify
+          - `vite.config.ts` - Add manual chunk configuration
+          - `src/App.tsx` - Implement lazy loading for Canvas component
+          - `src/components/` - Consider extracting 3D components for lazy loading
+          
+          ### Approach
+          1. Configure Vite `build.rollupOptions.output.manualChunks` to split Three.js
+          2. Use React.lazy() to dynamically import Canvas component
+          3. Add Suspense boundary with loading indicator
+          4. Test that game loads correctly with code-splitting
+          5. Measure before/after bundle sizes
+          6. Run `npm run build` and verify warnings are gone
+          
+          ### Example Configuration
+          ```typescript
+          // vite.config.ts
+          export default defineConfig({
+            build: {
+              rollupOptions: {
+                output: {
+                  manualChunks: {
+                    'three-vendor': ['three'],
+                    'three-react': ['@react-three/fiber', '@react-three/drei'],
+                  }
+                }
+              }
+            }
+          })
+          
+          // App.tsx
+          const GameCanvas = React.lazy(() => import('./components/GameCanvas'));
+          
+          function App() {
+            return (
+              <Suspense fallback={<div>Loading game...</div>}>
+                <GameCanvas />
+              </Suspense>
+            );
+          }
+          ```
+          
+          ## 🔗 Related Resources
+          
+          - [Vite Manual Chunks Documentation](https://rollupjs.org/configuration-options/#output-manualchunks)
+          - [React Code-Splitting](https://react.dev/reference/react/lazy)
+          - [Web.dev - Code Splitting](https://web.dev/code-splitting-suspense/)
+          - Current build output showing 1.1MB chunk
+          
+          ## 📊 Metadata
+          
+          **Priority:** High
+          **Effort:** Medium (4-6 hours)  
+          **Impact:** High - Performance and user experience
+          **Type:** Performance optimization
+          EOF
+          )
+          
+          ISSUE_URL=$(gh issue create \
+            --title "⚡ Optimize bundle size with Three.js code-splitting" \
+            --body "$ISSUE_BODY" \
+            --label "type:performance,priority:high,size:medium,domain:infrastructure" \
+            --assignee "" \
+            2>&1)
+          
+          echo "Created: $ISSUE_URL"
+          echo "issue3=$ISSUE_URL" >> $GITHUB_OUTPUT
+          sleep 2
+
+      - name: Create Issue 4 - Test Coverage Improvement
+        id: issue4
+        run: |
+          ISSUE_BODY=$(cat <<'EOF'
+          ## 🎯 Objective
+          
+          Increase test coverage for App.tsx from 62.82% to 80%+ by adding tests for uncovered game mechanics and edge cases.
+          
+          ## 📋 Background
+          
+          Current coverage report shows:
+          ```
+          src/App.tsx | 62.82% | 60.11% | 72.41% | 63.94% | Lines: 290-348,353-362,444
+          ```
+          
+          The project has a minimum 80% coverage target. App.tsx contains critical game logic including:
+          - Particle system management
+          - Game state transitions
+          - User interaction handlers
+          - Sound effects integration
+          - Difficulty progression
+          
+          Uncovered areas include explosion effects, game over conditions, and some edge cases.
+          
+          ## ✅ Acceptance Criteria
+          
+          - [ ] Add tests for particle explosion system (lines 290-348)
+          - [ ] Add tests for game over conditions and restart (lines 353-362)
+          - [ ] Add tests for difficulty progression edge cases
+          - [ ] Add tests for sound effect triggers in various scenarios
+          - [ ] Overall App.tsx coverage reaches 80% or higher
+          - [ ] All new tests pass consistently
+          - [ ] Run `npm run coverage` showing improved metrics
+          
+          ## 🛠️ Implementation Guidance
+          
+          ### Files to Create/Modify
+          - `src/App.test.tsx` - Add new test cases for uncovered scenarios
+          - Consider creating `src/App.particles.test.tsx` for particle system tests
+          - May need to add test utilities in `src/test/` for complex scenarios
+          
+          ### Approach
+          1. Review coverage report to identify specific uncovered lines
+          2. Analyze uncovered code to understand what scenarios aren't tested
+          3. Write tests for particle explosion behavior
+          4. Write tests for game over state transitions
+          5. Write tests for edge cases in difficulty scaling
+          6. Use Testing Library's `waitFor` for async behavior
+          7. Mock Three.js objects as needed for particle tests
+          8. Run `npm run coverage` to verify improvements
+          
+          ### Example Test Cases
+          ```typescript
+          describe('Particle Explosion System', () => {
+            it('should create particles when target is hit', async () => {
+              // Test particle creation logic
+            });
+            
+            it('should clean up particles after animation completes', async () => {
+              // Test particle lifecycle
+            });
+          });
+          
+          describe('Game Over Scenarios', () => {
+            it('should trigger game over when time expires', async () => {
+              // Test time-based game over
+            });
+            
+            it('should show restart button after game over', () => {
+              // Test UI after game over
+            });
+          });
+          ```
+          
+          ## 🔗 Related Resources
+          
+          - [Vitest Documentation](https://vitest.dev/)
+          - [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/)
+          - [Testing Three.js Components](https://docs.pmnd.rs/react-three-fiber/tutorials/testing)
+          - Current coverage report: 62.82% statement coverage
+          - Existing test files: `App.test.tsx`, `App.integration.test.tsx`, `App.interaction.test.tsx`
+          
+          ## 📊 Metadata
+          
+          **Priority:** High
+          **Effort:** Small (2-3 hours)
+          **Impact:** High - Test reliability and confidence
+          **Type:** Test improvement
+          EOF
+          )
+          
+          ISSUE_URL=$(gh issue create \
+            --title "🧪 Increase App.tsx test coverage from 62% to 80%+" \
+            --body "$ISSUE_BODY" \
+            --label "type:test,priority:high,size:small,domain:testing" \
+            --assignee "" \
+            2>&1)
+          
+          echo "Created: $ISSUE_URL"
+          echo "issue4=$ISSUE_URL" >> $GITHUB_OUTPUT
+          sleep 2
+
+      - name: Create Issue 5 - Dependency Updates
+        id: issue5
+        run: |
+          ISSUE_BODY=$(cat <<'EOF'
+          ## 🎯 Objective
+          
+          Update outdated dependencies and run comprehensive security audits to ensure all packages are current and secure.
+          
+          ## 📋 Background
+          
+          Current dependency status shows:
+          - `@types/react`: 19.2.2 → 19.2.3 (patch update available)
+          - Need to audit all dependencies for security vulnerabilities
+          - Need to verify license compliance after updates
+          - Need to ensure SBOM quality remains above 7.0/10 threshold
+          
+          Regular dependency updates are required by the ISMS Open Source Policy to maintain security posture and reduce technical debt.
+          
+          ## ✅ Acceptance Criteria
+          
+          - [ ] Update `@types/react` to latest version (19.2.3)
+          - [ ] Run `npm audit` and address any high/critical vulnerabilities
+          - [ ] Run `npm outdated` and evaluate other updates
+          - [ ] Run `npm run test:licenses` to verify license compliance
+          - [ ] Verify SBOM quality check still passes (score ≥ 7.0/10)
+          - [ ] Run full test suite to ensure no regressions
+          - [ ] Update package-lock.json with new dependency tree
+          - [ ] Document any breaking changes or manual interventions needed
+          
+          ## 🛠️ Implementation Guidance
+          
+          ### Files to Modify
+          - `package.json` - Update dependency versions
+          - `package-lock.json` - Will be auto-updated by npm
+          - Document any breaking changes in commit message
+          
+          ### Approach
+          1. Run `npm outdated` to see all available updates
+          2. Update @types/react: `npm install --save-dev @types/react@latest`
+          3. Run `npm audit` to check for vulnerabilities
+          4. If vulnerabilities found, run `npm audit fix` (review changes carefully)
+          5. Run `npm run test:licenses` to verify license compliance
+          6. Run full test suite: `npm test` and `npm run test:e2e`
+          7. Test build: `npm run build`
+          8. Verify in development: `npm run dev`
+          9. Check for any console warnings or errors
+          
+          ### Security Verification
+          ```bash
+          # Update dependencies
+          npm install --save-dev @types/react@latest
+          
+          # Security audit
+          npm audit
+          npm audit fix --dry-run  # Review before applying
+          
+          # License compliance
+          npm run test:licenses
+          
+          # Test everything
+          npm run lint
+          npm run test
+          npm run build
+          ```
+          
+          ## 🔗 Related Resources
+          
+          - [npm audit documentation](https://docs.npmjs.com/cli/v10/commands/npm-audit)
+          - [npm outdated documentation](https://docs.npmjs.com/cli/v10/commands/npm-outdated)
+          - [Hack23 ISMS - Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md)
+          - [License Compliance Tool](https://github.com/decentriq/license-compliance)
+          - Current `npm outdated` output showing @types/react update
+          
+          ## 📊 Metadata
+          
+          **Priority:** Medium
+          **Effort:** Small (1-2 hours)
+          **Impact:** Medium - Security and compatibility
+          **Type:** Maintenance
+          EOF
+          )
+          
+          ISSUE_URL=$(gh issue create \
+            --title "📦 Update dependencies and run security audit" \
+            --body "$ISSUE_BODY" \
+            --label "type:chore,priority:medium,size:small,domain:infrastructure" \
+            --assignee "" \
+            2>&1)
+          
+          echo "Created: $ISSUE_URL"
+          echo "issue5=$ISSUE_URL" >> $GITHUB_OUTPUT
+          sleep 2
+
+      - name: Generate Summary
+        run: |
+          echo "## ✅ Created 5 Priority Issues for Next Release" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "The following high-priority issues have been created:" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "1. 🔒 **Security Headers Enhancement** - Address ZAP scan findings" >> $GITHUB_STEP_SUMMARY
+          echo "   - Priority: High | Effort: Medium | Impact: Critical" >> $GITHUB_STEP_SUMMARY
+          echo "   - Labels: type:security, priority:high, size:medium" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "2. 🔷 **TypeScript Strict Typing** - Fix 8 ESLint warnings" >> $GITHUB_STEP_SUMMARY
+          echo "   - Priority: High | Effort: Small | Impact: High" >> $GITHUB_STEP_SUMMARY
+          echo "   - Labels: type:refactor, priority:high, size:small" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "3. ⚡ **Bundle Size Optimization** - Code-split Three.js" >> $GITHUB_STEP_SUMMARY
+          echo "   - Priority: High | Effort: Medium | Impact: High" >> $GITHUB_STEP_SUMMARY
+          echo "   - Labels: type:performance, priority:high, size:medium" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "4. 🧪 **Test Coverage Improvement** - Increase App.tsx to 80%+" >> $GITHUB_STEP_SUMMARY
+          echo "   - Priority: High | Effort: Small | Impact: High" >> $GITHUB_STEP_SUMMARY
+          echo "   - Labels: type:test, priority:high, size:small" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "5. 📦 **Dependency Updates** - Update packages and security audit" >> $GITHUB_STEP_SUMMARY
+          echo "   - Priority: Medium | Effort: Small | Impact: Medium" >> $GITHUB_STEP_SUMMARY
+          echo "   - Labels: type:chore, priority:medium, size:small" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📊 Priority Distribution" >> $GITHUB_STEP_SUMMARY
+          echo "- **High Priority:** 4 issues" >> $GITHUB_STEP_SUMMARY
+          echo "- **Medium Priority:** 1 issue" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### ⏱️ Estimated Total Effort" >> $GITHUB_STEP_SUMMARY
+          echo "- **Small:** 3 issues (5-7 hours total)" >> $GITHUB_STEP_SUMMARY
+          echo "- **Medium:** 2 issues (8-12 hours total)" >> $GITHUB_STEP_SUMMARY
+          echo "- **Total:** 13-19 hours" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "All issues are ready for assignment and can be worked on in parallel." >> $GITHUB_STEP_SUMMARY
