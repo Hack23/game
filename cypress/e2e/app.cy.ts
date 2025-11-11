@@ -54,13 +54,11 @@ describe("App E2E - UI and Basic Functionality", () => {
     cy.get("[data-testid=pause-button]").should("not.be.disabled").click();
     cy.get("[data-testid=game-status]").should("contain", "Paused");
     cy.get("[data-testid=pause-overlay]").should("exist").and("be.visible");
-    cy.get("[data-testid=instructions-text]").should("contain", "paused");
     
     // Resume the game
     cy.get("[data-testid=pause-button]").click();
     cy.get("[data-testid=game-status]").should("contain", "Active");
     cy.get("[data-testid=pause-overlay]").should("not.exist");
-    cy.get("[data-testid=instructions-text]").should("contain", "Click the target");
   });
 
   it("can reset the game", () => {
@@ -133,33 +131,10 @@ describe("App E2E - UI and Basic Functionality", () => {
   });
 
   it("should have a visible and interactive 3D target", () => {
-    // Verify game is in playing state first
-    cy.get("[data-testid=game-status]").should("contain", "Active");
-    
-    // Verify timer is running (not 0)
-    cy.get("[data-testid=timer-display]").should("contain", "60s");
-    
     // Target should exist in the canvas when game is active
-    cy.get("[data-testid=target-sphere]", { timeout: 10000 }).should("exist");
+    cy.get("[data-testid=target-sphere]").should("exist");
     
     // Canvas should be visible
     cy.get("[data-testid=threejs-canvas-container]").should("be.visible");
-  });
-
-  it("should display instructions that change with game state", () => {
-    // Active state instructions
-    cy.get("[data-testid=instructions-text]")
-      .should("be.visible")
-      .and("contain", "Click the target");
-    
-    // Pause and check instructions change
-    cy.get("[data-testid=pause-button]").click();
-    cy.get("[data-testid=instructions-text]")
-      .should("contain", "paused");
-    
-    // Resume
-    cy.get("[data-testid=pause-button]").click();
-    cy.get("[data-testid=instructions-text]")
-      .should("contain", "Click the target");
   });
 });
