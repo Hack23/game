@@ -72,8 +72,9 @@ describe("Game Visual Documentation", () => {
   });
 
   it("captures game after timer countdown", () => {
-    // Wait for timer to tick down
-    cy.wait(2000);
+    // Advance timer deterministically
+    cy.clock();
+    cy.tick(2000);
     cy.get("[data-testid=timer-display]").should("not.contain", "60s");
     
     // Take screenshot with reduced timer

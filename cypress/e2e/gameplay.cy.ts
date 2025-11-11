@@ -29,10 +29,7 @@ describe("Game Mechanics E2E", () => {
         win.dispatchEvent(new CustomEvent('test:targetClick'));
       });
       
-      // Wait for events to process
-      cy.wait(100);
-      
-      // Combo should now be visible
+      // Combo should now be visible (Cypress will auto-retry)
       cy.get("[data-testid=score-display]").should("contain", "COMBO");
     });
 
@@ -44,11 +41,8 @@ describe("Game Mechanics E2E", () => {
         }
       });
       
-      // Wait for all events to process
-      cy.wait(500);
-      
-      // After 5 hits, should have 6 points (5 base + 1 bonus)
-      cy.get("[data-testid=score-value]").then(($score) => {
+      // Wait for score to reach expected value (5 base + 1 bonus = 6)
+      cy.get("[data-testid=score-value]", { timeout: 3000 }).should(($score) => {
         const score = parseInt($score.text());
         expect(score).to.be.at.least(6);
       });
@@ -93,10 +87,7 @@ describe("Game Mechanics E2E", () => {
         }
       });
       
-      // Wait for events to process
-      cy.wait(500);
-      
-      // Level should increase to 2
+      // Level should increase to 2 (Cypress will auto-retry)
       cy.get("[data-testid=level-display]").should("contain", "2");
     });
 
