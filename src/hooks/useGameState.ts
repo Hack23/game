@@ -1,33 +1,36 @@
 import { useState, useCallback, useEffect, useRef } from "react";
-
-// Game spatial boundaries for player position randomization
-const PLAYER_X_RANGE = 4; // Range: -2 to +2
-const PLAYER_Y_RANGE = 3; // Range: -1.5 to +1.5
-const PLAYER_Z_RANGE = 2; // Range: -1 to +1
-
-// Game configuration constants
-const GAME_DURATION = 60; // 60 seconds
-const COMBO_TIMEOUT = 2000; // 2 seconds to maintain combo
-const BASE_TARGET_SIZE = 0.5;
-const MIN_TARGET_SIZE = 0.25; // Made smaller for increased difficulty
-const BASE_SPEED = 0.02; // Base speed for ball movement
+import { createTarget, updateTargetPhysics } from "../utils/targetPhysics";
+import {
+  GAME_DURATION,
+  COMBO_TIMEOUT,
+  getTargetCountForLevel,
+  getTargetSizeForLevel,
+  calculateLevel,
+  getSpeedMultiplierForLevel,
+  BASE_TARGET_SIZE,
+} from "../utils/gameConfig";
 
 /**
- * Generate a random velocity for ball movement
- * @returns Random velocity value
+ * Create initial targets array based on level
  */
-function generateRandomVelocity(): number {
-  return (Math.random() - 0.5) * BASE_SPEED * 2;
+function createInitialTargets(level: number, targetSize: number): Target[] {
+  const count = getTargetCountForLevel(level);
+  return Array.from({ length: count }, (_, i) => createTarget(i, targetSize));
+}
+
+export interface Target {
+  id: number;
+  x: number;
+  y: number;
+  z: number;
+  velocityX: number;
+  velocityY: number;
+  velocityZ: number;
+  size: number;
 }
 
 export interface GameState {
   score: number;
-  playerX: number;
-  playerY: number;
-  playerZ: number;
-  velocityX: number; // Ball velocity in X direction
-  velocityY: number; // Ball velocity in Y direction
-  velocityZ: number; // Ball velocity in Z direction
   isPlaying: boolean;
   timeLeft: number;
   combo: number;
@@ -35,11 +38,15 @@ export interface GameState {
   targetSize: number;
   level: number;
   isNewHighScore: boolean;
+  targets: Target[]; // Multiple targets support
+  totalClicks: number; // Track total clicks for accuracy
+  successfulHits: number; // Track successful hits
 }
 
 export interface UseGameStateReturn {
   gameState: GameState;
-  incrementScore: () => void;
+  incrementScore: (targetId: number) => void;
+  recordMiss: () => void;
   resetGame: () => void;
   togglePause: () => void;
 }
@@ -50,22 +57,23 @@ export interface UseGameStateReturn {
  * @returns Game state and control functions
  */
 export function useGameState(initialState?: Partial<GameState>): UseGameStateReturn {
-  const [gameState, setGameState] = useState<GameState>(() => ({
-    score: initialState?.score ?? 0,
-    playerX: initialState?.playerX ?? 0,
-    playerY: initialState?.playerY ?? 0,
-    playerZ: initialState?.playerZ ?? 0,
-    velocityX: initialState?.velocityX ?? generateRandomVelocity(),
-    velocityY: initialState?.velocityY ?? generateRandomVelocity(),
-    velocityZ: initialState?.velocityZ ?? generateRandomVelocity(),
-    isPlaying: initialState?.isPlaying ?? true,
-    timeLeft: initialState?.timeLeft ?? GAME_DURATION,
-    combo: initialState?.combo ?? 0,
-    highScore: initialState?.highScore ?? 0,
-    targetSize: initialState?.targetSize ?? BASE_TARGET_SIZE,
-    level: initialState?.level ?? 1,
-    isNewHighScore: initialState?.isNewHighScore ?? false,
-  }));
+  const [gameState, setGameState] = useState<GameState>(() => {
+    const level = initialState?.level ?? 1;
+    const targetSize = initialState?.targetSize ?? BASE_TARGET_SIZE;
+    return {
+      score: initialState?.score ?? 0,
+      isPlaying: initialState?.isPlaying ?? true,
+      timeLeft: initialState?.timeLeft ?? GAME_DURATION,
+      combo: initialState?.combo ?? 0,
+      highScore: initialState?.highScore ?? 0,
+      targetSize,
+      level,
+      isNewHighScore: initialState?.isNewHighScore ?? false,
+      targets: initialState?.targets ?? createInitialTargets(level, targetSize),
+      totalClicks: initialState?.totalClicks ?? 0,
+      successfulHits: initialState?.successfulHits ?? 0,
+    };
+  });
 
   const comboTimerRef = useRef<NodeJS.Timeout | null>(null);
   const gameTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -98,46 +106,17 @@ export function useGameState(initialState?: Partial<GameState>): UseGameStateRet
 
     const animate = (): void => {
       setGameState((prev) => {
-        // Calculate speed multiplier based on level (increases with level)
-        const speedMultiplier = 1 + (prev.level - 1) * 0.15;
+        // Calculate speed multiplier based on level
+        const speedMultiplier = getSpeedMultiplierForLevel(prev.level);
 
-        // Update positions
-        let newX = prev.playerX + prev.velocityX * speedMultiplier;
-        let newY = prev.playerY + prev.velocityY * speedMultiplier;
-        let newZ = prev.playerZ + prev.velocityZ * speedMultiplier;
-
-        // Update velocities for bouncing
-        let newVelocityX = prev.velocityX;
-        let newVelocityY = prev.velocityY;
-        let newVelocityZ = prev.velocityZ;
-
-        // Bounce off boundaries with slight randomization
-        const halfRange = PLAYER_X_RANGE / 2;
-        if (newX > halfRange || newX < -halfRange) {
-          newVelocityX = -prev.velocityX * (0.95 + Math.random() * 0.1);
-          newX = Math.max(-halfRange, Math.min(halfRange, newX));
-        }
-
-        const halfYRange = PLAYER_Y_RANGE / 2;
-        if (newY > halfYRange || newY < -halfYRange) {
-          newVelocityY = -prev.velocityY * (0.95 + Math.random() * 0.1);
-          newY = Math.max(-halfYRange, Math.min(halfYRange, newY));
-        }
-
-        const halfZRange = PLAYER_Z_RANGE / 2;
-        if (newZ > halfZRange || newZ < -halfZRange) {
-          newVelocityZ = -prev.velocityZ * (0.95 + Math.random() * 0.1);
-          newZ = Math.max(-halfZRange, Math.min(halfZRange, newZ));
-        }
+        // Update all targets using physics utility
+        const updatedTargets = prev.targets.map((target) =>
+          updateTargetPhysics(target, speedMultiplier)
+        );
 
         return {
           ...prev,
-          playerX: newX,
-          playerY: newY,
-          playerZ: newZ,
-          velocityX: newVelocityX,
-          velocityY: newVelocityY,
-          velocityZ: newVelocityZ,
+          targets: updatedTargets,
         };
       });
 
@@ -187,19 +166,36 @@ export function useGameState(initialState?: Partial<GameState>): UseGameStateRet
     };
   }, [gameState.isPlaying, gameState.timeLeft]);
 
-  const incrementScore = useCallback(() => {
+  const incrementScore = useCallback((targetId: number) => {
     setGameState((prev) => {
       const newCombo = prev.combo + 1;
       // Only give bonus when reaching exactly a multiple of 5
       const comboBonus = newCombo % 5 === 0 ? 1 : 0;
       const newScore = prev.score + 1 + comboBonus;
       
-      // Increase difficulty: smaller target and higher level
-      const newLevel = Math.floor(newScore / 10) + 1;
-      const newTargetSize = Math.max(
-        MIN_TARGET_SIZE,
-        BASE_TARGET_SIZE - (newLevel - 1) * 0.04
-      );
+      // Calculate new level and target size using utilities
+      const newLevel = calculateLevel(newScore);
+      const newTargetSize = getTargetSizeForLevel(newLevel);
+
+      // Replace the hit target with a new one
+      const newTargets = prev.targets.map((target) => {
+        if (target.id === targetId) {
+          return createTarget(target.id, newTargetSize);
+        }
+        return { ...target, size: newTargetSize };
+      });
+
+      // Adjust target count based on new level
+      const targetCount = getTargetCountForLevel(newLevel);
+      let updatedTargets = newTargets;
+      if (targetCount > newTargets.length) {
+        // Add new targets
+        const newTargetId = Math.max(...newTargets.map(t => t.id)) + 1;
+        updatedTargets = [...newTargets, createTarget(newTargetId, newTargetSize)];
+      } else if (targetCount < newTargets.length) {
+        // Remove excess targets
+        updatedTargets = newTargets.slice(0, targetCount);
+      }
 
       return {
         ...prev,
@@ -207,12 +203,9 @@ export function useGameState(initialState?: Partial<GameState>): UseGameStateRet
         combo: newCombo,
         level: newLevel,
         targetSize: newTargetSize,
-        playerX: Math.random() * PLAYER_X_RANGE - PLAYER_X_RANGE / 2,
-        playerY: Math.random() * PLAYER_Y_RANGE - PLAYER_Y_RANGE / 2,
-        playerZ: Math.random() * PLAYER_Z_RANGE - PLAYER_Z_RANGE / 2,
-        velocityX: generateRandomVelocity(),
-        velocityY: generateRandomVelocity(),
-        velocityZ: generateRandomVelocity(),
+        targets: updatedTargets,
+        successfulHits: prev.successfulHits + 1,
+        totalClicks: prev.totalClicks + 1,
       };
     });
 
@@ -225,6 +218,19 @@ export function useGameState(initialState?: Partial<GameState>): UseGameStateRet
     }, COMBO_TIMEOUT);
   }, []);
 
+  const recordMiss = useCallback(() => {
+    setGameState((prev) => ({
+      ...prev,
+      totalClicks: prev.totalClicks + 1,
+      combo: 0, // Break combo on miss
+    }));
+    
+    // Clear combo timer since combo is broken
+    if (comboTimerRef.current !== null) {
+      clearTimeout(comboTimerRef.current);
+    }
+  }, []);
+
   const resetGame = useCallback((): void => {
     if (comboTimerRef.current !== null) {
       clearTimeout(comboTimerRef.current);
@@ -233,14 +239,9 @@ export function useGameState(initialState?: Partial<GameState>): UseGameStateRet
       clearInterval(gameTimerRef.current);
     }
     
+    const initialTargets = createInitialTargets(1, BASE_TARGET_SIZE);
     setGameState((prev) => ({
       score: 0,
-      playerX: 0,
-      playerY: 0,
-      playerZ: 0,
-      velocityX: generateRandomVelocity(),
-      velocityY: generateRandomVelocity(),
-      velocityZ: generateRandomVelocity(),
       isPlaying: true,
       timeLeft: GAME_DURATION,
       combo: 0,
@@ -248,6 +249,9 @@ export function useGameState(initialState?: Partial<GameState>): UseGameStateRet
       targetSize: BASE_TARGET_SIZE,
       level: 1,
       isNewHighScore: false,
+      targets: initialTargets,
+      totalClicks: 0,
+      successfulHits: 0,
     }));
   }, []);
 
@@ -261,6 +265,7 @@ export function useGameState(initialState?: Partial<GameState>): UseGameStateRet
   return {
     gameState,
     incrementScore,
+    recordMiss,
     resetGame,
     togglePause,
   };

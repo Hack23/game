@@ -239,8 +239,9 @@ describe("App Component Interactions", () => {
     it("should display volume percentage correctly", async () => {
       render(<App />);
       
-      // Should show 100% initially
-      expect(screen.getByText("100%")).toBeInTheDocument();
+      // Should show 100% initially - use getAllByText since there are multiple 100% on screen now
+      const percentages = screen.getAllByText("100%");
+      expect(percentages.length).toBeGreaterThan(0);
     });
   });
 
@@ -282,7 +283,7 @@ describe("App Component Interactions", () => {
       render(<App />);
       
       const instructions = screen.getByTestId("instructions-text");
-      expect(instructions).toHaveTextContent("Click the target to score");
+      expect(instructions).toHaveTextContent("Click targets to score");
     });
 
     it("should show pause instructions when game is paused", async () => {

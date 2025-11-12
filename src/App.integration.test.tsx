@@ -136,7 +136,7 @@ describe("App Game Integration Tests", () => {
       // Score 9 times (with a combo bonus at hit 5, total score will be 10) to reach level 2
       act(() => {
         for (let i = 0; i < 9; i++) {
-          result.current.incrementScore();
+          result.current.incrementScore(0);
         }
       });
       
@@ -152,7 +152,7 @@ describe("App Game Integration Tests", () => {
       // Score 10 times
       act(() => {
         for (let i = 0; i < 10; i++) {
-          result.current.incrementScore();
+          result.current.incrementScore(0);
         }
       });
       
@@ -161,7 +161,7 @@ describe("App Game Integration Tests", () => {
       // Score 10 more times
       act(() => {
         for (let i = 0; i < 10; i++) {
-          result.current.incrementScore();
+          result.current.incrementScore(0);
         }
       });
       
@@ -176,7 +176,7 @@ describe("App Game Integration Tests", () => {
       // Score to increase level
       act(() => {
         for (let i = 0; i < 20; i++) {
-          result.current.incrementScore();
+          result.current.incrementScore(0);
         }
       });
       
@@ -193,7 +193,7 @@ describe("App Game Integration Tests", () => {
       // Score 5 times
       act(() => {
         for (let i = 0; i < 5; i++) {
-          result.current.incrementScore();
+          result.current.incrementScore(0);
         }
       });
       
@@ -207,7 +207,7 @@ describe("App Game Integration Tests", () => {
       // Score 5 times
       act(() => {
         for (let i = 0; i < 5; i++) {
-          result.current.incrementScore();
+          result.current.incrementScore(0);
         }
       });
       
@@ -222,7 +222,7 @@ describe("App Game Integration Tests", () => {
       // Score 10 times
       act(() => {
         for (let i = 0; i < 10; i++) {
-          result.current.incrementScore();
+          result.current.incrementScore(0);
         }
       });
       
@@ -236,7 +236,7 @@ describe("App Game Integration Tests", () => {
       
       // Score once to start combo
       act(() => {
-        result.current.incrementScore();
+        result.current.incrementScore(0);
       });
       
       expect(result.current.gameState.combo).toBe(1);
@@ -259,9 +259,9 @@ describe("App Game Integration Tests", () => {
       
       // Play for a bit
       act(() => {
-        result.current.incrementScore();
-        result.current.incrementScore();
-        result.current.incrementScore();
+        result.current.incrementScore(0);
+        result.current.incrementScore(0);
+        result.current.incrementScore(0);
       });
       
       expect(result.current.gameState.score).toBe(3);
@@ -288,9 +288,9 @@ describe("App Game Integration Tests", () => {
       
       // Play first game
       act(() => {
-        result.current.incrementScore();
-        result.current.incrementScore();
-        result.current.incrementScore();
+        result.current.incrementScore(0);
+        result.current.incrementScore(0);
+        result.current.incrementScore(0);
       });
       
       const firstScore = result.current.gameState.score;
@@ -325,23 +325,29 @@ describe("App Game Integration Tests", () => {
   });
 
   describe("Ball Movement Integration", () => {
-    it("should randomize ball position after scoring", () => {
+    it("should randomize target position after scoring", () => {
       const { result } = renderHook(() => useGameState());
       
+      const initialTarget = result.current.gameState.targets[0];
+      if (!initialTarget) throw new Error("No target");
+      
       const initialPos = {
-        x: result.current.gameState.playerX,
-        y: result.current.gameState.playerY,
-        z: result.current.gameState.playerZ,
+        x: initialTarget.x,
+        y: initialTarget.y,
+        z: initialTarget.z,
       };
       
       act(() => {
-        result.current.incrementScore();
+        result.current.incrementScore(initialTarget.id);
       });
       
+      const newTarget = result.current.gameState.targets[0];
+      if (!newTarget) throw new Error("No target after score");
+      
       const newPos = {
-        x: result.current.gameState.playerX,
-        y: result.current.gameState.playerY,
-        z: result.current.gameState.playerZ,
+        x: newTarget.x,
+        y: newTarget.y,
+        z: newTarget.z,
       };
       
       // Position should have changed
@@ -355,25 +361,25 @@ describe("App Game Integration Tests", () => {
     it("should reset ball position and velocity on game reset", () => {
       const { result } = renderHook(() => useGameState());
       
-      // Score to move ball
+      // Score to change state
       act(() => {
-        result.current.incrementScore();
-        result.current.incrementScore();
+        const targetId = result.current.gameState.targets[0]?.id ?? 0;
+        result.current.incrementScore(targetId);
+        result.current.incrementScore(targetId);
       });
       
       act(() => {
         result.current.resetGame();
       });
       
-      // Position should be reset to origin
-      expect(result.current.gameState.playerX).toBe(0);
-      expect(result.current.gameState.playerY).toBe(0);
-      expect(result.current.gameState.playerZ).toBe(0);
+      // Check that targets are reset
+      expect(result.current.gameState.targets).toHaveLength(1);
+      expect(result.current.gameState.targets[0]).toBeDefined();
       
-      // Velocities should be re-randomized
-      expect(result.current.gameState.velocityX).toBeDefined();
-      expect(result.current.gameState.velocityY).toBeDefined();
-      expect(result.current.gameState.velocityZ).toBeDefined();
+      // Score and stats should be reset
+      expect(result.current.gameState.score).toBe(0);
+      expect(result.current.gameState.totalClicks).toBe(0);
+      expect(result.current.gameState.successfulHits).toBe(0);
     });
   });
 });

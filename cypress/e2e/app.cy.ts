@@ -40,7 +40,7 @@ describe("App E2E - UI and Basic Functionality", () => {
   });
 
   it("displays game instructions", () => {
-    cy.get("[data-testid=instructions-text]").should("contain", "Click the target");
+    cy.get("[data-testid=instructions-text]").should("contain", "Click targets to score");
   });
 
   it("has pause and reset buttons", () => {
