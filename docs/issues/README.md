@@ -18,7 +18,7 @@ gh workflow run create-priority-issues.yml
 
 ### Method 2: Use the Documentation
 
-Review the detailed specifications in [`PRIORITY_ISSUES_NEXT_RELEASE.md`](PRIORITY_ISSUES_NEXT_RELEASE.md) and create issues manually or adapt the templates.
+Review the detailed specifications in [`PRIORITY_ISSUES_NEXT_RELEASE.md`](../PRIORITY_ISSUES_NEXT_RELEASE.md) and create issues manually or adapt the templates.
 
 ## What Gets Created
 
@@ -67,7 +67,6 @@ All issues scored 12-17 points, making them top priorities for the next release.
 
 ### Workflow Features
 - ✅ **Hardened runner** with security audit logging
-- ✅ **Duplicate detection** to avoid creating existing issues
 - ✅ **Comprehensive labels** (type, priority, size, domain)
 - ✅ **Summary report** showing all created issues
 - ✅ **Rate limiting** between issue creations

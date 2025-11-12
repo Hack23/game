@@ -2,11 +2,6 @@ name: Create Priority Issues for Release
 
 on:
   workflow_dispatch:
-    inputs:
-      milestone:
-        description: 'Milestone to assign (optional)'
-        required: false
-        type: string
 
 permissions:
   contents: read
@@ -267,6 +262,8 @@ jobs:
           })
           
           // App.tsx
+          import React, { Suspense } from 'react';
+          
           const GameCanvas = React.lazy(() => import('./components/GameCanvas'));
           
           function App() {

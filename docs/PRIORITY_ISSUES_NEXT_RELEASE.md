@@ -143,7 +143,7 @@ const playSound = (): void => {
 ### Related Resources
 - [TypeScript Handbook - Functions](https://www.typescriptlang.org/docs/handbook/2/functions.html)
 - [ESLint Rule - explicit-function-return-type](https://typescript-eslint.io/rules/explicit-function-return-type/)
-- [Repository Copilot Instructions](.github/copilot-instructions.md)
+- [Repository Copilot Instructions](../.github/copilot-instructions.md)
 - Current lint output showing 8 warnings
 
 ### Metadata
@@ -214,6 +214,8 @@ export default defineConfig({
 })
 
 // App.tsx
+import React, { Suspense } from 'react';
+
 const GameCanvas = React.lazy(() => import('./components/GameCanvas'));
 
 function App() {
