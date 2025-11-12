@@ -325,23 +325,29 @@ describe("App Game Integration Tests", () => {
   });
 
   describe("Ball Movement Integration", () => {
-    it("should randomize ball position after scoring", () => {
+    it("should randomize target position after scoring", () => {
       const { result } = renderHook(() => useGameState());
       
+      const initialTarget = result.current.gameState.targets[0];
+      if (!initialTarget) throw new Error("No target");
+      
       const initialPos = {
-        x: result.current.gameState.playerX,
-        y: result.current.gameState.playerY,
-        z: result.current.gameState.playerZ,
+        x: initialTarget.x,
+        y: initialTarget.y,
+        z: initialTarget.z,
       };
       
       act(() => {
-        result.current.incrementScore(0);
+        result.current.incrementScore(initialTarget.id);
       });
       
+      const newTarget = result.current.gameState.targets[0];
+      if (!newTarget) throw new Error("No target after score");
+      
       const newPos = {
-        x: result.current.gameState.playerX,
-        y: result.current.gameState.playerY,
-        z: result.current.gameState.playerZ,
+        x: newTarget.x,
+        y: newTarget.y,
+        z: newTarget.z,
       };
       
       // Position should have changed
@@ -355,7 +361,7 @@ describe("App Game Integration Tests", () => {
     it("should reset ball position and velocity on game reset", () => {
       const { result } = renderHook(() => useGameState());
       
-      // Score to move ball
+      // Score to change state
       act(() => {
         const targetId = result.current.gameState.targets[0]?.id ?? 0;
         result.current.incrementScore(targetId);
@@ -366,15 +372,9 @@ describe("App Game Integration Tests", () => {
         result.current.resetGame();
       });
       
-      // Position should be reset (from first target)
-      expect(result.current.gameState.playerX).toBeDefined();
-      expect(result.current.gameState.playerY).toBeDefined();
-      expect(result.current.gameState.playerZ).toBeDefined();
-      
-      // Velocities should be re-randomized
-      expect(result.current.gameState.velocityX).toBeDefined();
-      expect(result.current.gameState.velocityY).toBeDefined();
-      expect(result.current.gameState.velocityZ).toBeDefined();
+      // Check that targets are reset
+      expect(result.current.gameState.targets).toHaveLength(1);
+      expect(result.current.gameState.targets[0]).toBeDefined();
       
       // Score and stats should be reset
       expect(result.current.gameState.score).toBe(0);

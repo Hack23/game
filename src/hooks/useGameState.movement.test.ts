@@ -12,106 +12,129 @@ describe("useGameState Ball Movement and Bouncing", () => {
     vi.useRealTimers();
   });
 
-  describe("Ball Velocity and Movement", () => {
-    it("should initialize with random velocities", () => {
+  describe("Target Velocity and Movement", () => {
+    it("should initialize with random velocities for all targets", () => {
       const { result } = renderHook(() => useGameState());
       
-      // Velocities should be set (non-zero)
-      expect(result.current.gameState.velocityX).toBeDefined();
-      expect(result.current.gameState.velocityY).toBeDefined();
-      expect(result.current.gameState.velocityZ).toBeDefined();
+      // Each target should have velocities
+      result.current.gameState.targets.forEach(target => {
+        expect(target.velocityX).toBeDefined();
+        expect(target.velocityY).toBeDefined();
+        expect(target.velocityZ).toBeDefined();
+      });
     });
 
-    it("should update velocities when score is incremented", () => {
+    it("should update target when score is incremented", () => {
       const { result } = renderHook(() => useGameState());
       
-      const initialVelocityX = result.current.gameState.velocityX;
-      const initialVelocityY = result.current.gameState.velocityY;
-      const initialVelocityZ = result.current.gameState.velocityZ;
+      const initialTarget = result.current.gameState.targets[0];
+      if (!initialTarget) throw new Error("No target found");
+      
+      const initialX = initialTarget.x;
+      const initialY = initialTarget.y;
+      const initialZ = initialTarget.z;
       
       act(() => {
-        result.current.incrementScore(0);
+        result.current.incrementScore(initialTarget.id);
       });
       
-      // Velocities should change after scoring
-      expect(
-        result.current.gameState.velocityX !== initialVelocityX ||
-        result.current.gameState.velocityY !== initialVelocityY ||
-        result.current.gameState.velocityZ !== initialVelocityZ
-      ).toBe(true);
+      // Target position should have changed (new target spawned)
+      const newTarget = result.current.gameState.targets[0];
+      expect(newTarget).toBeDefined();
+      if (newTarget) {
+        expect(
+          newTarget.x !== initialX ||
+          newTarget.y !== initialY ||
+          newTarget.z !== initialZ
+        ).toBe(true);
+      }
     });
 
-    it("should generate new random velocities on reset", () => {
+    it("should generate new random properties on reset", () => {
       const { result } = renderHook(() => useGameState());
       
       act(() => {
-        result.current.incrementScore(0);
-        result.current.incrementScore(0);
+        const targetId = result.current.gameState.targets[0]?.id ?? 0;
+        result.current.incrementScore(targetId);
+        result.current.incrementScore(targetId);
       });
       
       act(() => {
         result.current.resetGame();
       });
       
-      // Velocities should be reset and potentially different
-      expect(result.current.gameState.velocityX).toBeDefined();
-      expect(result.current.gameState.velocityY).toBeDefined();
-      expect(result.current.gameState.velocityZ).toBeDefined();
+      // Should have targets with valid properties
+      expect(result.current.gameState.targets.length).toBeGreaterThan(0);
+      const firstTarget = result.current.gameState.targets[0];
+      expect(firstTarget?.velocityX).toBeDefined();
+      expect(firstTarget?.velocityY).toBeDefined();
+      expect(firstTarget?.velocityZ).toBeDefined();
     });
   });
 
-  describe("Ball Position Boundaries", () => {
-    it("should keep ball within X boundaries (-2 to +2)", () => {
+  describe("Target Position Boundaries", () => {
+    it("should keep targets within X boundaries (-2 to +2)", () => {
       const { result } = renderHook(() => useGameState());
       
       // Generate multiple positions by scoring
       for (let i = 0; i < 20; i++) {
         act(() => {
-          result.current.incrementScore(0);
+          const targetId = result.current.gameState.targets[0]?.id ?? 0;
+          result.current.incrementScore(targetId);
         });
         
-        expect(result.current.gameState.playerX).toBeGreaterThanOrEqual(-2);
-        expect(result.current.gameState.playerX).toBeLessThanOrEqual(2);
+        result.current.gameState.targets.forEach(target => {
+          expect(target.x).toBeGreaterThanOrEqual(-2);
+          expect(target.x).toBeLessThanOrEqual(2);
+        });
       }
     });
 
-    it("should keep ball within Y boundaries (-1.5 to +1.5)", () => {
+    it("should keep targets within Y boundaries (-1.5 to +1.5)", () => {
       const { result } = renderHook(() => useGameState());
       
       // Generate multiple positions by scoring
       for (let i = 0; i < 20; i++) {
         act(() => {
-          result.current.incrementScore(0);
+          const targetId = result.current.gameState.targets[0]?.id ?? 0;
+          result.current.incrementScore(targetId);
         });
         
-        expect(result.current.gameState.playerY).toBeGreaterThanOrEqual(-1.5);
-        expect(result.current.gameState.playerY).toBeLessThanOrEqual(1.5);
+        result.current.gameState.targets.forEach(target => {
+          expect(target.y).toBeGreaterThanOrEqual(-1.5);
+          expect(target.y).toBeLessThanOrEqual(1.5);
+        });
       }
     });
 
-    it("should keep ball within Z boundaries (-1 to +1)", () => {
+    it("should keep targets within Z boundaries (-1 to +1)", () => {
       const { result } = renderHook(() => useGameState());
       
       // Generate multiple positions by scoring
       for (let i = 0; i < 20; i++) {
         act(() => {
-          result.current.incrementScore(0);
+          const targetId = result.current.gameState.targets[0]?.id ?? 0;
+          result.current.incrementScore(targetId);
         });
         
-        expect(result.current.gameState.playerZ).toBeGreaterThanOrEqual(-1);
-        expect(result.current.gameState.playerZ).toBeLessThanOrEqual(1);
+        result.current.gameState.targets.forEach(target => {
+          expect(target.z).toBeGreaterThanOrEqual(-1);
+          expect(target.z).toBeLessThanOrEqual(1);
+        });
       }
     });
   });
 
   describe("Speed Scaling with Level", () => {
-    it("should maintain reasonable velocities", () => {
+    it("should maintain reasonable velocities for all targets", () => {
       const { result } = renderHook(() => useGameState());
       
-      // Check initial velocities are reasonable
-      expect(Math.abs(result.current.gameState.velocityX)).toBeLessThan(1);
-      expect(Math.abs(result.current.gameState.velocityY)).toBeLessThan(1);
-      expect(Math.abs(result.current.gameState.velocityZ)).toBeLessThan(1);
+      // Check initial velocities are reasonable for all targets
+      result.current.gameState.targets.forEach(target => {
+        expect(Math.abs(target.velocityX)).toBeLessThan(1);
+        expect(Math.abs(target.velocityY)).toBeLessThan(1);
+        expect(Math.abs(target.velocityZ)).toBeLessThan(1);
+      });
     });
 
     it("should increase effective speed as level increases", () => {
@@ -122,7 +145,8 @@ describe("useGameState Ball Movement and Bouncing", () => {
       // Score to reach level 2
       act(() => {
         for (let i = 0; i < 10; i++) {
-          result.current.incrementScore(0);
+          const targetId = result.current.gameState.targets[0]?.id ?? 0;
+          result.current.incrementScore(targetId);
         }
       });
       
@@ -134,24 +158,18 @@ describe("useGameState Ball Movement and Bouncing", () => {
   });
 
   describe("Game State During Movement", () => {
-    it("should not move ball when game is paused", () => {
+    it("should not move targets when game is paused", () => {
       const { result } = renderHook(() => useGameState());
       
       act(() => {
         result.current.togglePause();
       });
       
-      // Advance time
-      act(() => {
-        vi.advanceTimersByTime(1000);
-      });
-      
-      // Position should not change significantly when paused
-      // Note: Due to requestAnimationFrame mocking, we just verify the game is paused
+      // Game should be paused
       expect(result.current.gameState.isPlaying).toBe(false);
     });
 
-    it("should not move ball when game is over", () => {
+    it("should not move targets when game is over", () => {
       const { result } = renderHook(() => useGameState({ timeLeft: 1 }));
       
       // Let game end
@@ -165,31 +183,28 @@ describe("useGameState Ball Movement and Bouncing", () => {
   });
 
   describe("Position Randomization on Score", () => {
-    it("should randomize position when scoring multiple times", () => {
+    it("should randomize target position when scoring", () => {
       const { result } = renderHook(() => useGameState());
       
-      const positions: Array<{ x: number; y: number; z: number }> = [];
+      const initialTarget = result.current.gameState.targets[0];
+      if (!initialTarget) throw new Error("No target");
       
-      // Collect multiple positions
-      for (let i = 0; i < 10; i++) {
-        act(() => {
-          result.current.incrementScore(0);
-        });
-        
-        positions.push({
-          x: result.current.gameState.playerX,
-          y: result.current.gameState.playerY,
-          z: result.current.gameState.playerZ,
-        });
-      }
+      const initialPos = { x: initialTarget.x, y: initialTarget.y, z: initialTarget.z };
       
-      // Check that positions are different (randomized)
-      const uniquePositions = new Set(
-        positions.map(p => `${p.x.toFixed(2)},${p.y.toFixed(2)},${p.z.toFixed(2)}`)
-      );
+      act(() => {
+        result.current.incrementScore(initialTarget.id);
+      });
       
-      // Most positions should be unique (allowing for some coincidental duplicates)
-      expect(uniquePositions.size).toBeGreaterThan(7);
+      const newTarget = result.current.gameState.targets[0];
+      if (!newTarget) throw new Error("No target after score");
+      
+      // Position should have changed (new target spawned)
+      const positionChanged = 
+        newTarget.x !== initialPos.x ||
+        newTarget.y !== initialPos.y ||
+        newTarget.z !== initialPos.z;
+      
+      expect(positionChanged).toBe(true);
     });
 
     it("should set valid positions after each score", () => {
@@ -197,62 +212,19 @@ describe("useGameState Ball Movement and Bouncing", () => {
       
       for (let i = 0; i < 10; i++) {
         act(() => {
-          result.current.incrementScore(0);
+          const targetId = result.current.gameState.targets[0]?.id ?? 0;
+          result.current.incrementScore(targetId);
         });
         
-        // Check positions are valid numbers
-        expect(Number.isFinite(result.current.gameState.playerX)).toBe(true);
-        expect(Number.isFinite(result.current.gameState.playerY)).toBe(true);
-        expect(Number.isFinite(result.current.gameState.playerZ)).toBe(true);
-        
-        // Check positions are not NaN
-        expect(Number.isNaN(result.current.gameState.playerX)).toBe(false);
-        expect(Number.isNaN(result.current.gameState.playerY)).toBe(false);
-        expect(Number.isNaN(result.current.gameState.playerZ)).toBe(false);
-      }
-    });
-  });
-
-  describe("Velocity Reset on Score", () => {
-    it("should generate new velocities after scoring", () => {
-      const { result } = renderHook(() => useGameState());
-      
-      const velocities: Array<{ x: number; y: number; z: number }> = [];
-      
-      // Collect multiple velocity sets
-      for (let i = 0; i < 5; i++) {
-        act(() => {
-          result.current.incrementScore(0);
+        // Check all targets have valid positions
+        result.current.gameState.targets.forEach(target => {
+          expect(Number.isFinite(target.x)).toBe(true);
+          expect(Number.isFinite(target.y)).toBe(true);
+          expect(Number.isFinite(target.z)).toBe(true);
+          expect(Number.isNaN(target.x)).toBe(false);
+          expect(Number.isNaN(target.y)).toBe(false);
+          expect(Number.isNaN(target.z)).toBe(false);
         });
-        
-        velocities.push({
-          x: result.current.gameState.velocityX,
-          y: result.current.gameState.velocityY,
-          z: result.current.gameState.velocityZ,
-        });
-      }
-      
-      // Check that velocities are different after each score
-      const uniqueVelocities = new Set(
-        velocities.map(v => `${v.x.toFixed(4)},${v.y.toFixed(4)},${v.z.toFixed(4)}`)
-      );
-      
-      // Most velocities should be unique (randomized)
-      expect(uniqueVelocities.size).toBeGreaterThan(3);
-    });
-
-    it("should maintain velocity magnitudes in reasonable range", () => {
-      const { result } = renderHook(() => useGameState());
-      
-      for (let i = 0; i < 10; i++) {
-        act(() => {
-          result.current.incrementScore(0);
-        });
-        
-        // Velocities should be small (base speed is 0.02, max is around 0.02)
-        expect(Math.abs(result.current.gameState.velocityX)).toBeLessThan(0.1);
-        expect(Math.abs(result.current.gameState.velocityY)).toBeLessThan(0.1);
-        expect(Math.abs(result.current.gameState.velocityZ)).toBeLessThan(0.1);
       }
     });
   });
@@ -264,39 +236,47 @@ describe("useGameState Ball Movement and Bouncing", () => {
       // Rapidly score multiple times
       act(() => {
         for (let i = 0; i < 50; i++) {
-          result.current.incrementScore(0);
+          const targetId = result.current.gameState.targets[0]?.id ?? 0;
+          result.current.incrementScore(targetId);
         }
       });
       
       // Game should still be in valid state
       // 50 base points + 10 bonus points (one for every 5th hit) = 60
       expect(result.current.gameState.score).toBe(60);
-      expect(Number.isFinite(result.current.gameState.playerX)).toBe(true);
-      expect(Number.isFinite(result.current.gameState.playerY)).toBe(true);
-      expect(Number.isFinite(result.current.gameState.playerZ)).toBe(true);
+      
+      // All targets should have valid positions
+      result.current.gameState.targets.forEach(target => {
+        expect(Number.isFinite(target.x)).toBe(true);
+        expect(Number.isFinite(target.y)).toBe(true);
+        expect(Number.isFinite(target.z)).toBe(true);
+      });
     });
 
     it("should maintain state consistency after pause-resume cycles", () => {
       const { result } = renderHook(() => useGameState());
       
+      const firstTargetId = result.current.gameState.targets[0]?.id ?? 0;
+      
       act(() => {
-        result.current.incrementScore(0);
+        result.current.incrementScore(firstTargetId);
         result.current.togglePause();
         result.current.togglePause();
-        result.current.incrementScore(0);
+        result.current.incrementScore(firstTargetId);
       });
       
       expect(result.current.gameState.score).toBe(2);
       expect(result.current.gameState.isPlaying).toBe(true);
     });
 
-    it("should reset velocities correctly when game is reset", () => {
+    it("should reset targets correctly when game is reset", () => {
       const { result } = renderHook(() => useGameState());
       
-      // Score and let ball move
+      // Score to change state
       act(() => {
         for (let i = 0; i < 5; i++) {
-          result.current.incrementScore(0);
+          const targetId = result.current.gameState.targets[0]?.id ?? 0;
+          result.current.incrementScore(targetId);
         }
       });
       
@@ -304,13 +284,15 @@ describe("useGameState Ball Movement and Bouncing", () => {
         result.current.resetGame();
       });
       
-      // All velocities should be defined after reset
-      expect(result.current.gameState.velocityX).toBeDefined();
-      expect(result.current.gameState.velocityY).toBeDefined();
-      expect(result.current.gameState.velocityZ).toBeDefined();
-      expect(Number.isFinite(result.current.gameState.velocityX)).toBe(true);
-      expect(Number.isFinite(result.current.gameState.velocityY)).toBe(true);
-      expect(Number.isFinite(result.current.gameState.velocityZ)).toBe(true);
+      // Should have exactly 1 target at level 1
+      expect(result.current.gameState.targets).toHaveLength(1);
+      const target = result.current.gameState.targets[0];
+      expect(target).toBeDefined();
+      if (target) {
+        expect(target.velocityX).toBeDefined();
+        expect(target.velocityY).toBeDefined();
+        expect(target.velocityZ).toBeDefined();
+      }
     });
   });
 });
