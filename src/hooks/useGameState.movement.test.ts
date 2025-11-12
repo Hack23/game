@@ -30,7 +30,7 @@ describe("useGameState Ball Movement and Bouncing", () => {
       const initialVelocityZ = result.current.gameState.velocityZ;
       
       act(() => {
-        result.current.incrementScore();
+        result.current.incrementScore(0);
       });
       
       // Velocities should change after scoring
@@ -45,8 +45,8 @@ describe("useGameState Ball Movement and Bouncing", () => {
       const { result } = renderHook(() => useGameState());
       
       act(() => {
-        result.current.incrementScore();
-        result.current.incrementScore();
+        result.current.incrementScore(0);
+        result.current.incrementScore(0);
       });
       
       act(() => {
@@ -67,7 +67,7 @@ describe("useGameState Ball Movement and Bouncing", () => {
       // Generate multiple positions by scoring
       for (let i = 0; i < 20; i++) {
         act(() => {
-          result.current.incrementScore();
+          result.current.incrementScore(0);
         });
         
         expect(result.current.gameState.playerX).toBeGreaterThanOrEqual(-2);
@@ -81,7 +81,7 @@ describe("useGameState Ball Movement and Bouncing", () => {
       // Generate multiple positions by scoring
       for (let i = 0; i < 20; i++) {
         act(() => {
-          result.current.incrementScore();
+          result.current.incrementScore(0);
         });
         
         expect(result.current.gameState.playerY).toBeGreaterThanOrEqual(-1.5);
@@ -95,7 +95,7 @@ describe("useGameState Ball Movement and Bouncing", () => {
       // Generate multiple positions by scoring
       for (let i = 0; i < 20; i++) {
         act(() => {
-          result.current.incrementScore();
+          result.current.incrementScore(0);
         });
         
         expect(result.current.gameState.playerZ).toBeGreaterThanOrEqual(-1);
@@ -122,7 +122,7 @@ describe("useGameState Ball Movement and Bouncing", () => {
       // Score to reach level 2
       act(() => {
         for (let i = 0; i < 10; i++) {
-          result.current.incrementScore();
+          result.current.incrementScore(0);
         }
       });
       
@@ -173,7 +173,7 @@ describe("useGameState Ball Movement and Bouncing", () => {
       // Collect multiple positions
       for (let i = 0; i < 10; i++) {
         act(() => {
-          result.current.incrementScore();
+          result.current.incrementScore(0);
         });
         
         positions.push({
@@ -197,7 +197,7 @@ describe("useGameState Ball Movement and Bouncing", () => {
       
       for (let i = 0; i < 10; i++) {
         act(() => {
-          result.current.incrementScore();
+          result.current.incrementScore(0);
         });
         
         // Check positions are valid numbers
@@ -222,7 +222,7 @@ describe("useGameState Ball Movement and Bouncing", () => {
       // Collect multiple velocity sets
       for (let i = 0; i < 5; i++) {
         act(() => {
-          result.current.incrementScore();
+          result.current.incrementScore(0);
         });
         
         velocities.push({
@@ -246,7 +246,7 @@ describe("useGameState Ball Movement and Bouncing", () => {
       
       for (let i = 0; i < 10; i++) {
         act(() => {
-          result.current.incrementScore();
+          result.current.incrementScore(0);
         });
         
         // Velocities should be small (base speed is 0.02, max is around 0.02)
@@ -264,7 +264,7 @@ describe("useGameState Ball Movement and Bouncing", () => {
       // Rapidly score multiple times
       act(() => {
         for (let i = 0; i < 50; i++) {
-          result.current.incrementScore();
+          result.current.incrementScore(0);
         }
       });
       
@@ -280,10 +280,10 @@ describe("useGameState Ball Movement and Bouncing", () => {
       const { result } = renderHook(() => useGameState());
       
       act(() => {
-        result.current.incrementScore();
+        result.current.incrementScore(0);
         result.current.togglePause();
         result.current.togglePause();
-        result.current.incrementScore();
+        result.current.incrementScore(0);
       });
       
       expect(result.current.gameState.score).toBe(2);
@@ -296,7 +296,7 @@ describe("useGameState Ball Movement and Bouncing", () => {
       // Score and let ball move
       act(() => {
         for (let i = 0; i < 5; i++) {
-          result.current.incrementScore();
+          result.current.incrementScore(0);
         }
       });
       

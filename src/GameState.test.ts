@@ -16,9 +16,9 @@ describe("useGameState Hook", () => {
     const { result } = renderHook(() => useGameState());
     
     expect(result.current.gameState.score).toBe(0);
-    expect(result.current.gameState.playerX).toBe(0);
-    expect(result.current.gameState.playerY).toBe(0);
-    expect(result.current.gameState.playerZ).toBe(0);
+    expect(result.current.gameState.playerX).toBeDefined();
+    expect(result.current.gameState.playerY).toBeDefined();
+    expect(result.current.gameState.playerZ).toBeDefined();
     expect(result.current.gameState.isPlaying).toBe(true);
     expect(result.current.gameState.timeLeft).toBe(60);
     expect(result.current.gameState.combo).toBe(0);
@@ -26,6 +26,9 @@ describe("useGameState Hook", () => {
     expect(result.current.gameState.targetSize).toBe(0.5);
     expect(result.current.gameState.level).toBe(1);
     expect(result.current.gameState.isNewHighScore).toBe(false);
+    expect(result.current.gameState.targets).toHaveLength(1);
+    expect(result.current.gameState.totalClicks).toBe(0);
+    expect(result.current.gameState.successfulHits).toBe(0);
   });
 
   it("initializes with custom values", () => {
@@ -39,33 +42,30 @@ describe("useGameState Hook", () => {
     expect(result.current.gameState.timeLeft).toBe(30);
   });
 
-  it("increments score, combo, and randomizes position", () => {
+  it("increments score, combo, and updates targets", () => {
     const { result } = renderHook(() => useGameState());
     
     const initialScore = result.current.gameState.score;
-    const initialX = result.current.gameState.playerX;
+    const initialTargetId = result.current.gameState.targets[0]?.id ?? 0;
     
     act(() => {
-      result.current.incrementScore();
+      result.current.incrementScore(initialTargetId);
     });
     
     expect(result.current.gameState.score).toBe(initialScore + 1);
     expect(result.current.gameState.combo).toBe(1);
-    // Position should be randomized (different from initial)
-    expect(
-      result.current.gameState.playerX !== initialX ||
-      result.current.gameState.playerY !== 0 ||
-      result.current.gameState.playerZ !== 0
-    ).toBe(true);
+    expect(result.current.gameState.successfulHits).toBe(1);
+    expect(result.current.gameState.totalClicks).toBe(1);
+    expect(result.current.gameState.targets).toHaveLength(1);
   });
 
   it("increments score multiple times and builds combo", () => {
     const { result } = renderHook(() => useGameState());
     
     act(() => {
-      result.current.incrementScore();
-      result.current.incrementScore();
-      result.current.incrementScore();
+      result.current.incrementScore(0);
+      result.current.incrementScore(0);
+      result.current.incrementScore(0);
     });
     
     expect(result.current.gameState.score).toBe(3);
@@ -78,7 +78,7 @@ describe("useGameState Hook", () => {
     // Score 5 times to trigger first combo bonus
     act(() => {
       for (let i = 0; i < 5; i++) {
-        result.current.incrementScore();
+        result.current.incrementScore(0);
       }
     });
     
@@ -93,7 +93,7 @@ describe("useGameState Hook", () => {
     act(() => {
       // Score 10 times to reach level 2
       for (let i = 0; i < 10; i++) {
-        result.current.incrementScore();
+        result.current.incrementScore(0);
       }
     });
     
@@ -108,7 +108,7 @@ describe("useGameState Hook", () => {
     act(() => {
       // Score enough to increase level
       for (let i = 0; i < 10; i++) {
-        result.current.incrementScore();
+        result.current.incrementScore(0);
       }
     });
     
@@ -120,7 +120,7 @@ describe("useGameState Hook", () => {
     const { result } = renderHook(() => useGameState());
     
     act(() => {
-      result.current.incrementScore();
+      result.current.incrementScore(0);
     });
     
     expect(result.current.gameState.combo).toBe(1);
@@ -150,7 +150,7 @@ describe("useGameState Hook", () => {
     const { result } = renderHook(() => useGameState({ timeLeft: 2 }));
     
     act(() => {
-      result.current.incrementScore();
+      result.current.incrementScore(0);
     });
     
     const score = result.current.gameState.score;
@@ -185,8 +185,8 @@ describe("useGameState Hook", () => {
     const { result } = renderHook(() => useGameState({ score: 10, timeLeft: 2 }));
     
     act(() => {
-      result.current.incrementScore();
-      result.current.incrementScore();
+      result.current.incrementScore(0);
+      result.current.incrementScore(0);
     });
     
     // Let time run out to set high score
@@ -204,9 +204,9 @@ describe("useGameState Hook", () => {
     });
     
     expect(result.current.gameState.score).toBe(0);
-    expect(result.current.gameState.playerX).toBe(0);
-    expect(result.current.gameState.playerY).toBe(0);
-    expect(result.current.gameState.playerZ).toBe(0);
+    expect(result.current.gameState.playerX).toBeDefined();
+    expect(result.current.gameState.playerY).toBeDefined();
+    expect(result.current.gameState.playerZ).toBeDefined();
     expect(result.current.gameState.isPlaying).toBe(true);
     expect(result.current.gameState.timeLeft).toBe(60);
     expect(result.current.gameState.combo).toBe(0);
@@ -238,8 +238,8 @@ describe("useGameState Hook", () => {
     const { result } = renderHook(() => useGameState());
     
     act(() => {
-      result.current.incrementScore();
-      result.current.incrementScore();
+      result.current.incrementScore(0);
+      result.current.incrementScore(0);
     });
     
     const scoreBeforePause = result.current.gameState.score;
@@ -256,7 +256,7 @@ describe("useGameState Hook", () => {
     const { result } = renderHook(() => useGameState());
     
     act(() => {
-      result.current.incrementScore();
+      result.current.incrementScore(0);
     });
     
     // Check that positions are within expected ranges
@@ -266,5 +266,49 @@ describe("useGameState Hook", () => {
     expect(result.current.gameState.playerY).toBeLessThanOrEqual(1.5);
     expect(result.current.gameState.playerZ).toBeGreaterThanOrEqual(-1);
     expect(result.current.gameState.playerZ).toBeLessThanOrEqual(1);
+  });
+
+  it("should track accuracy correctly", () => {
+    const { result } = renderHook(() => useGameState());
+    
+    act(() => {
+      result.current.incrementScore(0); // Hit
+      result.current.recordMiss(); // Miss
+      result.current.incrementScore(0); // Hit
+    });
+    
+    expect(result.current.gameState.successfulHits).toBe(2);
+    expect(result.current.gameState.totalClicks).toBe(3);
+  });
+
+  it("should break combo on miss", () => {
+    const { result } = renderHook(() => useGameState());
+    
+    act(() => {
+      result.current.incrementScore(0);
+      result.current.incrementScore(0);
+    });
+    
+    expect(result.current.gameState.combo).toBe(2);
+    
+    act(() => {
+      result.current.recordMiss();
+    });
+    
+    expect(result.current.gameState.combo).toBe(0);
+  });
+
+  it("should add multiple targets at higher levels", () => {
+    const { result } = renderHook(() => useGameState());
+    
+    // Score until level 4 (10 points = level 2, 20 points = level 3, 30 points = level 4)
+    act(() => {
+      for (let i = 0; i < 30; i++) {
+        result.current.incrementScore(result.current.gameState.targets[0]?.id ?? 0);
+      }
+    });
+    
+    expect(result.current.gameState.level).toBe(4);
+    expect(result.current.gameState.targets.length).toBe(2);
   });
 });

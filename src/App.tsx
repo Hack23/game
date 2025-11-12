@@ -333,20 +333,26 @@ function BackgroundParticles(): JSX.Element {
 
 interface GameSceneProps {
   gameState: GameState;
-  onTargetClick: () => void;
+  onTargetClick: (targetId: number) => void;
+  onMiss: () => void;
   showExplosion: boolean;
   explosionPosition: [number, number, number];
 }
 
-function GameScene({ gameState, onTargetClick, showExplosion, explosionPosition }: GameSceneProps): JSX.Element {
+function GameScene({ gameState, onTargetClick, onMiss, showExplosion, explosionPosition }: GameSceneProps): JSX.Element {
   const shakeTimeRef = useRef(0);
   const basePositionRef = useRef(new THREE.Vector3(0, 2, 8));
 
-  const handleTargetClick = useCallback(() => {
+  const handleTargetClick = useCallback((targetId: number) => {
     if (!gameState.isPlaying || gameState.timeLeft <= 0) return;
-    onTargetClick();
+    onTargetClick(targetId);
     shakeTimeRef.current = 0.3; // Shake for 300ms
   }, [gameState.isPlaying, gameState.timeLeft, onTargetClick]);
+
+  const handleBackgroundClick = useCallback(() => {
+    if (!gameState.isPlaying || gameState.timeLeft <= 0) return;
+    onMiss();
+  }, [gameState.isPlaying, gameState.timeLeft, onMiss]);
 
   // Camera shake effect using state.camera from useFrame
   useFrame((state, delta) => {
@@ -388,17 +394,25 @@ function GameScene({ gameState, onTargetClick, showExplosion, explosionPosition 
         <ParticleExplosion position={explosionPosition} active={showExplosion} />
       )}
 
-      {/* Target Sphere */}
-      <TargetSphere
-        position={[gameState.playerX, gameState.playerY, gameState.playerZ]}
-        onClick={handleTargetClick}
-        isActive={gameState.isPlaying && !isGameOver}
-        size={gameState.targetSize}
-      />
+      {/* Multiple Target Spheres */}
+      {gameState.targets.map((target) => (
+        <TargetSphere
+          key={target.id}
+          position={[target.x, target.y, target.z]}
+          onClick={() => handleTargetClick(target.id)}
+          isActive={gameState.isPlaying && !isGameOver}
+          size={target.size}
+        />
+      ))}
 
       {/* Improved Grid floor with glow */}
       <gridHelper args={[10, 10, "#30363d", "#21262d"]} position={[0, -2, 0]} />
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -2.01, 0]} receiveShadow>
+      <mesh 
+        rotation={[-Math.PI / 2, 0, 0]} 
+        position={[0, -2.01, 0]} 
+        receiveShadow
+        onClick={handleBackgroundClick}
+      >
         <planeGeometry args={[10, 10]} />
         <meshStandardMaterial color="#0d1117" opacity={0.8} transparent />
       </mesh>
@@ -416,7 +430,7 @@ function GameScene({ gameState, onTargetClick, showExplosion, explosionPosition 
 }
 
 function App(): JSX.Element {
-  const { gameState, incrementScore, resetGame, togglePause } = useGameState();
+  const { gameState, incrementScore, recordMiss, resetGame, togglePause } = useGameState();
   const audioManager = useAudioManager();
   const [isMuted, setIsMuted] = useState(false);
   const [volume, setVolume] = useState(1.0);
@@ -461,30 +475,38 @@ function App(): JSX.Element {
     prevComboRef.current = gameState.combo;
   }, [gameState.combo, isMuted, audioManager]);
 
-  const handleTargetClick = useCallback(() => {
-    // Trigger explosion effect
-    setExplosionPosition([gameState.playerX, gameState.playerY, gameState.playerZ]);
-    setShowExplosion(true);
-    setTimeout(() => setShowExplosion(false), PARTICLE_EXPLOSION_DURATION_MS);
+  const handleTargetClick = useCallback((targetId: number) => {
+    // Find the target position for explosion effect
+    const target = gameState.targets.find(t => t.id === targetId);
+    if (target) {
+      setExplosionPosition([target.x, target.y, target.z]);
+      setShowExplosion(true);
+      setTimeout(() => setShowExplosion(false), PARTICLE_EXPLOSION_DURATION_MS);
+    }
     
-    incrementScore();
+    incrementScore(targetId);
     if (!isMuted) {
       audioManager.playHitSound();
     }
-  }, [incrementScore, isMuted, audioManager, gameState.playerX, gameState.playerY, gameState.playerZ]);
+  }, [incrementScore, isMuted, audioManager, gameState.targets]);
+
+  const handleMiss = useCallback(() => {
+    recordMiss();
+    // Optional: play a miss sound or provide visual feedback
+  }, [recordMiss]);
 
   // Expose test API for E2E tests to trigger target clicks
   // This bypasses Three.js raycasting which doesn't work reliably in headless CI
   useEffect(() => {
     const handleTestTargetClick = () => {
-      if (gameState.isPlaying && gameState.timeLeft > 0) {
-        handleTargetClick();
+      if (gameState.isPlaying && gameState.timeLeft > 0 && gameState.targets.length > 0) {
+        handleTargetClick(gameState.targets[0]?.id ?? 0);
       }
     };
 
     window.addEventListener('test:targetClick', handleTestTargetClick);
     return () => window.removeEventListener('test:targetClick', handleTestTargetClick);
-  }, [handleTargetClick, gameState.isPlaying, gameState.timeLeft]);
+  }, [handleTargetClick, gameState.isPlaying, gameState.timeLeft, gameState.targets]);
 
   const handleMuteToggle = useCallback(() => {
     const newMuted = !isMuted;
@@ -519,6 +541,19 @@ function App(): JSX.Element {
           <div style={{ color: "#7d8590", fontSize: "10px", marginBottom: "4px" }}>LEVEL</div>
           <div style={{ color: "#646cff", fontSize: "24px", fontWeight: "bold" }}>{gameState.level}</div>
           {gameState.highScore > 0 && <div style={{ color: "#ffa500", fontSize: "10px" }}>HIGH: {gameState.highScore}</div>}
+        </div>
+        
+        <div data-testid="accuracy-display" style={{ background: "rgba(33, 38, 45, 0.7)", padding: "10px 20px", borderRadius: "8px", backdropFilter: "blur(10px)" }}>
+          <div style={{ color: "#7d8590", fontSize: "10px", marginBottom: "4px" }}>ACCURACY</div>
+          <div style={{ color: "#00ffff", fontSize: "24px", fontWeight: "bold" }}>
+            {gameState.totalClicks > 0 ? Math.round((gameState.successfulHits / gameState.totalClicks) * 100) : 100}%
+          </div>
+          <div style={{ color: "#7d8590", fontSize: "10px" }}>{gameState.successfulHits}/{gameState.totalClicks}</div>
+        </div>
+        
+        <div data-testid="targets-display" style={{ background: "rgba(33, 38, 45, 0.7)", padding: "10px 20px", borderRadius: "8px", backdropFilter: "blur(10px)" }}>
+          <div style={{ color: "#7d8590", fontSize: "10px", marginBottom: "4px" }}>TARGETS</div>
+          <div style={{ color: "#ff66ff", fontSize: "24px", fontWeight: "bold" }}>{gameState.targets.length}</div>
         </div>
       </div>
       
@@ -604,9 +639,9 @@ function App(): JSX.Element {
       {/* Instructions */}
       <div data-testid="instructions-text" style={{ ...INSTRUCTIONS_STYLES, color: gameState.isPlaying && gameState.timeLeft > 0 ? "#ffffff" : "#7d8590" }}>
         {gameState.timeLeft <= 0
-          ? `🎮 Game Over! Final Score: ${gameState.score} - Click Reset to play again`
+          ? `🎮 Game Over! Final Score: ${gameState.score} | Accuracy: ${gameState.totalClicks > 0 ? Math.round((gameState.successfulHits / gameState.totalClicks) * 100) : 100}% - Click Reset to play again`
           : gameState.isPlaying
-          ? "🎯 Click the target to score! Build combos for bonus points!"
+          ? `🎯 Click targets to score! ${gameState.targets.length > 1 ? `${gameState.targets.length} targets active!` : ''} Build combos for bonus points! Miss penalty applies.`
           : "⏸️ Game paused - Resume to continue"}
       </div>
       
@@ -668,6 +703,7 @@ function App(): JSX.Element {
           <GameScene 
             gameState={gameState}
             onTargetClick={handleTargetClick}
+            onMiss={handleMiss}
             showExplosion={showExplosion}
             explosionPosition={explosionPosition}
           />
