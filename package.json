@@ -36,7 +36,7 @@
     "@types/three": "^0.181.0",
     "@typescript-eslint/eslint-plugin": "^8.46.4",
     "@typescript-eslint/parser": "^8.46.4",
-    "@vitejs/plugin-react": "^5.1.0",
+    "@vitejs/plugin-react": "^5.1.1",
     "@vitest/coverage-v8": "^4.0.8",
     "@vitest/ui": "^4.0.3",
     "cypress": "^15.6.0",
