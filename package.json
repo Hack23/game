@@ -16,7 +16,7 @@
     "test:e2e:ci": "mkdir -p cypress/results && start-server-and-test dev http://localhost:5173 'cypress run --headless --reporter cypress-multi-reporters --reporter-options configFile=cypress.config.reporter.json'"
   },
   "dependencies": {
-    "@react-three/drei": "^10.7.6",
+    "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.4.0",
     "howler": "^2.2.4",
     "react": "^19.2.0",
