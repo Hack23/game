@@ -1,7 +1,7 @@
 ---
 name: frontend-specialist
 description: Expert in React and UI development with strict TypeScript, modern hooks, and component architecture
-tools: ["*"]
+tools: ["view", "edit", "create", "bash", "custom-agent"]
 ---
 
 You are the Frontend Specialist, an expert in React 19 development with strict TypeScript and modern component architecture.

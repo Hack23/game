@@ -4,6 +4,29 @@ This directory contains custom agent configurations for GitHub Copilot coding ag
 
 ## 🎯 Available Agents
 
+### 🎯 product-task-agent
+**Expert in product analysis, quality improvement, and GitHub issue creation**
+
+Specialized in:
+- Product quality analysis across code, UI/UX, security, and performance
+- Creating well-structured GitHub issues with proper labels and assignments
+- Coordinating between specialized agents for task implementation
+- ISMS compliance verification and security alignment
+- Using GitHub MCP, Playwright, and AWS tools for comprehensive analysis
+- Identifying improvements and creating actionable tasks
+
+**Tools:** `view`, `edit`, `create`, `bash`, `search_code`, `custom-agent`
+
+**Key Capabilities:**
+- 🔍 Analyze codebase for quality, security, and UX improvements
+- 📝 Create structured GitHub issues with clear acceptance criteria
+- 🤝 Assign tasks to appropriate specialized agents
+- 🔒 Verify ISMS policy alignment and compliance
+- 🎭 Use Playwright for UI/UX testing and analysis
+- 📊 Generate comprehensive product improvement plans
+
+---
+
 ### 🎮 game-developer
 **Expert in Three.js game development with React integration**
 
@@ -88,13 +111,15 @@ graph TB
     User[Developer Request] --> Copilot[GitHub Copilot]
     Copilot --> AgentSelect{Select Agent}
     
+    AgentSelect -->|Product Analysis| TaskAgent[🎯 product-task-agent]
     AgentSelect -->|3D Game Code| GameDev[🎮 game-developer]
     AgentSelect -->|UI/React Code| Frontend[🎨 frontend-specialist]
     AgentSelect -->|Testing| TestEng[🧪 test-engineer]
     AgentSelect -->|Security| Security[🔒 security-specialist]
     AgentSelect -->|Documentation| DocWriter[📝 documentation-writer]
     
-    GameDev --> Tools[Agent Tools]
+    TaskAgent --> Tools[Agent Tools]
+    GameDev --> Tools
     Frontend --> Tools
     TestEng --> Tools
     Security --> Tools
@@ -106,8 +131,16 @@ graph TB
     MCP --> Git[📋 Git]
     MCP --> PW[🎭 Playwright]
     
-    Tools --> Output[Code/Docs/Tests]
+    Tools --> Output[Code/Docs/Tests/Issues]
     
+    TaskAgent -.->|Creates Issues| GH
+    TaskAgent -.->|Assigns| GameDev
+    TaskAgent -.->|Assigns| Frontend
+    TaskAgent -.->|Assigns| TestEng
+    TaskAgent -.->|Assigns| Security
+    TaskAgent -.->|Assigns| DocWriter
+    
+    style TaskAgent fill:#FFC107,stroke:#F57C00,stroke-width:3px,color:#000
     style GameDev fill:#4CAF50
     style Frontend fill:#2196F3
     style TestEng fill:#FF9800
@@ -121,6 +154,10 @@ When working with GitHub Copilot, request help from specific agents using natura
 
 **Example Requests:**
 ```
+@workspace Use the product-task-agent to analyze the codebase and create improvement issues
+
+@workspace Ask the product-task-agent to review UI/UX and create accessibility issues
+
 @workspace Use the game-developer agent to create a new Three.js sprite component
 
 @workspace Ask the security-specialist to review this dependency for vulnerabilities
@@ -133,6 +170,24 @@ When working with GitHub Copilot, request help from specific agents using natura
 ```
 
 The coding agent will automatically apply the specialized knowledge and guidelines from the relevant agent.
+
+### 🎯 Product Task Agent Usage
+
+The product-task-agent is your go-to for:
+- **Product Analysis:** Comprehensive quality, security, and UX assessment
+- **Issue Creation:** Creating structured GitHub issues with proper categorization
+- **Agent Coordination:** Assigning tasks to specialized agents
+- **ISMS Compliance:** Verifying alignment with Hack23 AB security policies
+
+**Example Workflows:**
+```
+@workspace Use product-task-agent to:
+- Analyze the codebase for quality improvements and create prioritized issues
+- Review UI/UX using Playwright and create accessibility enhancement issues
+- Check ISMS compliance and create security alignment issues
+- Identify test coverage gaps and assign to test-engineer
+- Review documentation completeness and assign to documentation-writer
+```
 
 ## 🛠️ Agent Tools
 
@@ -209,11 +264,14 @@ You specialize in:
 
 | Domain | Primary Agent | Secondary Agent | MCP Server |
 |--------|--------------|-----------------|------------|
+| Product Analysis | 🎯 product-task-agent | All agents | GitHub, Playwright |
+| Issue Management | 🎯 product-task-agent | - | GitHub |
 | Three.js/3D | 🎮 game-developer | 🧪 test-engineer | Playwright |
 | React/UI | 🎨 frontend-specialist | 🧪 test-engineer | Playwright |
 | Testing | 🧪 test-engineer | 🎮 🎨 | Playwright |
-| Security | 🔒 security-specialist | - | GitHub |
+| Security | 🔒 security-specialist | 🎯 product-task-agent | GitHub |
 | Documentation | 📝 documentation-writer | - | Filesystem |
+| ISMS Compliance | 🔒 security-specialist | 🎯 product-task-agent | GitHub |
 
 ## 📚 Resources
 
