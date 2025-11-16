@@ -58,13 +58,14 @@ For complete security policy mapping and detailed compliance information, see:
 
 This repository includes specialized AI agents that enhance GitHub Copilot's capabilities for game development. These custom agents provide expert guidance in specific domains:
 
+- **🎯 [product-task-agent](.github/agents/product-task-agent.md)** - Product analysis, quality improvement, and GitHub issue creation
 - **🎮 [game-developer](.github/agents/game-developer.md)** - Three.js game development with @react-three/fiber and @react-three/drei
 - **🎨 [frontend-specialist](.github/agents/frontend-specialist.md)** - React 19 and TypeScript UI development
 - **🧪 [test-engineer](.github/agents/test-engineer.md)** - Comprehensive testing with Vitest and Cypress
 - **🔒 [security-specialist](.github/agents/security-specialist.md)** - Security, compliance, and supply chain protection
 - **📝 [documentation-writer](.github/agents/documentation-writer.md)** - Technical documentation and guides
 
-When using GitHub Copilot, you can request help from specific agents by mentioning them in your prompts. Learn more in the **[Custom Agents Documentation](.github/agents/README.md)**.
+The **product-task-agent** can analyze your product, identify improvements, and create well-structured GitHub issues assigned to the appropriate specialized agents. When using GitHub Copilot, you can request help from specific agents by mentioning them in your prompts. Learn more in the **[Custom Agents Documentation](.github/agents/README.md)**.
 
 ## 🚀 Using This Template
 
