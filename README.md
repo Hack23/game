@@ -219,6 +219,105 @@ This repository is configured with Model Context Protocol (MCP) servers that enh
 
 **Learn More:** See [MCP Configuration Guide](docs/MCP_CONFIGURATION.md) for detailed setup and usage instructions.
 
+### 🔑 Configuring GitHub Personal Access Token
+
+The **product-task-agent** and **GitHub MCP server** require a Personal Access Token (PAT) to create and manage issues, access repository data, and perform other GitHub operations.
+
+#### Creating a Personal Access Token
+
+1. **Generate a Fine-Grained Token** (Recommended)
+   - Go to **GitHub Settings** → **Developer settings** → **Personal access tokens** → **Fine-grained tokens**
+   - Click **"Generate new token"**
+   - Fill in the details:
+     - **Token name**: `copilot-mcp-game` (or your preferred name)
+     - **Expiration**: Choose an appropriate duration (e.g., 90 days)
+     - **Repository access**: Select **"Only select repositories"** → Choose your game repository
+   
+   - **Repository permissions** (required):
+     - **Issues**: Read and write (for creating and managing issues)
+     - **Contents**: Read-only (for code analysis)
+     - **Metadata**: Read-only (automatically included)
+     - **Pull requests**: Read and write (optional, for PR management)
+     - **Workflows**: Read-only (optional, for workflow status)
+   
+   - Click **"Generate token"** and **copy the token immediately** (you won't see it again)
+
+2. **Alternative: Classic Token**
+   - Go to **GitHub Settings** → **Developer settings** → **Personal access tokens** → **Tokens (classic)**
+   - Click **"Generate new token"** → **"Generate new token (classic)"**
+   - Select scopes:
+     - ✅ `repo` (Full control of private repositories) - **Required**
+     - ✅ `read:org` (Read org membership) - Optional
+     - ✅ `workflow` (Update GitHub Actions workflows) - Optional
+   - Click **"Generate token"** and **copy the token**
+
+#### Setting the Token in Your Environment
+
+**For GitHub Codespaces:**
+
+1. Go to your repository on GitHub
+2. Click **Settings** → **Secrets and variables** → **Codespaces**
+3. Click **"New repository secret"**
+4. Name: `GITHUB_TOKEN`
+5. Value: Paste your Personal Access Token
+6. Click **"Add secret"**
+
+The token will be automatically available in your Codespace environment.
+
+**For Local Development:**
+
+```bash
+# Linux/macOS - Add to ~/.bashrc or ~/.zshrc
+export GITHUB_TOKEN="your_token_here"
+
+# Windows PowerShell - Add to your PowerShell profile
+$env:GITHUB_TOKEN="your_token_here"
+
+# Windows Command Prompt
+set GITHUB_TOKEN=your_token_here
+```
+
+**Verify the token is set:**
+```bash
+# In your terminal
+echo $GITHUB_TOKEN  # Linux/macOS
+echo %GITHUB_TOKEN% # Windows CMD
+echo $env:GITHUB_TOKEN # Windows PowerShell
+```
+
+#### Required Permissions Summary
+
+| Permission | Access Level | Purpose |
+|------------|--------------|---------|
+| **Issues** | Read and write | Create and manage GitHub issues via product-task-agent |
+| **Contents** | Read-only | Analyze code and repository structure |
+| **Metadata** | Read-only | Access repository metadata (automatic) |
+| **Pull requests** | Read and write | Manage PRs (optional) |
+| **Workflows** | Read-only | Check workflow status (optional) |
+
+#### Security Best Practices
+
+- ✅ **Use fine-grained tokens** with minimal required permissions
+- ✅ **Set appropriate expiration** (90 days recommended)
+- ✅ **Limit to specific repositories** rather than all repositories
+- ✅ **Never commit tokens** to source code
+- ✅ **Use repository secrets** for Codespaces
+- ✅ **Rotate tokens regularly** before expiration
+- ✅ **Revoke unused tokens** in GitHub settings
+
+#### Troubleshooting
+
+**Token not working:**
+- Verify the token has the required permissions
+- Check if the token has expired
+- Ensure `GITHUB_TOKEN` environment variable is set correctly
+- Restart your Codespace or terminal after setting the token
+
+**Permission errors when creating issues:**
+- Ensure token has **Issues: Read and write** permission
+- Verify repository access includes your target repository
+- Check token hasn't been revoked
+
 ```mermaid
 graph LR
     A[Developer] -->|Opens in Codespace| B[Container Setup]
