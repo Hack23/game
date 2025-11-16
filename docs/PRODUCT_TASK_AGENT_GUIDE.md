@@ -182,7 +182,7 @@ gh issue create \
   --title "Improve accessibility" \
   --body "..." \
   --label "enhancement,ui-ux" \
-  --assignee "@frontend-specialist"
+  --assignee "USERNAME"  # or "@me" for self-assignment
 
 # List open issues
 gh issue list --state open
