@@ -1,3 +1,26 @@
+<p align="center">
+  <img src="https://hack23.github.io/cia-compliance-manager/icon-192.png" alt="Hack23 AB Logo" width="192" height="192">
+</p>
+
+<h1 align="center">🏗️ Hack23 AB — Copilot MCP Architecture</h1>
+
+<p align="center">
+  <strong>🤖 AI-Enhanced Development Architecture</strong><br>
+  <em>🎯 Model Context Protocol integration for secure development</em>
+</p>
+
+<p align="center">
+  <a href="#"><img src="https://img.shields.io/badge/Owner-CEO-0A66C2?style=for-the-badge" alt="Owner"/></a>
+  <a href="#"><img src="https://img.shields.io/badge/Version-1.0-555?style=for-the-badge" alt="Version"/></a>
+  <a href="#"><img src="https://img.shields.io/badge/Effective-2025--11--10-success?style=for-the-badge" alt="Effective Date"/></a>
+  <a href="#"><img src="https://img.shields.io/badge/Review-Quarterly-orange?style=for-the-badge" alt="Review Cycle"/></a>
+</p>
+
+**📋 Document Owner:** CEO | **📄 Version:** 1.0 | **📅 Last Updated:** 2025-11-10 (UTC)  
+**🔄 Review Cycle:** Quarterly | **⏰ Next Review:** 2026-02-10
+
+---
+
 # Copilot MCP Architecture
 
 This document visualizes how Model Context Protocol (MCP) servers integrate with GitHub Copilot in this repository.
@@ -356,15 +379,28 @@ graph TB
     class B1,B2,B3,B4,B5 capability
 ```
 
-## See Also
+---
+
+## 📚 Related Documents
 
 ### Internal Documentation
-- [MCP Configuration Guide](MCP_CONFIGURATION.md)
-- [Copilot Quick Start](COPILOT_QUICK_START.md)
-- [Copilot Instructions](../.github/copilot-instructions.md)
+- 📖 [MCP Configuration Guide](MCP_CONFIGURATION.md) - MCP server setup and configuration
+- 🚀 [Copilot Quick Start](COPILOT_QUICK_START.md) - Getting started with Copilot
+- 🤖 [Copilot Instructions](../.github/copilot-instructions.md) - Coding guidelines for AI assistance
+- 📊 [ISMS Policy Mapping](ISMS_POLICY_MAPPING.md) - Feature-to-policy alignment
 
-### ISMS Policy References
-This MCP architecture supports secure development practices aligned with:
-- **[Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md)** - AI-assisted development and security guidelines
-- **[Access Control Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Access_Control_Policy.md)** - Authentication and authorization controls
-- **[ISMS Policy Mapping](ISMS_POLICY_MAPPING.md)** - Complete feature-to-policy alignment
+### ISMS-PUBLIC Policies
+- 🔐 [Information Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md) - Overall security governance
+- 🛠️ [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) - AI-assisted development and security guidelines
+- 🔑 [Access Control Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Access_Control_Policy.md) - Authentication and authorization controls
+- 🏷️ [Classification Framework](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) - CIA triad and impact levels
+
+---
+
+**📋 Document Control:**  
+**✅ Approved by:** James Pether Sörling, CEO  
+**📤 Distribution:** Public  
+**🏷️ Classification:** [![Confidentiality: Public](https://img.shields.io/badge/C-Public-lightgrey?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#confidentiality-levels)  
+**📅 Effective Date:** 2025-11-10  
+**⏰ Next Review:** 2026-02-10  
+**🎯 Framework Compliance:** [![ISO 27001](https://img.shields.io/badge/ISO_27001-2022_Aligned-blue?style=flat-square&logo=iso&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![NIST CSF 2.0](https://img.shields.io/badge/NIST_CSF-2.0_Aligned-green?style=flat-square&logo=nist&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![CIS Controls](https://img.shields.io/badge/CIS_Controls-v8.1_Aligned-orange?style=flat-square&logo=cisecurity&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)

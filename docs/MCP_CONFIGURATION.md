@@ -1,3 +1,26 @@
+<p align="center">
+  <img src="https://hack23.github.io/cia-compliance-manager/icon-192.png" alt="Hack23 AB Logo" width="192" height="192">
+</p>
+
+<h1 align="center">⚙️ Hack23 AB — MCP Configuration Guide</h1>
+
+<p align="center">
+  <strong>🤖 Model Context Protocol Setup</strong><br>
+  <em>🎯 Enhancing GitHub Copilot with specialized context</em>
+</p>
+
+<p align="center">
+  <a href="#"><img src="https://img.shields.io/badge/Owner-CEO-0A66C2?style=for-the-badge" alt="Owner"/></a>
+  <a href="#"><img src="https://img.shields.io/badge/Version-1.0-555?style=for-the-badge" alt="Version"/></a>
+  <a href="#"><img src="https://img.shields.io/badge/Effective-2025--11--10-success?style=for-the-badge" alt="Effective Date"/></a>
+  <a href="#"><img src="https://img.shields.io/badge/Review-Quarterly-orange?style=for-the-badge" alt="Review Cycle"/></a>
+</p>
+
+**📋 Document Owner:** CEO | **📄 Version:** 1.0 | **📅 Last Updated:** 2025-11-10 (UTC)  
+**🔄 Review Cycle:** Quarterly | **⏰ Next Review:** 2026-02-10
+
+---
+
 # GitHub Copilot MCP Configuration Guide
 
 This document explains how Model Context Protocol (MCP) servers enhance GitHub Copilot's capabilities for this game development project.
@@ -329,9 +352,33 @@ To add new MCP servers:
 
 **Note:** MCP servers are configured through Copilot's environment rather than separate config files.
 
-## Support
+---
 
-For issues with MCP servers:
-- Check the [MCP repository](https://github.com/modelcontextprotocol)
-- Review [Copilot documentation](https://docs.github.com/en/copilot)
-- Open an issue in this repository
+## 📚 Related Documents
+
+### Internal Documentation
+- 🏗️ [MCP Architecture](MCP_ARCHITECTURE.md) - Architecture diagrams and design
+- 🚀 [Copilot Quick Start](COPILOT_QUICK_START.md) - Getting started guide
+- 🤖 [Copilot Instructions](../.github/copilot-instructions.md) - Coding guidelines
+- 📊 [ISMS Policy Mapping](ISMS_POLICY_MAPPING.md) - Feature-to-policy alignment
+
+### ISMS-PUBLIC Policies
+- 🔐 [Information Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md) - Overall security governance
+- 🛠️ [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) - SDLC and CI/CD requirements
+- 🔑 [Access Control Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Access_Control_Policy.md) - Authentication and authorization controls
+- 🏷️ [Classification Framework](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) - CIA triad and impact levels
+
+### External Resources
+- [MCP Specification](https://github.com/modelcontextprotocol/specification) - Official MCP protocol documentation
+- [GitHub Copilot Documentation](https://docs.github.com/en/copilot) - Official Copilot documentation
+- [MCP Servers Repository](https://github.com/modelcontextprotocol/servers) - Official MCP server implementations
+
+---
+
+**📋 Document Control:**  
+**✅ Approved by:** James Pether Sörling, CEO  
+**📤 Distribution:** Public  
+**🏷️ Classification:** [![Confidentiality: Public](https://img.shields.io/badge/C-Public-lightgrey?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#confidentiality-levels)  
+**📅 Effective Date:** 2025-11-10  
+**⏰ Next Review:** 2026-02-10  
+**🎯 Framework Compliance:** [![ISO 27001](https://img.shields.io/badge/ISO_27001-2022_Aligned-blue?style=flat-square&logo=iso&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![NIST CSF 2.0](https://img.shields.io/badge/NIST_CSF-2.0_Aligned-green?style=flat-square&logo=nist&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![CIS Controls](https://img.shields.io/badge/CIS_Controls-v8.1_Aligned-orange?style=flat-square&logo=cisecurity&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)
