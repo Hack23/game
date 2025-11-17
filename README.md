@@ -915,6 +915,7 @@ All security workflows will automatically protect your game from common vulnerab
 
 ### Security & Compliance
 - 🔒 **[SECURITY.md](SECURITY.md)** - Security policy and vulnerability reporting
+- 🛡️ **[SECURITY_HEADERS.md](SECURITY_HEADERS.md)** - Security headers implementation
 - 📊 **[ISMS Policy Mapping](docs/ISMS_POLICY_MAPPING.md)** - Complete feature-to-policy mapping
 - 🔐 **[ISMS-PUBLIC Repository](https://github.com/Hack23/ISMS-PUBLIC)** - Hack23 AB's complete ISMS
 

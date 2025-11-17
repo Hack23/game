@@ -4,7 +4,7 @@
 
 ## Overview
 
-This implementation configures GitHub Copilot with Model Context Protocol (MCP) servers to enhance AI-assisted development in this game template repository.
+This implementation configures GitHub Copilot with Model Context Protocol (MCP) servers to enhance AI-assisted development in this game template repository, aligned with [Hack23 AB's ISMS](https://github.com/Hack23/ISMS-PUBLIC) [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md).
 
 ## Implementation Date
 
@@ -334,6 +334,13 @@ See `docs/MCP_CONFIGURATION.md` for detailed troubleshooting guide.
 Same as repository license (see LICENSE.md)
 
 ---
+
+## ISMS Policy Alignment
+
+This MCP implementation supports secure development practices per:
+- **[Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md)** - AI-assisted development and security guidelines
+- **[Access Control Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Access_Control_Policy.md)** - Environment variable security and access controls
+- **[ISMS Policy Mapping](ISMS_POLICY_MAPPING.md)** - Complete feature-to-policy alignment
 
 For questions or issues with MCP configuration, please:
 1. Check documentation in `docs/` directory

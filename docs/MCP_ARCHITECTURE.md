@@ -358,6 +358,13 @@ graph TB
 
 ## See Also
 
+### Internal Documentation
 - [MCP Configuration Guide](MCP_CONFIGURATION.md)
 - [Copilot Quick Start](COPILOT_QUICK_START.md)
 - [Copilot Instructions](../.github/copilot-instructions.md)
+
+### ISMS Policy References
+This MCP architecture supports secure development practices aligned with:
+- **[Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md)** - AI-assisted development and security guidelines
+- **[Access Control Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Access_Control_Policy.md)** - Authentication and authorization controls
+- **[ISMS Policy Mapping](ISMS_POLICY_MAPPING.md)** - Complete feature-to-policy alignment

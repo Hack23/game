@@ -200,6 +200,7 @@ We appreciate your effort in helping us maintain a secure and reliable project. 
 
 ### Internal Documentation
 - 📊 **[ISMS Policy Mapping](docs/ISMS_POLICY_MAPPING.md)** - Complete mapping of features to ISMS policies
+- 🛡️ **[Security Headers](SECURITY_HEADERS.md)** - Security headers implementation details
 - 📖 **[README.md](README.md)** - Project overview with security features
 - 🤖 **[Copilot Instructions](.github/copilot-instructions.md)** - Secure coding guidelines
 - 🔒 **[Security Specialist Agent](.github/agents/security-specialist.md)** - Security expert agent

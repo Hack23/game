@@ -1,10 +1,14 @@
 # Security Headers Implementation
 
 ## Overview
-This document explains the security headers implemented to address vulnerabilities identified in the ZAP (Zed Attack Proxy) full scan.
+This document explains the security headers implemented to address vulnerabilities identified in the ZAP (Zed Attack Proxy) full scan, in compliance with [Hack23 AB's ISMS](https://github.com/Hack23/ISMS-PUBLIC) [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md).
 
 ## Background
 GitHub Pages does not support custom HTTP headers, so security controls must be implemented through HTML meta tags with `http-equiv` attributes. While not as robust as HTTP headers, these meta tags provide meaningful security improvements for client-side rendered applications.
+
+This implementation aligns with:
+- **[Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md)** - Security testing and DAST requirements
+- **[Information Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md)** - Security controls implementation
 
 ## Implemented Security Headers
 
@@ -181,6 +185,14 @@ If migrating from GitHub Pages to a platform with HTTP header support (e.g., Net
 4. Implement proper CORS configuration if needed
 
 ## References
+
+### ISMS Policy References
+- **[ISMS-PUBLIC Repository](https://github.com/Hack23/ISMS-PUBLIC)** - Hack23 AB's complete ISMS
+- **[Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md)** - SDLC and security testing requirements
+- **[Information Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md)** - Overall security governance
+- **[ISMS Policy Mapping](docs/ISMS_POLICY_MAPPING.md)** - Feature-to-policy mapping
+
+### External References
 - [MDN: Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP)
 - [OWASP: Clickjacking Defense](https://cheatsheetseries.owasp.org/cheatsheets/Clickjacking_Defense_Cheat_Sheet.html)
 - [OWASP: Security Headers](https://owasp.org/www-project-secure-headers/)
