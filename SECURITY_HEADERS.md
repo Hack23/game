@@ -1,3 +1,26 @@
+<p align="center">
+  <img src="https://hack23.github.io/cia-compliance-manager/icon-192.png" alt="Hack23 AB Logo" width="192" height="192">
+</p>
+
+<h1 align="center">🛡️ Hack23 AB — Security Headers Implementation</h1>
+
+<p align="center">
+  <strong>🔒 Technical Security Controls</strong><br>
+  <em>🎯 Implementing defense-in-depth for client-side applications</em>
+</p>
+
+<p align="center">
+  <a href="#"><img src="https://img.shields.io/badge/Owner-CEO-0A66C2?style=for-the-badge" alt="Owner"/></a>
+  <a href="#"><img src="https://img.shields.io/badge/Version-1.0-555?style=for-the-badge" alt="Version"/></a>
+  <a href="#"><img src="https://img.shields.io/badge/Effective-2025--11--10-success?style=for-the-badge" alt="Effective Date"/></a>
+  <a href="#"><img src="https://img.shields.io/badge/Review-Quarterly-orange?style=for-the-badge" alt="Review Cycle"/></a>
+</p>
+
+**📋 Document Owner:** CEO | **📄 Version:** 1.0 | **📅 Last Updated:** 2025-11-10 (UTC)  
+**🔄 Review Cycle:** Quarterly | **⏰ Next Review:** 2026-02-10
+
+---
+
 # Security Headers Implementation
 
 ## Overview
@@ -184,16 +207,33 @@ If migrating from GitHub Pages to a platform with HTTP header support (e.g., Net
 3. Consider adding `Content-Security-Policy-Report-Only` for monitoring
 4. Implement proper CORS configuration if needed
 
-## References
+---
 
-### ISMS Policy References
-- **[ISMS-PUBLIC Repository](https://github.com/Hack23/ISMS-PUBLIC)** - Hack23 AB's complete ISMS
-- **[Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md)** - SDLC and security testing requirements
-- **[Information Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md)** - Overall security governance
-- **[ISMS Policy Mapping](docs/ISMS_POLICY_MAPPING.md)** - Feature-to-policy mapping
+## 📚 Related Documents
+
+### Internal Documentation
+- 🔒 [SECURITY.md](SECURITY.md) - Security policy and vulnerability reporting
+- 📊 [ISMS Policy Mapping](docs/ISMS_POLICY_MAPPING.md) - Feature-to-policy mapping
+- 📖 [README.md](README.md) - Project overview
+
+### ISMS-PUBLIC Policies
+- 🔐 [Information Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md) - Overall security governance
+- 🛠️ [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) - SDLC and security testing requirements
+- 🔍 [Vulnerability Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Vulnerability_Management.md) - Security vulnerability handling
+- 🏷️ [Classification Framework](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) - CIA triad and impact levels
 
 ### External References
 - [MDN: Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP)
 - [OWASP: Clickjacking Defense](https://cheatsheetseries.owasp.org/cheatsheets/Clickjacking_Defense_Cheat_Sheet.html)
 - [OWASP: Security Headers](https://owasp.org/www-project-secure-headers/)
 - [ZAP Scanning Rules](https://www.zaproxy.org/docs/alerts/)
+
+---
+
+**📋 Document Control:**  
+**✅ Approved by:** James Pether Sörling, CEO  
+**📤 Distribution:** Public  
+**🏷️ Classification:** [![Confidentiality: Public](https://img.shields.io/badge/C-Public-lightgrey?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#confidentiality-levels)  
+**📅 Effective Date:** 2025-11-10  
+**⏰ Next Review:** 2026-02-10  
+**🎯 Framework Compliance:** [![ISO 27001](https://img.shields.io/badge/ISO_27001-2022_Aligned-blue?style=flat-square&logo=iso&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![NIST CSF 2.0](https://img.shields.io/badge/NIST_CSF-2.0_Aligned-green?style=flat-square&logo=nist&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![CIS Controls](https://img.shields.io/badge/CIS_Controls-v8.1_Aligned-orange?style=flat-square&logo=cisecurity&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![OWASP](https://img.shields.io/badge/OWASP-Aligned-purple?style=flat-square&logo=owasp&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)
