@@ -12,10 +12,9 @@ graph TB
         Copilot[🤖 GitHub Copilot]
     end
 
-    subgraph "MCP Configuration"
-        SetupSteps[copilot-setup-steps.yml]
-        MCPConfig[mcp-config.json]
+    subgraph "Configuration"
         Instructions[copilot-instructions.md]
+        Env[Environment Variables]
     end
 
     subgraph "MCP Servers"
@@ -37,16 +36,15 @@ graph TB
 
     Dev -->|Uses| VSCode
     VSCode -->|Integrates| Copilot
-    Copilot -->|Reads| SetupSteps
-    Copilot -->|Loads| MCPConfig
     Copilot -->|Follows| Instructions
+    Copilot -->|Uses| Env
 
-    MCPConfig -->|Configures| FS
-    MCPConfig -->|Configures| GH
-    MCPConfig -->|Configures| Git
-    MCPConfig -->|Configures| Mem
-    MCPConfig -->|Configures| Search
-    MCPConfig -->|Configures| PW
+    Copilot -->|Activates| FS
+    Copilot -->|Activates| GH
+    Copilot -->|Activates| Git
+    Copilot -->|Activates| Mem
+    Copilot -->|Activates| Search
+    Copilot -->|Activates| PW
 
     FS -->|Accesses| Files
     GH -->|Queries| Repo
@@ -67,7 +65,7 @@ graph TB
     classDef data fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
 
     class Dev,VSCode,Copilot primary
-    class SetupSteps,MCPConfig,Instructions config
+    class Instructions,Env config
     class FS,GH,Git,Mem,Search,PW server
     class Files,Repo,History,Docs,Browser data
 ```
@@ -78,13 +76,12 @@ graph TB
 sequenceDiagram
     participant Dev as Developer
     participant Copilot as GitHub Copilot
-    participant MCP as MCP Config
     participant FS as Filesystem Server
     participant GH as GitHub Server
     participant Git as Git Server
 
     Dev->>Copilot: Ask question about code
-    Copilot->>MCP: Load MCP configuration
+    Copilot->>Copilot: Initialize MCP servers
     
     par Query Multiple Servers
         Copilot->>FS: Request file content
@@ -105,12 +102,10 @@ sequenceDiagram
 
 ```mermaid
 flowchart TD
-    Start[🚀 Start Codespace/VS Code] --> LoadConfig[Load MCP Config]
-    LoadConfig --> ReadSetup[Read copilot-setup-steps.yml]
-    ReadSetup --> InstallDeps[Install System Dependencies]
-    InstallDeps --> InstallNode[Install Node Dependencies]
-    InstallNode --> BuildProject[Build TypeScript Project]
-    BuildProject --> InitServers[Initialize MCP Servers]
+    Start[🚀 Start Codespace/VS Code] --> LoadCopilot[Load GitHub Copilot]
+    LoadCopilot --> LoadInstructions[Load copilot-instructions.md]
+    LoadInstructions --> CheckEnv[Check Environment Variables]
+    CheckEnv --> InitServers[Initialize MCP Servers]
     
     InitServers --> FSServer[Start Filesystem Server]
     InitServers --> GHServer[Start GitHub Server]
@@ -132,7 +127,7 @@ flowchart TD
     classDef server fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px
     classDef ready fill:#c8e6c9,stroke:#2e7d32,stroke-width:3px
     
-    class Start,LoadConfig,ReadSetup,InstallDeps,InstallNode,BuildProject,InitServers setup
+    class Start,LoadCopilot,LoadInstructions,CheckEnv,InitServers setup
     class FSServer,GHServer,GitServer,MemServer,SearchServer,PWServer server
     class Ready,UseCopilot ready
 ```
@@ -285,19 +280,6 @@ graph TD
 
 ```
 .github/
-├── copilot-setup-steps.yml     # Main setup configuration
-│   ├── System dependencies
-│   ├── Node.js setup
-│   ├── MCP server list
-│   ├── Environment variables
-│   └── Validation steps
-│
-├── mcp-config.json             # Standard MCP configuration
-│   ├── Server definitions
-│   ├── Command configurations
-│   ├── Environment mappings
-│   └── Enable/disable flags
-│
 ├── copilot-instructions.md     # Coding guidelines
 │   ├── TypeScript rules
 │   ├── React patterns
@@ -305,21 +287,28 @@ graph TD
 │   └── Testing requirements
 │
 └── workflows/
-    └── copilot-setup.yml       # Setup validation workflow
-        ├── Installation tests
-        ├── Configuration checks
-        └── Documentation generation
+    └── (optional workflow files)
+
+.devcontainer/
+└── devcontainer.json           # Development container configuration
+
+docs/
+├── MCP_CONFIGURATION.md        # MCP server documentation
+├── MCP_ARCHITECTURE.md         # This document
+├── COPILOT_QUICK_START.md      # Quick start guide
+└── MCP_IMPLEMENTATION_SUMMARY.md # Historical implementation notes
 ```
+
+**Note:** MCP servers are automatically configured by GitHub Copilot without requiring separate configuration files.
 
 ## Integration Points
 
 | Component | Configuration | Purpose |
 |-----------|--------------|---------|
-| **VS Code** | Uses `mcp-config.json` | Loads MCP servers automatically |
+| **VS Code** | Built-in Copilot context | Loads MCP servers automatically |
 | **Codespaces** | Uses `devcontainer.json` | Pre-configures environment |
-| **Copilot Agent** | Reads `copilot-setup-steps.yml` | Pre-installs dependencies |
-| **GitHub Actions** | Executes `copilot-setup.yml` | Validates configuration |
-| **Documentation** | References all configs | Guides developers |
+| **Copilot** | Reads `copilot-instructions.md` | Follows coding guidelines |
+| **Documentation** | References guides | Provides developer guidance |
 
 ## Benefits of MCP Integration
 

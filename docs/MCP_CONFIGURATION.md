@@ -172,6 +172,8 @@ Browser automation for testing and debugging web applications.
 
 ### In GitHub Codespaces
 
+### In GitHub Codespaces
+
 1. Open the repository in Codespaces
 2. MCP servers are automatically configured
 3. Use Copilot Chat to interact with them
@@ -180,7 +182,7 @@ Browser automation for testing and debugging web applications.
 ### In VS Code
 
 1. Install GitHub Copilot extension
-2. MCP servers load automatically from `.github/mcp-config.json`
+2. MCP servers load automatically with Copilot context
 3. Use Copilot Chat with enhanced context
 4. Example: "Search documentation for Three.js mesh anchors"
 
@@ -191,25 +193,6 @@ Browser automation for testing and debugging web applications.
 3. Use: `gh copilot suggest "create a new game component"`
 
 ## Configuration Files
-
-### `.github/copilot-setup-steps.yml`
-
-Defines the setup process that runs before Copilot agent starts working:
-
-- System dependencies installation
-- Node.js project setup
-- MCP server configuration
-- Environment variables
-- Validation steps
-
-### `.github/mcp-config.json`
-
-Standard MCP configuration file that defines available servers:
-
-- Server commands
-- Environment variables
-- Enabled/disabled state
-- Descriptions
 
 ### `.github/copilot-instructions.md`
 
@@ -269,14 +252,16 @@ All sensitive data uses environment variables:
 
 ### MCP Server Not Working
 
-1. Check if the server is enabled in `.github/mcp-config.json`
-2. Verify environment variables are set
-3. Ensure npm can access the package
-4. Restart VS Code or Codespace
+### MCP Server Not Working
+
+1. Verify environment variables are set (especially `GITHUB_TOKEN`)
+2. Ensure npm can access the package
+3. Restart VS Code or Codespace
+4. Check Copilot output panel for errors
 
 ### Performance Issues
 
-1. Disable unused MCP servers
+1. Disable unused MCP servers in Copilot settings
 2. Limit filesystem server to specific directories
 3. Use caching where available
 4. Monitor resource usage
@@ -289,15 +274,6 @@ All sensitive data uses environment variables:
 4. Review server logs
 
 ## Testing the Configuration
-
-### Manual Validation
-
-Run the setup workflow:
-```bash
-# Trigger the workflow manually from GitHub Actions UI
-# Or use GitHub CLI:
-gh workflow run copilot-setup.yml
-```
 
 ### Local Testing
 
@@ -312,6 +288,8 @@ npx @modelcontextprotocol/server-github
 # Test Git server
 npx @modelcontextprotocol/server-git --repository .
 ```
+
+**Note:** MCP servers are automatically configured in GitHub Codespaces and VS Code with Copilot.
 
 ## Further Reading
 
@@ -344,11 +322,12 @@ This project follows [Hack23 AB's ISMS](https://github.com/Hack23/ISMS-PUBLIC):
 To add new MCP servers:
 
 1. Research available MCP servers for your use case
-2. Add configuration to `.github/mcp-config.json`
-3. Document the server in this guide
-4. Update `.github/copilot-setup-steps.yml` if needed
-5. Test the configuration
-6. Submit a pull request
+2. Document the server capabilities in this guide
+3. Update Copilot configuration as needed
+4. Test the server integration
+5. Submit a pull request
+
+**Note:** MCP servers are configured through Copilot's environment rather than separate config files.
 
 ## Support
 

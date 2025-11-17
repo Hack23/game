@@ -38,7 +38,7 @@ This guide helps you get started with GitHub Copilot in this repository, leverag
 
 4. Install GitHub Copilot extension from VS Code Marketplace
 
-5. MCP servers will be automatically loaded from `.github/mcp-config.json`
+5. MCP servers are automatically configured for the repository context
 
 ## 💬 Using Copilot Chat
 
@@ -176,17 +176,7 @@ Find React 19 best practices for hooks
 - Three.js patterns
 - Testing requirements
 
-### `.github/copilot-setup-steps.yml`
-- Pre-installation steps
-- MCP server configuration
-- Environment setup
-- Validation checks
-
-### `.github/mcp-config.json`
-- MCP server definitions
-- Command configurations
-- Environment variables
-- Enable/disable settings
+**Note:** MCP servers are automatically configured in the GitHub Codespaces environment.
 
 ## 🛠️ Troubleshooting
 
@@ -199,10 +189,9 @@ Find React 19 best practices for hooks
 
 ### MCP Servers Not Loading
 
-1. Verify `.github/mcp-config.json` exists
-2. Check environment variables are set
-3. Restart VS Code or Codespace
-4. Review VS Code output panel for errors
+1. Check environment variables are set (especially `GITHUB_TOKEN` for product-task-agent)
+2. Restart VS Code or Codespace
+3. Review VS Code output panel for errors
 
 ### Suggestions Not Relevant
 
@@ -213,10 +202,9 @@ Find React 19 best practices for hooks
 
 ### Performance Issues
 
-1. Disable unused MCP servers in `.github/mcp-config.json`
-2. Close unnecessary files
-3. Restart VS Code
-4. Check system resources
+1. Close unnecessary files
+2. Restart VS Code
+3. Check system resources
 
 ## 📚 Learning Resources
 
