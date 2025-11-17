@@ -212,10 +212,10 @@ This repository is configured with Model Context Protocol (MCP) servers that enh
 - **🎭 Playwright Server** - Browser automation for testing and debugging
 
 **Configuration Files:**
-- `.github/copilot-setup-steps.yml` - Pre-installation steps for Copilot agent
-- `.github/mcp-config.json` - MCP server configuration
 - `.github/copilot-instructions.md` - Coding guidelines for Copilot
 - `docs/MCP_CONFIGURATION.md` - Detailed MCP setup documentation
+
+**Note:** MCP servers are automatically configured in the GitHub Codespaces environment and don't require separate configuration files.
 
 **Learn More:** See [MCP Configuration Guide](docs/MCP_CONFIGURATION.md) for detailed setup and usage instructions.
 
@@ -915,6 +915,7 @@ All security workflows will automatically protect your game from common vulnerab
 
 ### Security & Compliance
 - 🔒 **[SECURITY.md](SECURITY.md)** - Security policy and vulnerability reporting
+- 🛡️ **[SECURITY_HEADERS.md](SECURITY_HEADERS.md)** - Security headers implementation
 - 📊 **[ISMS Policy Mapping](docs/ISMS_POLICY_MAPPING.md)** - Complete feature-to-policy mapping
 - 🔐 **[ISMS-PUBLIC Repository](https://github.com/Hack23/ISMS-PUBLIC)** - Hack23 AB's complete ISMS
 

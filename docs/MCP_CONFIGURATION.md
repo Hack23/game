@@ -1,3 +1,26 @@
+<p align="center">
+  <img src="https://hack23.github.io/cia-compliance-manager/icon-192.png" alt="Hack23 AB Logo" width="192" height="192">
+</p>
+
+<h1 align="center">⚙️ Hack23 AB — MCP Configuration Guide</h1>
+
+<p align="center">
+  <strong>🤖 Model Context Protocol Setup</strong><br>
+  <em>🎯 Enhancing GitHub Copilot with specialized context</em>
+</p>
+
+<p align="center">
+  <a href="#"><img src="https://img.shields.io/badge/Owner-CEO-0A66C2?style=for-the-badge" alt="Owner"/></a>
+  <a href="#"><img src="https://img.shields.io/badge/Version-1.0-555?style=for-the-badge" alt="Version"/></a>
+  <a href="#"><img src="https://img.shields.io/badge/Effective-2025--11--10-success?style=for-the-badge" alt="Effective Date"/></a>
+  <a href="#"><img src="https://img.shields.io/badge/Review-Quarterly-orange?style=for-the-badge" alt="Review Cycle"/></a>
+</p>
+
+**📋 Document Owner:** CEO | **📄 Version:** 1.0 | **📅 Last Updated:** 2025-11-10 (UTC)  
+**🔄 Review Cycle:** Quarterly | **⏰ Next Review:** 2026-02-10
+
+---
+
 # GitHub Copilot MCP Configuration Guide
 
 This document explains how Model Context Protocol (MCP) servers enhance GitHub Copilot's capabilities for this game development project.
@@ -180,7 +203,7 @@ Browser automation for testing and debugging web applications.
 ### In VS Code
 
 1. Install GitHub Copilot extension
-2. MCP servers load automatically from `.github/mcp-config.json`
+2. MCP servers load automatically with Copilot context
 3. Use Copilot Chat with enhanced context
 4. Example: "Search documentation for Three.js mesh anchors"
 
@@ -191,25 +214,6 @@ Browser automation for testing and debugging web applications.
 3. Use: `gh copilot suggest "create a new game component"`
 
 ## Configuration Files
-
-### `.github/copilot-setup-steps.yml`
-
-Defines the setup process that runs before Copilot agent starts working:
-
-- System dependencies installation
-- Node.js project setup
-- MCP server configuration
-- Environment variables
-- Validation steps
-
-### `.github/mcp-config.json`
-
-Standard MCP configuration file that defines available servers:
-
-- Server commands
-- Environment variables
-- Enabled/disabled state
-- Descriptions
 
 ### `.github/copilot-instructions.md`
 
@@ -269,14 +273,14 @@ All sensitive data uses environment variables:
 
 ### MCP Server Not Working
 
-1. Check if the server is enabled in `.github/mcp-config.json`
-2. Verify environment variables are set
-3. Ensure npm can access the package
-4. Restart VS Code or Codespace
+1. Verify environment variables are set (especially `GITHUB_TOKEN`)
+2. Ensure npm can access the package
+3. Restart VS Code or Codespace
+4. Check Copilot output panel for errors
 
 ### Performance Issues
 
-1. Disable unused MCP servers
+1. Disable unused MCP servers in Copilot settings
 2. Limit filesystem server to specific directories
 3. Use caching where available
 4. Monitor resource usage
@@ -289,15 +293,6 @@ All sensitive data uses environment variables:
 4. Review server logs
 
 ## Testing the Configuration
-
-### Manual Validation
-
-Run the setup workflow:
-```bash
-# Trigger the workflow manually from GitHub Actions UI
-# Or use GitHub CLI:
-gh workflow run copilot-setup.yml
-```
 
 ### Local Testing
 
@@ -312,6 +307,8 @@ npx @modelcontextprotocol/server-github
 # Test Git server
 npx @modelcontextprotocol/server-git --repository .
 ```
+
+**Note:** MCP servers are automatically configured in GitHub Codespaces and VS Code with Copilot.
 
 ## Further Reading
 
@@ -344,15 +341,40 @@ This project follows [Hack23 AB's ISMS](https://github.com/Hack23/ISMS-PUBLIC):
 To add new MCP servers:
 
 1. Research available MCP servers for your use case
-2. Add configuration to `.github/mcp-config.json`
-3. Document the server in this guide
-4. Update `.github/copilot-setup-steps.yml` if needed
-5. Test the configuration
-6. Submit a pull request
+2. Document the server capabilities in this guide
+3. Update Copilot configuration as needed
+4. Test the server integration
+5. Submit a pull request
 
-## Support
+**Note:** MCP servers are configured through Copilot's environment rather than separate config files.
 
-For issues with MCP servers:
-- Check the [MCP repository](https://github.com/modelcontextprotocol)
-- Review [Copilot documentation](https://docs.github.com/en/copilot)
-- Open an issue in this repository
+---
+
+## 📚 Related Documents
+
+### Internal Documentation
+- 🏗️ [MCP Architecture](MCP_ARCHITECTURE.md) - Architecture diagrams and design
+- 🚀 [Copilot Quick Start](COPILOT_QUICK_START.md) - Getting started guide
+- 🤖 [Copilot Instructions](../.github/copilot-instructions.md) - Coding guidelines
+- 📊 [ISMS Policy Mapping](ISMS_POLICY_MAPPING.md) - Feature-to-policy alignment
+
+### ISMS-PUBLIC Policies
+- 🔐 [Information Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md) - Overall security governance
+- 🛠️ [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) - SDLC and CI/CD requirements
+- 🔑 [Access Control Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Access_Control_Policy.md) - Authentication and authorization controls
+- 🏷️ [Classification Framework](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) - CIA triad and impact levels
+
+### External Resources
+- [MCP Specification](https://github.com/modelcontextprotocol/specification) - Official MCP protocol documentation
+- [GitHub Copilot Documentation](https://docs.github.com/en/copilot) - Official Copilot documentation
+- [MCP Servers Repository](https://github.com/modelcontextprotocol/servers) - Official MCP server implementations
+
+---
+
+**📋 Document Control:**  
+**✅ Approved by:** James Pether Sörling, CEO  
+**📤 Distribution:** Public  
+**🏷️ Classification:** [![Confidentiality: Public](https://img.shields.io/badge/C-Public-lightgrey?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#confidentiality-levels)  
+**📅 Effective Date:** 2025-11-10  
+**⏰ Next Review:** 2026-02-10  
+**🎯 Framework Compliance:** [![ISO 27001](https://img.shields.io/badge/ISO_27001-2022_Aligned-blue?style=flat-square&logo=iso&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![NIST CSF 2.0](https://img.shields.io/badge/NIST_CSF-2.0_Aligned-green?style=flat-square&logo=nist&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![CIS Controls](https://img.shields.io/badge/CIS_Controls-v8.1_Aligned-orange?style=flat-square&logo=cisecurity&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)

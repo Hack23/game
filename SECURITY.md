@@ -1,18 +1,23 @@
-<div align="center">
-  <img src="https://hack23.github.io/cia-compliance-manager/icon-192.png" alt="Hack23 AB Logo" width="96" height="96">
-</div>
+<p align="center">
+  <img src="https://hack23.github.io/cia-compliance-manager/icon-192.png" alt="Hack23 AB Logo" width="192" height="192">
+</p>
 
-<h1 align="center">🔐 Security Policy</h1>
+<h1 align="center">🔐 Hack23 AB — Game Template Security Policy</h1>
 
 <p align="center">
-  <strong>Hack23 AB Game Template</strong><br>
-  <em>Security-first game development with verifiable transparency</em>
+  <strong>🛡️ Security Through Transparency and Excellence</strong><br>
+  <em>🎯 Security-first game development with verifiable compliance</em>
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Classification-Public-green?style=flat-square" alt="Classification">
-  <img src="https://img.shields.io/badge/Last_Updated-2025--11--10-blue?style=flat-square" alt="Last Updated">
+  <a href="#"><img src="https://img.shields.io/badge/Owner-CEO-0A66C2?style=for-the-badge" alt="Owner"/></a>
+  <a href="#"><img src="https://img.shields.io/badge/Version-1.0-555?style=for-the-badge" alt="Version"/></a>
+  <a href="#"><img src="https://img.shields.io/badge/Effective-2025--11--10-success?style=for-the-badge" alt="Effective Date"/></a>
+  <a href="#"><img src="https://img.shields.io/badge/Review-Quarterly-orange?style=for-the-badge" alt="Review Cycle"/></a>
 </p>
+
+**📋 Document Owner:** CEO | **📄 Version:** 1.0 | **📅 Last Updated:** 2025-11-10 (UTC)  
+**🔄 Review Cycle:** Quarterly | **⏰ Next Review:** 2026-02-10
 
 ---
 
@@ -200,6 +205,7 @@ We appreciate your effort in helping us maintain a secure and reliable project. 
 
 ### Internal Documentation
 - 📊 **[ISMS Policy Mapping](docs/ISMS_POLICY_MAPPING.md)** - Complete mapping of features to ISMS policies
+- 🛡️ **[Security Headers](SECURITY_HEADERS.md)** - Security headers implementation details
 - 📖 **[README.md](README.md)** - Project overview with security features
 - 🤖 **[Copilot Instructions](.github/copilot-instructions.md)** - Secure coding guidelines
 - 🔒 **[Security Specialist Agent](.github/agents/security-specialist.md)** - Security expert agent
@@ -214,11 +220,28 @@ All security practices are governed by our publicly available ISMS:
 - 🔒 **[Privacy Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Privacy_Policy.md)** - Privacy and GDPR compliance
 - 🔑 **[Access Control Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Access_Control_Policy.md)** - Authentication and authorization
 
-### Framework Compliance
-Our security practices align with:
-- **ISO 27001:2022** - Information Security Management
-- **NIST Cybersecurity Framework 2.0** - Comprehensive cybersecurity
-- **CIS Controls v8.1** - Critical security controls
+---
+
+## 📚 Related Documents
+
+- 🔐 [Information Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md) - Overall security governance
+- 🛠️ [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) - SDLC and CI/CD requirements
+- 📦 [Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md) - Supply chain security
+- 🏷️ [Data Classification Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Data_Classification_Policy.md) - Data handling requirements
+- 🔒 [Privacy Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Privacy_Policy.md) - Privacy and GDPR compliance
+- 🔑 [Access Control Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Access_Control_Policy.md) - Authentication and authorization
+- 🔍 [Vulnerability Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Vulnerability_Management.md) - Security vulnerability handling
+- 🏷️ [Classification Framework](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) - CIA triad and impact levels
+
+---
+
+**📋 Document Control:**  
+**✅ Approved by:** James Pether Sörling, CEO  
+**📤 Distribution:** Public  
+**🏷️ Classification:** [![Confidentiality: Public](https://img.shields.io/badge/C-Public-lightgrey?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#confidentiality-levels)  
+**📅 Effective Date:** 2025-11-10  
+**⏰ Next Review:** 2026-02-10  
+**🎯 Framework Compliance:** [![ISO 27001](https://img.shields.io/badge/ISO_27001-2022_Aligned-blue?style=flat-square&logo=iso&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![NIST CSF 2.0](https://img.shields.io/badge/NIST_CSF-2.0_Aligned-green?style=flat-square&logo=nist&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![CIS Controls](https://img.shields.io/badge/CIS_Controls-v8.1_Aligned-orange?style=flat-square&logo=cisecurity&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![AWS Well-Architected](https://img.shields.io/badge/AWS-Well_Architected-orange?style=flat-square&logo=amazon-aws&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)
 
 ---
 
@@ -228,9 +251,4 @@ Our security practices align with:
 
 *Part of Hack23 AB's commitment to transparency and security excellence*
 
-[![ISO 27001:2022](https://img.shields.io/badge/ISO_27001-2022-0066cc?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md)
-[![NIST CSF 2.0](https://img.shields.io/badge/NIST_CSF-2.0-0066cc?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md)
-[![CIS Controls v8.1](https://img.shields.io/badge/CIS_Controls-v8.1-0066cc?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md)
-
 </div>
-

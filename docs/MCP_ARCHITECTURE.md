@@ -1,3 +1,26 @@
+<p align="center">
+  <img src="https://hack23.github.io/cia-compliance-manager/icon-192.png" alt="Hack23 AB Logo" width="192" height="192">
+</p>
+
+<h1 align="center">🏗️ Hack23 AB — Copilot MCP Architecture</h1>
+
+<p align="center">
+  <strong>🤖 AI-Enhanced Development Architecture</strong><br>
+  <em>🎯 Model Context Protocol integration for secure development</em>
+</p>
+
+<p align="center">
+  <a href="#"><img src="https://img.shields.io/badge/Owner-CEO-0A66C2?style=for-the-badge" alt="Owner"/></a>
+  <a href="#"><img src="https://img.shields.io/badge/Version-1.0-555?style=for-the-badge" alt="Version"/></a>
+  <a href="#"><img src="https://img.shields.io/badge/Effective-2025--11--10-success?style=for-the-badge" alt="Effective Date"/></a>
+  <a href="#"><img src="https://img.shields.io/badge/Review-Quarterly-orange?style=for-the-badge" alt="Review Cycle"/></a>
+</p>
+
+**📋 Document Owner:** CEO | **📄 Version:** 1.0 | **📅 Last Updated:** 2025-11-10 (UTC)  
+**🔄 Review Cycle:** Quarterly | **⏰ Next Review:** 2026-02-10
+
+---
+
 # Copilot MCP Architecture
 
 This document visualizes how Model Context Protocol (MCP) servers integrate with GitHub Copilot in this repository.
@@ -12,10 +35,9 @@ graph TB
         Copilot[🤖 GitHub Copilot]
     end
 
-    subgraph "MCP Configuration"
-        SetupSteps[copilot-setup-steps.yml]
-        MCPConfig[mcp-config.json]
+    subgraph "Configuration"
         Instructions[copilot-instructions.md]
+        Env[Environment Variables]
     end
 
     subgraph "MCP Servers"
@@ -37,16 +59,15 @@ graph TB
 
     Dev -->|Uses| VSCode
     VSCode -->|Integrates| Copilot
-    Copilot -->|Reads| SetupSteps
-    Copilot -->|Loads| MCPConfig
     Copilot -->|Follows| Instructions
+    Copilot -->|Uses| Env
 
-    MCPConfig -->|Configures| FS
-    MCPConfig -->|Configures| GH
-    MCPConfig -->|Configures| Git
-    MCPConfig -->|Configures| Mem
-    MCPConfig -->|Configures| Search
-    MCPConfig -->|Configures| PW
+    Copilot -->|Activates| FS
+    Copilot -->|Activates| GH
+    Copilot -->|Activates| Git
+    Copilot -->|Activates| Mem
+    Copilot -->|Activates| Search
+    Copilot -->|Activates| PW
 
     FS -->|Accesses| Files
     GH -->|Queries| Repo
@@ -67,7 +88,7 @@ graph TB
     classDef data fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
 
     class Dev,VSCode,Copilot primary
-    class SetupSteps,MCPConfig,Instructions config
+    class Instructions,Env config
     class FS,GH,Git,Mem,Search,PW server
     class Files,Repo,History,Docs,Browser data
 ```
@@ -78,13 +99,12 @@ graph TB
 sequenceDiagram
     participant Dev as Developer
     participant Copilot as GitHub Copilot
-    participant MCP as MCP Config
     participant FS as Filesystem Server
     participant GH as GitHub Server
     participant Git as Git Server
 
     Dev->>Copilot: Ask question about code
-    Copilot->>MCP: Load MCP configuration
+    Copilot->>Copilot: Initialize MCP servers
     
     par Query Multiple Servers
         Copilot->>FS: Request file content
@@ -105,12 +125,10 @@ sequenceDiagram
 
 ```mermaid
 flowchart TD
-    Start[🚀 Start Codespace/VS Code] --> LoadConfig[Load MCP Config]
-    LoadConfig --> ReadSetup[Read copilot-setup-steps.yml]
-    ReadSetup --> InstallDeps[Install System Dependencies]
-    InstallDeps --> InstallNode[Install Node Dependencies]
-    InstallNode --> BuildProject[Build TypeScript Project]
-    BuildProject --> InitServers[Initialize MCP Servers]
+    Start[🚀 Start Codespace/VS Code] --> LoadCopilot[Load GitHub Copilot]
+    LoadCopilot --> LoadInstructions[Load copilot-instructions.md]
+    LoadInstructions --> CheckEnv[Check Environment Variables]
+    CheckEnv --> InitServers[Initialize MCP Servers]
     
     InitServers --> FSServer[Start Filesystem Server]
     InitServers --> GHServer[Start GitHub Server]
@@ -132,7 +150,7 @@ flowchart TD
     classDef server fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px
     classDef ready fill:#c8e6c9,stroke:#2e7d32,stroke-width:3px
     
-    class Start,LoadConfig,ReadSetup,InstallDeps,InstallNode,BuildProject,InitServers setup
+    class Start,LoadCopilot,LoadInstructions,CheckEnv,InitServers setup
     class FSServer,GHServer,GitServer,MemServer,SearchServer,PWServer server
     class Ready,UseCopilot ready
 ```
@@ -285,19 +303,6 @@ graph TD
 
 ```
 .github/
-├── copilot-setup-steps.yml     # Main setup configuration
-│   ├── System dependencies
-│   ├── Node.js setup
-│   ├── MCP server list
-│   ├── Environment variables
-│   └── Validation steps
-│
-├── mcp-config.json             # Standard MCP configuration
-│   ├── Server definitions
-│   ├── Command configurations
-│   ├── Environment mappings
-│   └── Enable/disable flags
-│
 ├── copilot-instructions.md     # Coding guidelines
 │   ├── TypeScript rules
 │   ├── React patterns
@@ -305,21 +310,28 @@ graph TD
 │   └── Testing requirements
 │
 └── workflows/
-    └── copilot-setup.yml       # Setup validation workflow
-        ├── Installation tests
-        ├── Configuration checks
-        └── Documentation generation
+    └── (optional workflow files)
+
+.devcontainer/
+└── devcontainer.json           # Development container configuration
+
+docs/
+├── MCP_CONFIGURATION.md        # MCP server documentation
+├── MCP_ARCHITECTURE.md         # This document
+├── COPILOT_QUICK_START.md      # Quick start guide
+└── MCP_IMPLEMENTATION_SUMMARY.md # Historical implementation notes
 ```
+
+**Note:** MCP servers are automatically configured by GitHub Copilot without requiring separate configuration files.
 
 ## Integration Points
 
 | Component | Configuration | Purpose |
 |-----------|--------------|---------|
-| **VS Code** | Uses `mcp-config.json` | Loads MCP servers automatically |
+| **VS Code** | Built-in Copilot context | Loads MCP servers automatically |
 | **Codespaces** | Uses `devcontainer.json` | Pre-configures environment |
-| **Copilot Agent** | Reads `copilot-setup-steps.yml` | Pre-installs dependencies |
-| **GitHub Actions** | Executes `copilot-setup.yml` | Validates configuration |
-| **Documentation** | References all configs | Guides developers |
+| **Copilot** | Reads `copilot-instructions.md` | Follows coding guidelines |
+| **Documentation** | References guides | Provides developer guidance |
 
 ## Benefits of MCP Integration
 
@@ -367,8 +379,28 @@ graph TB
     class B1,B2,B3,B4,B5 capability
 ```
 
-## See Also
+---
 
-- [MCP Configuration Guide](MCP_CONFIGURATION.md)
-- [Copilot Quick Start](COPILOT_QUICK_START.md)
-- [Copilot Instructions](../.github/copilot-instructions.md)
+## 📚 Related Documents
+
+### Internal Documentation
+- 📖 [MCP Configuration Guide](MCP_CONFIGURATION.md) - MCP server setup and configuration
+- 🚀 [Copilot Quick Start](COPILOT_QUICK_START.md) - Getting started with Copilot
+- 🤖 [Copilot Instructions](../.github/copilot-instructions.md) - Coding guidelines for AI assistance
+- 📊 [ISMS Policy Mapping](ISMS_POLICY_MAPPING.md) - Feature-to-policy alignment
+
+### ISMS-PUBLIC Policies
+- 🔐 [Information Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md) - Overall security governance
+- 🛠️ [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) - AI-assisted development and security guidelines
+- 🔑 [Access Control Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Access_Control_Policy.md) - Authentication and authorization controls
+- 🏷️ [Classification Framework](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) - CIA triad and impact levels
+
+---
+
+**📋 Document Control:**  
+**✅ Approved by:** James Pether Sörling, CEO  
+**📤 Distribution:** Public  
+**🏷️ Classification:** [![Confidentiality: Public](https://img.shields.io/badge/C-Public-lightgrey?style=flat-square)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#confidentiality-levels)  
+**📅 Effective Date:** 2025-11-10  
+**⏰ Next Review:** 2026-02-10  
+**🎯 Framework Compliance:** [![ISO 27001](https://img.shields.io/badge/ISO_27001-2022_Aligned-blue?style=flat-square&logo=iso&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![NIST CSF 2.0](https://img.shields.io/badge/NIST_CSF-2.0_Aligned-green?style=flat-square&logo=nist&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![CIS Controls](https://img.shields.io/badge/CIS_Controls-v8.1_Aligned-orange?style=flat-square&logo=cisecurity&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)
