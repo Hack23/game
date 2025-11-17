@@ -195,8 +195,6 @@ Browser automation for testing and debugging web applications.
 
 ### In GitHub Codespaces
 
-### In GitHub Codespaces
-
 1. Open the repository in Codespaces
 2. MCP servers are automatically configured
 3. Use Copilot Chat to interact with them
@@ -272,8 +270,6 @@ All sensitive data uses environment variables:
 - Review server logs for unusual activity
 
 ## Troubleshooting
-
-### MCP Server Not Working
 
 ### MCP Server Not Working
 
