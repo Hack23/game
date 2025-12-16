@@ -27,6 +27,14 @@ jobs:
           node-version: "24"
           cache: "npm"
 
+      - name: Cache apt packages
+        uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
+        with:
+          path: /var/cache/apt/archives
+          key: ${{ runner.os }}-apt-${{ hashFiles('.github/workflows/test-and-report.yml') }}
+          restore-keys: |
+            ${{ runner.os }}-apt-
+
       - name: Setup display and dependencies
         run: |
           sudo apt-get update
@@ -49,7 +57,9 @@ jobs:
         uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
         with:
           path: ~/.cache/Cypress
-          key: cypress-${{ runner.os }}-${{ hashFiles('**/package.json') }}
+          key: cypress-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            cypress-${{ runner.os }}-
 
       - name: Verify Cypress
         run: npx cypress verify
@@ -85,6 +95,15 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Cache build artifacts
+        uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
+        with:
+          path: dist
+          key: ${{ runner.os }}-build-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('src/**/*') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ hashFiles('**/package-lock.json') }}-
+            ${{ runner.os }}-build-
 
       - name: Build application
         run: npm run build
@@ -146,6 +165,14 @@ jobs:
         with:
           node-version: "24"
           cache: "npm"
+
+      - name: Cache dependencies
+        uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
       - name: Install dependencies
         run: npm install

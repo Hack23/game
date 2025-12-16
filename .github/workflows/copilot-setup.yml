@@ -37,6 +37,14 @@ jobs:
           node-version: '24'
           cache: 'npm'
 
+      - name: Cache dependencies
+        uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
       - name: Display Copilot Configuration
         run: |
           echo "## GitHub Copilot Development Environment"
@@ -83,6 +91,14 @@ jobs:
           echo "- Browser automation for testing"
           echo "- Useful for debugging and E2E tests"
           echo "- Command: @modelcontextprotocol/server-playwright"
+
+      - name: Cache apt packages
+        uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
+        with:
+          path: /var/cache/apt/archives
+          key: ${{ runner.os }}-apt-${{ hashFiles('.github/workflows/copilot-setup.yml') }}
+          restore-keys: |
+            ${{ runner.os }}-apt-
 
       - name: Install System Dependencies
         run: |
