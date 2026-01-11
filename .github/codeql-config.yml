@@ -1,0 +1,6 @@
+name: "CodeQL Config"
+
+paths:
+  - src
+paths-ignore:
+  - docs
