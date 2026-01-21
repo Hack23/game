@@ -6,11 +6,15 @@ import "./App.css";
 import { ErrorBoundary } from "react-error-boundary";
 
 // Custom fallback component for error handling
-function ErrorFallback({ error }: { error: Error }): React.ReactElement {
+function ErrorFallback({ error }: { error: unknown }): React.ReactElement {
+  // Type guard to safely extract error message
+  const errorMessage =
+    error instanceof Error ? error.message : String(error);
+
   return (
     <div className="error-container">
       <h2>Something went wrong:</h2>
-      <pre>{error.message}</pre>
+      <pre>{errorMessage}</pre>
       <button onClick={(): void => window.location.reload()}>Try again</button>
     </div>
   );
