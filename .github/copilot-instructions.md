@@ -92,7 +92,7 @@ npm run test:e2e:ci
 
 ### Quality Standards
 
-- Aim for minimum 80% code coverage per [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) (v3.2, 2026)
+- Aim for minimum 80% code coverage per [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) (v2.1, 2026-01-25)
 - Write tests for critical business logic and security paths
 - Test both success and error cases
 - Test edge cases and boundary conditions
@@ -335,11 +335,11 @@ export function Player({
 
 All development follows [Hack23 AB's ISMS](https://github.com/Hack23/ISMS-PUBLIC) (v3.2, 2026):
 
-- **Supply Chain Security**: Verify dependencies before adding (`npm audit`, `npm run test:licenses`)
-- **Secure Coding**: Follow OWASP guidelines, never commit secrets
-- **Testing Requirements**: Minimum 80% coverage per [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md)
-- **License Compliance**: Only approved open-source licenses (MIT, Apache-2.0, BSD variants, ISC, CC0-1.0, Unlicense)
-- **SBOM Quality**: Maintain SBOM quality score above 7.0/10
-- **Build Security**: All GitHub Actions pinned to SHA hashes
+- **Supply Chain Security**: Verify dependencies before adding (`npm audit`, `npm run test:licenses`) per [Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md) (v2.3)
+- **Secure Coding**: Follow OWASP guidelines, never commit secrets, per [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) (v2.1)
+- **Testing Requirements**: Minimum 80% coverage per [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) (v2.1, 2026-01-25)
+- **License Compliance**: Only approved open-source licenses (MIT, Apache-2.0, BSD variants, ISC, CC0-1.0, Unlicense) per [Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md) (v2.3)
+- **SBOM Quality**: Maintain SBOM quality score above 7.0/10 per [Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md)
+- **Build Security**: All GitHub Actions pinned to SHA hashes per [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md)
 
 For detailed compliance requirements, see [ISMS Policy Mapping](../docs/ISMS_POLICY_MAPPING.md).

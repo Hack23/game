@@ -88,11 +88,13 @@ Specialized in:
 - CodeQL and vulnerability scanning
 - Dependency management and audit
 - [ISMS-PUBLIC](https://github.com/Hack23/ISMS-PUBLIC) (v3.2, 2026) policy compliance
-- Security documentation aligned with [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md)
+- Security documentation aligned with:
+  - [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) (v2.1, 2026-01-25)
+  - [Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md) (v2.3, 2026-01-25)
 
 **Tools:** `view`, `edit`, `bash`, `search_code`, `custom-agent`
 
-**Quality Checks:** `npm audit`, `npm run test:licenses`, `npm run lint`, `npm run build`, `npm run test`
+**Quality Checks:** `npm audit`, `npm run test:licenses` per [Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md) (v2.3), `npm run lint`, `npm run build`, `npm run test`, `npm run coverage` (80%+ per [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) v2.1)
 
 ---
 

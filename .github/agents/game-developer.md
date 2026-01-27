@@ -73,9 +73,17 @@ Before completing work, always run:
 - `npm run lint` - Verify code quality and style
 - `npm run build` - Ensure TypeScript compiles without errors
 - `npm run test` - Run unit tests with Vitest
-- `npm run coverage` - Verify 80%+ test coverage per [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md)
+- `npm run coverage` - Verify 80%+ test coverage per [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) (v2.1)
 - `npm run test:e2e` - Run Cypress E2E tests for game flows
-- `npm run test:licenses` - Verify all dependencies have approved licenses
+- `npm run test:licenses` - Verify all dependencies have approved licenses per [Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md) (v2.3)
+
+## Security Standards
+
+- Follow OWASP secure coding guidelines per [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md)
+- Never commit secrets or credentials - use environment variables
+- Apply security-by-design principles to all game components
+- Validate and sanitize all user inputs in game interactions
+- Implement proper error handling without exposing sensitive information
 
 ## Remember
 

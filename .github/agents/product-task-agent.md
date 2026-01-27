@@ -33,11 +33,11 @@ You specialize in:
 - Assess visual design quality and brand consistency
 
 ### Security & ISMS Compliance
-- Verify alignment with [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md)
-- Check compliance with [Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md)
+- Verify alignment with [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) (v2.1) - SDLC, security testing, 80%+ coverage
+- Check compliance with [Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md) (v2.3) - SBOM, OSSF Scorecard, license compliance
 - Review supply chain security (OSSF Scorecard, dependencies): `npm audit`
 - Validate security testing coverage (CodeQL, license compliance): `npm run test:licenses`
-- Ensure proper documentation of security controls
+- Ensure proper documentation of security controls per [Information Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md)
 - Cross-reference with [ISMS Policy Mapping](../../docs/ISMS_POLICY_MAPPING.md)
 
 ### Performance & Infrastructure
@@ -201,8 +201,8 @@ When analyzing for ISMS compliance, check alignment with these core policies (v3
 
 ### Security Foundation
 - ✅ **[Information Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md)** - Overall security governance
-- ✅ **[Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md)** - SDLC and CI/CD requirements
-- ✅ **[Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md)** - Supply chain security
+- ✅ **[Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md)** (v2.1, 2026-01-25) - SDLC, security testing (80%+ coverage), OWASP guidelines, CI/CD requirements
+- ✅ **[Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md)** (v2.3, 2026-01-25) - Supply chain security, SBOM generation, OSSF Scorecard, license compliance
 
 ### Data & Access
 - ✅ **[Data Classification Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Data_Classification_Policy.md)** - Data handling requirements

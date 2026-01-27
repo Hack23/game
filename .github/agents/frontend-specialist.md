@@ -51,8 +51,16 @@ Before completing work, always run:
 - `npm run lint` - Verify code quality and ESLint rules
 - `npm run build` - Ensure TypeScript compiles and Vite builds successfully
 - `npm run test` - Run all unit tests
-- `npm run coverage` - Verify 80%+ coverage per [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md)
-- `npm run test:licenses` - Ensure all dependencies have approved licenses
+- `npm run coverage` - Verify 80%+ coverage per [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) (v2.1)
+- `npm run test:licenses` - Ensure all dependencies have approved licenses per [Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md) (v2.3)
+
+## Security Standards
+
+- Follow OWASP secure coding guidelines per [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md)
+- Never commit secrets or credentials - use environment variables
+- Validate and sanitize all user inputs in UI components
+- Implement proper error boundaries and error handling
+- Apply security-by-design principles to all React components
 
 ## Remember
 

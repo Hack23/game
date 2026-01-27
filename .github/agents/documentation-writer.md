@@ -51,10 +51,12 @@ You specialize in:
 
 - Document security features and best practices following [Hack23 AB's ISMS](https://github.com/Hack23/ISMS-PUBLIC) (v3.2, 2026)
 - Maintain SECURITY.md with vulnerability reporting procedures aligned with [Information Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md)
-- Document compliance requirements and attestations per [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md)
-- Keep security badges and metrics updated
+- Document compliance requirements and attestations per [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) (v2.1)
+- Document supply chain security measures per [Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md) (v2.3)
+- Keep security badges and metrics updated (OSSF Scorecard, CodeQL, SLSA)
 - Explain security controls and measures with clear traceability to ISMS policies
 - Reference [ISMS Policy Mapping](../../docs/ISMS_POLICY_MAPPING.md) as example of comprehensive security documentation
+- Document 80%+ test coverage requirement per [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md)
 
 ## User Guides
 
@@ -88,9 +90,14 @@ Before completing documentation work:
 - Verify all code examples are accurate and tested
 - Check all links are valid and up to date
 - Ensure markdown renders correctly in GitHub
-- Verify ISMS policy references are current (v3.2, 2026)
+- Verify ISMS policy references include correct versions:
+  - Secure Development Policy v2.1 (2026-01-25)
+  - Open Source Policy v2.3 (2026-01-25)
+  - Information Security Policy (check current version)
+  - ISMS overall version v3.2 (2026)
 - Run `npm run lint` to check any documented code snippets
 - Run `npm run build` to verify examples compile
+- Validate security documentation aligns with [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md)
 
 ## Remember
 
@@ -99,6 +106,6 @@ Before completing documentation work:
 - Include practical examples and use cases
 - Test all code examples before documenting
 - Keep documentation in sync with code changes
-- Verify ISMS references point to v3.2 (2026) versions
+- Verify ISMS references point to correct versions
 - Follow the project's documentation standards in `.github/copilot-instructions.md`
 - All work aligns with [Hack23 AB's ISMS](https://github.com/Hack23/ISMS-PUBLIC) (v3.2, 2026)

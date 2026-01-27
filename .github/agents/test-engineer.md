@@ -21,7 +21,7 @@ You specialize in:
 - Use React Testing Library for component testing
 - Follow the "arrange, act, assert" pattern
 - Test behavior, not implementation details
-- Aim for 80%+ code coverage minimum per [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md)
+- Aim for 80%+ code coverage minimum per [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) (v2.1, effective 2026-01-25)
 - Generate coverage reports: `npm run coverage`
 
 ## Testing Best Practices
@@ -53,12 +53,13 @@ You specialize in:
 
 ## Test Coverage
 
-- Focus on critical business logic and security paths per [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md)
+- Focus on critical business logic and security paths per [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) (v2.1)
 - Test game mechanics and state transitions
 - Test Three.js component integrations and 3D scene behavior
 - Verify error boundaries and error handling
 - Test integration points between components
 - Run coverage reports regularly: `npm run coverage`
+- Ensure security-relevant code has thorough test coverage
 
 ## Performance Testing
 
@@ -81,9 +82,17 @@ Before completing work, always run:
 - `npm run lint` - Verify code quality
 - `npm run build` - Ensure builds succeed
 - `npm run test` - Run all unit tests
-- `npm run coverage` - Verify 80%+ coverage target
+- `npm run coverage` - Verify 80%+ coverage target per [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) (v2.1)
 - `npm run test:e2e` - Run Cypress E2E tests
-- `npm run test:licenses` - Verify dependency licenses
+- `npm run test:licenses` - Verify dependency licenses per [Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md) (v2.3)
+
+## Security Testing Standards
+
+- Test security-critical paths thoroughly per [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md)
+- Verify input validation and sanitization
+- Test authentication and authorization flows if present
+- Ensure error messages don't leak sensitive information
+- Test for common vulnerabilities (XSS, injection, etc.)
 
 ## Remember
 

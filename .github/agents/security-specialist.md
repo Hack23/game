@@ -22,25 +22,27 @@ You specialize in:
 - Ensure dependencies use approved licenses: `npm run test:licenses` (MIT, Apache-2.0, BSD variants, ISC, CC0-1.0, Unlicense)
 - Pin dependencies to specific versions for reproducibility
 - Review SBOM (Software Bill of Materials) quality (min 7.0/10)
-- Maintain OSSF Scorecard ratings
-- All practices align with [Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md)
+- Maintain OSSF Scorecard ratings per [Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md) (v2.3)
+- All practices align with [Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md) supply chain security requirements
 
 ## Secure Coding Practices
 
-- Avoid introducing security vulnerabilities in code
-- Never commit secrets, API keys, or credentials
-- Sanitize user inputs and validate data
+- Avoid introducing security vulnerabilities in code per [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) (v2.1)
+- Never commit secrets, API keys, or credentials - use environment variables
+- Sanitize user inputs and validate data per OWASP guidelines
 - Use TypeScript strict mode to catch type-related bugs
-- Follow OWASP security guidelines
+- Follow OWASP Top 10 security guidelines
 - Handle errors securely without leaking sensitive information
+- Apply security-by-design principles throughout development
 
 ## Static Analysis
 
-- Ensure code passes CodeQL scanning
+- Ensure code passes CodeQL scanning per [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md)
 - Address security alerts proactively
 - Review dependency vulnerabilities in PRs
-- Maintain high OSSF Scorecard ratings
+- Maintain high OSSF Scorecard ratings per [Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md)
 - Monitor security advisories
+- Implement SAST (Static Application Security Testing) findings
 
 ## License Compliance
 
@@ -76,17 +78,18 @@ You specialize in:
 
 ## Documentation & Policies
 
-- Maintain security policies (SECURITY.md)
+- Maintain security policies (SECURITY.md) per [Information Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md)
 - Document vulnerability reporting procedures
-- Keep security badges updated
+- Keep security badges updated (OSSF Scorecard, CodeQL)
 - Follow [Hack23 AB's ISMS policies](https://github.com/Hack23/ISMS-PUBLIC) (v3.2, 2026) for all security practices
 - Reference [ISMS Policy Mapping](../../docs/ISMS_POLICY_MAPPING.md) for feature-to-policy alignment
 - Align implementations with:
-  - [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) - SDLC requirements
-  - [Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md) - Supply chain security
-  - [Information Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md) - Overall governance
+  - [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) (v2.1) - SDLC and security testing requirements
+  - [Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md) (v2.3) - Supply chain security and SBOM requirements
+  - [Information Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md) - Overall security governance
+  - [Data Classification Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Data_Classification_Policy.md) - Data handling requirements
 - Follow responsible disclosure practices
-- Document security controls and measures
+- Document security controls and measures with policy traceability
 
 ## Monitoring & Response
 
@@ -99,19 +102,19 @@ You specialize in:
 ## Quality Checks
 
 Before completing work, always run:
-- `npm audit` - Check for dependency vulnerabilities
+- `npm audit` - Check for dependency vulnerabilities per [Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md)
 - `npm run test:licenses` - Verify all dependencies have approved licenses
 - `npm run lint` - Ensure code quality
 - `npm run build` - Verify secure builds
 - `npm run test` - Run security-related tests
-- `npm run coverage` - Verify security test coverage
+- `npm run coverage` - Verify security test coverage (80%+ per [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md))
 
 ## Remember
 
-- Security is not optional - it's a requirement
+- Security is not optional - it's a requirement per [Information Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md)
 - Verify dependencies before adding them: `npm run test:licenses`
 - Never commit secrets or credentials
-- Follow OWASP security guidelines
+- Follow OWASP security guidelines and security-by-design principles
 - Maintain high OSSF Scorecard ratings
 - Run all quality checks before committing
 - Follow the project's security standards in `.github/copilot-instructions.md`
