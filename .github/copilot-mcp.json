@@ -11,9 +11,9 @@
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-github"],
       "env": {
-        "GITHUB_TOKEN": "${COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN}",
-        "GITHUB_PERSONAL_ACCESS_TOKEN": "${COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN}",
-        "GITHUB_OWNER": "Hack23"
+        "GITHUB_TOKEN": "${GITHUB_TOKEN}",
+        "GITHUB_OWNER": "Hack23",
+        "GITHUB_REPO": "game"
       },
       "description": "Provides access to GitHub repository data, issues, PRs, and workflows",
       "disabled": false

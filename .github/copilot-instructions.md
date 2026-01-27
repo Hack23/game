@@ -6,7 +6,7 @@ This file provides guidance for GitHub Copilot coding agent when working on this
 
 This is a game template built with React, TypeScript, Three.js, and Vite with a strong focus on security and code quality.
 
-**Security & Compliance:** All security practices in this repository align with [Hack23 AB's Information Security Management System (ISMS)](https://github.com/Hack23/ISMS-PUBLIC) (2026 edition). For complete policy mapping, see [ISMS Policy Mapping](../docs/ISMS_POLICY_MAPPING.md).
+**Security & Compliance:** All security practices in this repository align with [Hack23 AB's Information Security Management System (ISMS)](https://github.com/Hack23/ISMS-PUBLIC) (v3.2, 2026). For complete policy mapping, see [ISMS Policy Mapping](../docs/ISMS_POLICY_MAPPING.md).
 
 ## Development Workflow
 
@@ -92,7 +92,7 @@ npm run test:e2e:ci
 
 ### Quality Standards
 
-- Aim for minimum 80% code coverage per [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) (2026)
+- Aim for minimum 80% code coverage per [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) (v3.2, 2026)
 - Write tests for critical business logic and security paths
 - Test both success and error cases
 - Test edge cases and boundary conditions
@@ -333,11 +333,11 @@ export function Player({
 
 ## Security & Compliance
 
-All development follows [Hack23 AB's ISMS](https://github.com/Hack23/ISMS-PUBLIC) (2026):
+All development follows [Hack23 AB's ISMS](https://github.com/Hack23/ISMS-PUBLIC) (v3.2, 2026):
 
 - **Supply Chain Security**: Verify dependencies before adding (`npm audit`, `npm run test:licenses`)
 - **Secure Coding**: Follow OWASP guidelines, never commit secrets
-- **Testing Requirements**: Minimum 80% coverage per [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) (2026)
+- **Testing Requirements**: Minimum 80% coverage per [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md)
 - **License Compliance**: Only approved open-source licenses (MIT, Apache-2.0, BSD variants, ISC, CC0-1.0, Unlicense)
 - **SBOM Quality**: Maintain SBOM quality score above 7.0/10
 - **Build Security**: All GitHub Actions pinned to SHA hashes
