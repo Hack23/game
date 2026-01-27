@@ -65,7 +65,7 @@ This repository includes specialized AI agents that enhance GitHub Copilot's cap
 - **🔒 [security-specialist](.github/agents/security-specialist.md)** - Security, compliance, and supply chain protection
 - **📝 [documentation-writer](.github/agents/documentation-writer.md)** - Technical documentation and guides
 
-The **product-task-agent** can analyze your product, identify improvements, and create well-structured GitHub issues assigned to the appropriate specialized agents. When using GitHub Copilot, you can request help from specific agents by mentioning them in your prompts. Learn more in the **[Custom Agents Documentation](.github/agents/README.md)**.
+The **product-task-agent** can analyze your product, identify improvements, and create well-structured GitHub issues assigned to the appropriate specialized agents. All agents are configured with GitHub MCP access and follow [Hack23 AB's ISMS](https://github.com/Hack23/ISMS-PUBLIC) (2026). When using GitHub Copilot, you can request help from specific agents by mentioning them in your prompts. Learn more in the **[Custom Agents Documentation](.github/agents/README.md)**.
 
 ## 🚀 Using This Template
 

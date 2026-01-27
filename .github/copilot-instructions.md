@@ -6,7 +6,7 @@ This file provides guidance for GitHub Copilot coding agent when working on this
 
 This is a game template built with React, TypeScript, Three.js, and Vite with a strong focus on security and code quality.
 
-**Security & Compliance:** All security practices in this repository align with [Hack23 AB's Information Security Management System (ISMS)](https://github.com/Hack23/ISMS-PUBLIC). For complete policy mapping, see [ISMS Policy Mapping](../docs/ISMS_POLICY_MAPPING.md).
+**Security & Compliance:** All security practices in this repository align with [Hack23 AB's Information Security Management System (ISMS)](https://github.com/Hack23/ISMS-PUBLIC) (2026 edition). For complete policy mapping, see [ISMS Policy Mapping](../docs/ISMS_POLICY_MAPPING.md).
 
 ## Development Workflow
 
@@ -35,14 +35,18 @@ npm run lint
 # Run unit tests with Vitest
 npm run test
 
-# Run unit tests with coverage
+# Run unit tests with coverage (target: 80%+)
 npm run coverage
 
 # Run E2E tests with Cypress
 npm run test:e2e
 
-# Check license compliance (using license-compliance tool)
+# Check license compliance (MIT, Apache-2.0, BSD, ISC, CC0-1.0, Unlicense)
 npm run test:licenses
+
+# Run CI tests with JUnit output
+npm run test:ci
+npm run test:e2e:ci
 ```
 
 ### Testing Approach
@@ -88,11 +92,34 @@ npm run test:licenses
 
 ### Quality Standards
 
-- Aim for minimum 80% code coverage
+- Aim for minimum 80% code coverage per [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) (2026)
 - Write tests for critical business logic and security paths
 - Test both success and error cases
 - Test edge cases and boundary conditions
 - Use descriptive test names that explain what is being tested
+
+## Quality Checks
+
+Before committing code changes, always run:
+
+```bash
+# Verify code quality
+npm run lint
+
+# Build project
+npm run build
+
+# Run tests
+npm run test
+
+# Check coverage
+npm run coverage
+
+# Verify license compliance
+npm run test:licenses
+```
+
+All changes must pass these checks before being committed.
 
 ### Test Structure
 
@@ -303,3 +330,16 @@ export function Player({
 - **Use instancing**: For many similar objects, use `InstancedMesh`
 - **Optimize geometry**: Use lower polygon counts for better performance
 - **Dispose resources**: Clean up geometries, materials, and textures when components unmount
+
+## Security & Compliance
+
+All development follows [Hack23 AB's ISMS](https://github.com/Hack23/ISMS-PUBLIC) (2026):
+
+- **Supply Chain Security**: Verify dependencies before adding (`npm audit`, `npm run test:licenses`)
+- **Secure Coding**: Follow OWASP guidelines, never commit secrets
+- **Testing Requirements**: Minimum 80% coverage per [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) (2026)
+- **License Compliance**: Only approved open-source licenses (MIT, Apache-2.0, BSD variants, ISC, CC0-1.0, Unlicense)
+- **SBOM Quality**: Maintain SBOM quality score above 7.0/10
+- **Build Security**: All GitHub Actions pinned to SHA hashes
+
+For detailed compliance requirements, see [ISMS Policy Mapping](../docs/ISMS_POLICY_MAPPING.md).

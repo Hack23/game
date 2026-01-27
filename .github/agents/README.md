@@ -11,19 +11,22 @@ Specialized in:
 - Product quality analysis across code, UI/UX, security, and performance
 - Creating well-structured GitHub issues with proper labels and assignments
 - Coordinating between specialized agents for task implementation
-- ISMS compliance verification and security alignment
-- Using GitHub MCP, Playwright, and AWS tools for comprehensive analysis
+- ISMS compliance verification and security alignment (2026)
+- Using GitHub MCP and Playwright for comprehensive analysis
 - Identifying improvements and creating actionable tasks
 
 **Tools:** `view`, `edit`, `create`, `bash`, `search_code`, `custom-agent`
+
+**MCP Servers:** GitHub MCP (org-standard), Playwright (UI testing)
 
 **Key Capabilities:**
 - 🔍 Analyze codebase for quality, security, and UX improvements
 - 📝 Create structured GitHub issues with clear acceptance criteria
 - 🤝 Assign tasks to appropriate specialized agents
-- 🔒 Verify ISMS policy alignment and compliance
+- 🔒 Verify ISMS policy alignment and compliance (2026 policies)
 - 🎭 Use Playwright for UI/UX testing and analysis
 - 📊 Generate comprehensive product improvement plans
+- ✅ Run quality checks: `npm run lint`, `npm run build`, `npm run test`, `npm run coverage`, `npm run test:licenses`
 
 ---
 
@@ -40,6 +43,10 @@ Specialized in:
 
 **Tools:** `view`, `edit`, `create`, `bash`, `custom-agent`
 
+**MCP Servers:** GitHub MCP (org-standard)
+
+**Quality Checks:** `npm run lint`, `npm run build`, `npm run test`, `npm run coverage`, `npm run test:e2e`, `npm run test:licenses`
+
 ---
 
 ### 🎨 frontend-specialist
@@ -54,6 +61,10 @@ Specialized in:
 - Vite build optimization
 
 **Tools:** `view`, `edit`, `create`, `bash`, `custom-agent`
+
+**MCP Servers:** GitHub MCP (org-standard)
+
+**Quality Checks:** `npm run lint`, `npm run build`, `npm run test`, `npm run coverage`, `npm run test:licenses`
 
 ---
 
@@ -70,6 +81,10 @@ Specialized in:
 
 **Tools:** `view`, `edit`, `create`, `bash`, `search_code`, `custom-agent`
 
+**MCP Servers:** GitHub MCP (org-standard)
+
+**Quality Checks:** `npm run lint`, `npm run build`, `npm run test`, `npm run coverage`, `npm run test:e2e`, `npm run test:licenses`
+
 ---
 
 ### 🔒 security-specialist
@@ -78,14 +93,18 @@ Specialized in:
 Specialized in:
 - Supply chain security (OSSF Scorecard, SLSA)
 - License compliance verification
-- SBOM quality validation
+- SBOM quality validation (min 7.0/10)
 - Secure coding practices and OWASP guidelines
 - CodeQL and vulnerability scanning
 - Dependency management and audit
-- [ISMS-PUBLIC](https://github.com/Hack23/ISMS-PUBLIC) policy compliance
-- Security documentation aligned with [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md)
+- [ISMS-PUBLIC](https://github.com/Hack23/ISMS-PUBLIC) (2026) policy compliance
+- Security documentation aligned with [Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) (2026)
 
 **Tools:** `view`, `edit`, `bash`, `search_code`, `custom-agent`
+
+**MCP Servers:** GitHub MCP (org-standard)
+
+**Quality Checks:** `npm audit`, `npm run test:licenses`, `npm run lint`, `npm run build`, `npm run test`
 
 ---
 
@@ -101,6 +120,10 @@ Specialized in:
 - Mermaid diagrams and architecture docs
 
 **Tools:** `view`, `edit`, `create`, `search_code`, `custom-agent`
+
+**MCP Servers:** GitHub MCP (org-standard)
+
+**Quality Checks:** Verify code examples, check links, ensure ISMS references are current (2026)
 
 ---
 
@@ -252,12 +275,16 @@ You specialize in:
 - **name:** Lowercase with hyphens (e.g., `game-developer`)
 - **description:** Max 200 characters describing expertise
 - **tools:** Array of tool aliases the agent needs
+- **mcp-servers:** (Optional) MCP server configurations for GitHub, Playwright, etc.
 
 ### Agent Design Principles
 
 ✅ **Single Responsibility:** Each agent focuses on one domain
 ✅ **Minimal Tools:** Only include tools the agent actually needs
 ✅ **Clear Expertise:** Well-defined areas of specialization
+✅ **GitHub MCP Access:** All agents have GitHub MCP with org-standard token configuration
+✅ **Quality Checks:** All agents reference relevant npm scripts for validation
+✅ **ISMS Alignment:** All agents follow [Hack23 AB's ISMS](https://github.com/Hack23/ISMS-PUBLIC) (2026)
 ✅ **Consistent Standards:** All agents follow project guidelines in `.github/copilot-instructions.md`
 
 ## 📊 Agent Specialization Matrix
@@ -276,6 +303,7 @@ You specialize in:
 ## 📚 Resources
 
 - [GitHub Copilot Custom Agents Documentation](https://docs.github.com/en/copilot/concepts/agents/coding-agent/about-custom-agents)
-- [Repository Custom Instructions](..//copilot-instructions.md)
-- [MCP Configuration Guide](../../docs/MCP_CONFIGURATION.md)
-- [MCP Architecture Overview](../../docs/MCP_ARCHITECTURE.md)
+- [Repository Custom Instructions](../copilot-instructions.md)
+- [MCP Configuration](../copilot-mcp.json)
+- [Hack23 AB ISMS (2026)](https://github.com/Hack23/ISMS-PUBLIC)
+- [ISMS Policy Mapping](../../docs/ISMS_POLICY_MAPPING.md)
