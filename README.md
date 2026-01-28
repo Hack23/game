@@ -179,6 +179,12 @@ See **[ISMS Policy Mapping](docs/ISMS_POLICY_MAPPING.md)** for complete feature-
 
 All security workflows will protect your game from vulnerabilities while providing complete transparency through attestations and SBOM generation.
 
+### 📚 Game Development Documentation
+
+- **[Audio System](docs/AUDIO_SYSTEM.md)** - Procedurally-generated music and sound effects system
+- **[MCP Configuration](docs/MCP_CONFIGURATION.md)** - GitHub Copilot MCP server setup
+- **[ISMS Policy Mapping](docs/ISMS_POLICY_MAPPING.md)** - Security policy compliance mapping
+
 ## Development Environment
 
 This template includes a fully configured development environment:
