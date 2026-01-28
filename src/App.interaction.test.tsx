@@ -174,14 +174,14 @@ describe("App Component Interactions", () => {
       render(<App />);
       
       const muteButton = screen.getByTestId("mute-button");
-      expect(muteButton).toHaveTextContent("Mute");
+      expect(muteButton).toHaveTextContent("🔊");
       
       await user.click(muteButton);
       
       await waitFor(() => {
         expect(mockSetMuted).toHaveBeenCalledWith(true);
       });
-      expect(muteButton).toHaveTextContent("Unmute");
+      expect(muteButton).toHaveTextContent("🔇");
     });
 
     it("should unmute audio when mute button is clicked again", async () => {
@@ -201,7 +201,7 @@ describe("App Component Interactions", () => {
       await waitFor(() => {
         expect(mockSetMuted).toHaveBeenCalledWith(false);
       });
-      expect(muteButton).toHaveTextContent("Mute");
+      expect(muteButton).toHaveTextContent("🔊");
     });
 
     it("should hide audio status when muted", async () => {

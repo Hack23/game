@@ -110,7 +110,7 @@ describe("App Component", () => {
   it("canvas has correct inline styles", () => {
     render(<App />);
     const canvasContainer = screen.getByTestId("threejs-canvas-container");
-    expect(canvasContainer).toHaveStyle({ width: "100%", height: "600px" });
+    expect(canvasContainer).toHaveStyle({ width: "100%", height: "100%" });
   });
 
   it("renders all Three.js scene elements", () => {

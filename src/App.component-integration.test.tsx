@@ -292,7 +292,7 @@ describe("Component Integration Tests", () => {
       const muteButton = screen.getByTestId("mute-button");
       
       // Initially unmuted
-      expect(muteButton).toHaveTextContent("Mute");
+      expect(muteButton).toHaveTextContent("🔊");
       
       // Mute
       await user.click(muteButton);
@@ -300,7 +300,7 @@ describe("Component Integration Tests", () => {
       await waitFor(() => {
         expect(mockSetMuted).toHaveBeenCalledWith(true);
       });
-      expect(muteButton).toHaveTextContent("Unmute");
+      expect(muteButton).toHaveTextContent("🔇");
       
       // Audio status indicator should hide
       expect(screen.queryByText(/Sound enabled/i)).not.toBeInTheDocument();
