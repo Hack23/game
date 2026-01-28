@@ -1,13 +1,15 @@
 import { useEffect, useRef, useCallback } from "react";
 import { Howl } from "howler";
+import type { MusicTrack } from "../config/musicConfig";
 
 interface AudioManager {
   playHitSound: () => void;
   playComboSound: () => void;
   playLevelUpSound: () => void;
   playGameOverSound: () => void;
-  startBackgroundMusic: () => void;
+  startBackgroundMusic: (musicTrack?: MusicTrack) => void;
   stopBackgroundMusic: () => void;
+  switchMusic: (musicTrack: MusicTrack) => void;
   setMuted: (muted: boolean) => void;
   setVolume: (volume: number) => void;
   getVolume: () => number;
@@ -94,16 +96,9 @@ export function useAudioManager(): AudioManager {
         },
       });
 
-      // Create background music - rhythmic electronic game music
-      soundsRef.current.background = new Howl({
-        src: [generateBackgroundMusic()],
-        format: ['wav'],
-        volume: 0.2,
-        loop: true,
-        onloaderror: (_id, error) => {
-          console.error('Failed to load background music:', error);
-        },
-      });
+      // Background music is not initialized here - it will be loaded dynamically
+      // when startBackgroundMusic() is called with a music track
+      soundsRef.current.background = null;
 
       console.debug('✓ All sounds initialized successfully');
     } catch (error) {
@@ -161,13 +156,21 @@ export function useAudioManager(): AudioManager {
     }
   }, []);
 
-  const startBackgroundMusic = useCallback((): void => {
+  const startBackgroundMusic = useCallback((musicTrack?: MusicTrack): void => {
     if (soundsRef.current.background !== null && !isMutedRef.current) {
       try {
         soundsRef.current.background.play();
       } catch (error) {
         console.error('Error starting background music:', error);
       }
+      return;
+    }
+
+    // Load music from asset if provided, otherwise use procedural generation
+    if (musicTrack) {
+      loadMusicFromAsset(musicTrack);
+    } else {
+      loadProceduralMusic();
     }
   }, []);
 
@@ -176,6 +179,62 @@ export function useAudioManager(): AudioManager {
       soundsRef.current.background.stop();
     }
   }, []);
+
+  const switchMusic = useCallback((musicTrack: MusicTrack): void => {
+    // Stop current music
+    if (soundsRef.current.background !== null) {
+      soundsRef.current.background.stop();
+      soundsRef.current.background.unload();
+      soundsRef.current.background = null;
+    }
+    
+    // Load and play new music
+    loadMusicFromAsset(musicTrack);
+  }, []);
+
+  const loadMusicFromAsset = (musicTrack: MusicTrack): void => {
+    console.debug(`Loading music from asset: ${musicTrack.name}`);
+    
+    soundsRef.current.background = new Howl({
+      src: [musicTrack.path],
+      volume: musicTrack.volume ?? originalVolumesRef.current.background,
+      loop: musicTrack.loop ?? true,
+      onload: () => {
+        console.debug(`✓ Music loaded: ${musicTrack.name}`);
+        if (!isMutedRef.current) {
+          soundsRef.current.background?.play();
+        }
+      },
+      onloaderror: (_id, error) => {
+        console.error(`Failed to load music from ${musicTrack.path}:`, error);
+        console.debug('Falling back to procedural music generation');
+        loadProceduralMusic();
+      },
+    });
+    
+    // Update original volume for this music
+    originalVolumesRef.current.background = musicTrack.volume ?? 0.2;
+  };
+
+  const loadProceduralMusic = (): void => {
+    console.debug('Loading procedurally-generated background music');
+    
+    soundsRef.current.background = new Howl({
+      src: [generateBackgroundMusic()],
+      format: ['wav'],
+      volume: originalVolumesRef.current.background,
+      loop: true,
+      onload: () => {
+        console.debug('✓ Procedural music generated');
+        if (!isMutedRef.current) {
+          soundsRef.current.background?.play();
+        }
+      },
+      onloaderror: (_id, error) => {
+        console.error('Failed to generate procedural music:', error);
+      },
+    });
+  };
 
   const setMuted = useCallback((muted: boolean): void => {
     isMutedRef.current = muted;
@@ -220,6 +279,7 @@ export function useAudioManager(): AudioManager {
     playGameOverSound,
     startBackgroundMusic,
     stopBackgroundMusic,
+    switchMusic,
     setMuted,
     setVolume,
     getVolume,

@@ -16,6 +16,13 @@ vi.mock("howler", () => {
     pause = mockPause;
     unload = mockUnload;
     volume = mockVolume;
+    
+    constructor(options?: { onload?: () => void }) {
+      // Immediately trigger onload callback if provided
+      if (options?.onload) {
+        setTimeout(() => options.onload?.(), 0);
+      }
+    }
   }
   
   return {
@@ -112,20 +119,24 @@ describe("useAudioManager", () => {
     expect(mockPlay).toHaveBeenCalled();
   });
 
-  it("should start background music when not muted", () => {
+  it("should start background music when not muted", async () => {
     const { result } = renderHook(() => useAudioManager());
 
-    act(() => {
+    await act(async () => {
       result.current.startBackgroundMusic();
+      // Wait for onload callback
+      await new Promise(resolve => setTimeout(resolve, 10));
     });
 
     expect(mockPlay).toHaveBeenCalled();
   });
 
-  it("should stop background music", () => {
+  it("should stop background music", async () => {
     const { result } = renderHook(() => useAudioManager());
 
-    act(() => {
+    await act(async () => {
+      result.current.startBackgroundMusic();
+      await new Promise(resolve => setTimeout(resolve, 10));
       result.current.stopBackgroundMusic();
     });
 
@@ -196,27 +207,31 @@ describe("useAudioManager", () => {
     expect(mockPlay).not.toHaveBeenCalled();
   });
 
-  it("should pause background music when muted", () => {
+  it("should pause background music when muted", async () => {
     const { result } = renderHook(() => useAudioManager());
 
-    act(() => {
+    await act(async () => {
+      result.current.startBackgroundMusic();
+      await new Promise(resolve => setTimeout(resolve, 10));
       result.current.setMuted(true);
     });
 
     expect(mockPause).toHaveBeenCalled();
   });
 
-  it("should resume background music when unmuted", () => {
+  it("should resume background music when unmuted", async () => {
     const { result } = renderHook(() => useAudioManager());
 
-    act(() => {
+    await act(async () => {
+      result.current.startBackgroundMusic();
+      await new Promise(resolve => setTimeout(resolve, 10));
       result.current.setMuted(true);
     });
 
     mockPlay.mockClear();
     mockPause.mockClear();
 
-    act(() => {
+    await act(async () => {
       result.current.setMuted(false);
     });
 
@@ -244,8 +259,9 @@ describe("useAudioManager", () => {
 
     unmount();
 
-    // Should unload 5 sounds (hit, combo, levelUp, gameOver, background)
-    expect(mockUnload).toHaveBeenCalledTimes(5);
+    // Should unload 4 sounds (hit, combo, levelUp, gameOver)
+    // Background is only created when startBackgroundMusic is called
+    expect(mockUnload).toHaveBeenCalledTimes(4);
   });
 
   it("should toggle mute state correctly", () => {
@@ -366,16 +382,17 @@ describe("useAudioManager", () => {
       result.current.setVolume(0.5);
     });
 
-    // Verify that volume() was called 5 times (once for each sound)
-    expect(mockVolume).toHaveBeenCalledTimes(5);
+    // Verify that volume() was called 4 times (once for each loaded sound)
+    // Background is not loaded yet, so it won't be called
+    expect(mockVolume).toHaveBeenCalledTimes(4);
     
     // Verify that the original volume hierarchy is preserved
-    // Original volumes: hit=0.7, combo=0.8, levelUp=0.85, gameOver=0.7, background=0.2
-    // At 50% master volume: hit=0.35, combo=0.4, levelUp=0.425, gameOver=0.35, background=0.1
+    // Original volumes: hit=0.7, combo=0.8, levelUp=0.85, gameOver=0.7
+    // At 50% master volume: hit=0.35, combo=0.4, levelUp=0.425, gameOver=0.35
     expect(mockVolume).toHaveBeenNthCalledWith(1, 0.35); // hit: 0.7 * 0.5
     expect(mockVolume).toHaveBeenNthCalledWith(2, 0.4);  // combo: 0.8 * 0.5
     expect(mockVolume).toHaveBeenNthCalledWith(3, 0.425); // levelUp: 0.85 * 0.5
     expect(mockVolume).toHaveBeenNthCalledWith(4, 0.35); // gameOver: 0.7 * 0.5
-    expect(mockVolume).toHaveBeenNthCalledWith(5, 0.1);  // background: 0.2 * 0.5
+    // Background is not loaded, so no 5th call
   });
 });

@@ -1,0 +1,166 @@
+.intro-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #0d1117 0%, #1a1f2e 50%, #0d1117 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.intro-content {
+  text-align: center;
+  max-width: 900px;
+  padding: 40px;
+}
+
+.intro-title {
+  font-size: 72px;
+  margin-bottom: 16px;
+  background: linear-gradient(45deg, #646cff, #00ff88, #646cff);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradient 3s ease infinite;
+}
+
+@keyframes gradient {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.intro-subtitle {
+  font-size: 24px;
+  color: #7d8590;
+  margin-bottom: 48px;
+  font-weight: 300;
+}
+
+.archetype-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-bottom: 48px;
+}
+
+@media (max-width: 768px) {
+  .archetype-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.archetype-card {
+  background: rgba(33, 38, 45, 0.7);
+  border: 2px solid rgba(100, 108, 255, 0.3);
+  border-radius: 16px;
+  padding: 32px 24px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.archetype-card:hover {
+  border-color: rgba(100, 108, 255, 0.6);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(100, 108, 255, 0.3);
+}
+
+.archetype-card.selected {
+  border-color: #00ff88;
+  background: rgba(0, 255, 136, 0.1);
+  box-shadow: 0 8px 24px rgba(0, 255, 136, 0.3);
+}
+
+.archetype-icon {
+  font-size: 64px;
+  margin-bottom: 16px;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.archetype-card.selected .archetype-icon {
+  animation: pulse 1s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.archetype-name {
+  font-size: 24px;
+  color: #ffffff;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.archetype-description {
+  font-size: 14px;
+  color: #7d8590;
+  line-height: 1.6;
+}
+
+.start-button {
+  background: linear-gradient(45deg, #646cff, #7c3aed);
+  color: white;
+  border: none;
+  padding: 16px 48px;
+  border-radius: 12px;
+  font-size: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(100, 108, 255, 0.4);
+}
+
+.start-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(100, 108, 255, 0.6);
+}
+
+.start-button:disabled {
+  background: #666666;
+  cursor: not-allowed;
+  box-shadow: none;
+  opacity: 0.5;
+}
+
+.intro-footer {
+  margin-top: 32px;
+}
+
+.intro-hint {
+  font-size: 14px;
+  color: #7d8590;
+  font-style: italic;
+}

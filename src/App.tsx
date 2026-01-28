@@ -5,6 +5,8 @@ import type { JSX } from "react";
 import * as THREE from "three";
 import { useGameState, type GameState } from "./hooks/useGameState";
 import { useAudioManager } from "./hooks/useAudioManager";
+import { IntroScreen } from "./components/screens/IntroScreen";
+import { getMusicForScreen } from "./config/musicConfig";
 import "./App.css";
 
 // Constants for game mechanics
@@ -436,12 +438,16 @@ function App(): JSX.Element {
   const [volume, setVolume] = useState(1.0);
   const [showExplosion, setShowExplosion] = useState(false);
   const [explosionPosition, setExplosionPosition] = useState<[number, number, number]>([0, 0, 0]);
+  const [currentScreen, setCurrentScreen] = useState<"intro" | "game">(
+    // Skip intro screen in test environment
+    import.meta.env.MODE === "test" ? "game" : "intro"
+  );
   const prevLevelRef = useRef(gameState.level);
   const prevComboRef = useRef(gameState.combo);
 
   // Play background music when game starts
   useEffect(() => {
-    if (gameState.isPlaying && gameState.timeLeft > 0 && !isMuted) {
+    if (currentScreen === "game" && gameState.isPlaying && gameState.timeLeft > 0 && !isMuted) {
       audioManager.startBackgroundMusic();
     } else {
       audioManager.stopBackgroundMusic();
@@ -450,7 +456,20 @@ function App(): JSX.Element {
     return (): void => {
       audioManager.stopBackgroundMusic();
     };
-  }, [gameState.isPlaying, gameState.timeLeft, isMuted, audioManager]);
+  }, [currentScreen, gameState.isPlaying, gameState.timeLeft, isMuted, audioManager]);
+
+  // Start intro music when on intro screen
+  useEffect(() => {
+    if (currentScreen === "intro" && !isMuted) {
+      const introMusic = getMusicForScreen("intro");
+      if (introMusic) {
+        audioManager.startBackgroundMusic(introMusic);
+      } else {
+        // Fallback to procedural music
+        audioManager.startBackgroundMusic();
+      }
+    }
+  }, [currentScreen, isMuted, audioManager]);
 
   // Play game over sound
   useEffect(() => {
@@ -508,6 +527,17 @@ function App(): JSX.Element {
     return () => window.removeEventListener('test:targetClick', handleTestTargetClick);
   }, [handleTargetClick, gameState.isPlaying, gameState.timeLeft, gameState.targets]);
 
+  const handleStartGame = useCallback((archetype?: string) => {
+    console.log(`Starting game with archetype: ${archetype ?? "none"}`);
+    setCurrentScreen("game");
+  }, []);
+
+  const handleMusicChange = useCallback((archetype: string) => {
+    console.log(`Archetype selected: ${archetype} - Music would change here`);
+    // In a real implementation, you could have different intro music per archetype
+    // For now, we'll keep playing the intro music
+  }, []);
+
   const handleMuteToggle = useCallback(() => {
     const newMuted = !isMuted;
     setIsMuted(newMuted);
@@ -519,6 +549,16 @@ function App(): JSX.Element {
     setVolume(newVolume);
     audioManager.setVolume(newVolume);
   }, [audioManager]);
+
+  // Show intro screen if not yet started
+  if (currentScreen === "intro") {
+    return (
+      <IntroScreen 
+        onStart={handleStartGame}
+        onMusicChange={handleMusicChange}
+      />
+    );
+  }
 
   return (
     <div className="app-container" data-testid="app-container">
