@@ -64,9 +64,9 @@ export function useAudioManager(): AudioManager {
         },
       });
 
-      // Create combo sound - bright ascending tone
+      // Create combo sound - bright ascending arpeggio
       soundsRef.current.combo = new Howl({
-        src: [generateToneDataURL(1320, 0.2, 0.9)], // E6 note, 200ms
+        src: [generateArpeggioSound()],
         format: ['wav'],
         volume: 0.8,
         onloaderror: (_id, error) => {
@@ -74,9 +74,9 @@ export function useAudioManager(): AudioManager {
         },
       });
 
-      // Create level up sound - triumphant chord-like tone
+      // Create level up sound - triumphant fanfare
       soundsRef.current.levelUp = new Howl({
-        src: [generateToneDataURL(784, 0.4, 1)], // G5 note, 400ms
+        src: [generateLevelUpSound()],
         format: ['wav'],
         volume: 0.85,
         onloaderror: (_id, error) => {
@@ -94,14 +94,14 @@ export function useAudioManager(): AudioManager {
         },
       });
 
-      // Create background ambient sound - rhythmic pulse
+      // Create background music - rhythmic electronic game music
       soundsRef.current.background = new Howl({
-        src: [generateToneDataURL(110, 1.5, 0.4)], // A2 note, 1.5s looped
+        src: [generateBackgroundMusic()],
         format: ['wav'],
         volume: 0.2,
         loop: true,
         onloaderror: (_id, error) => {
-          console.error('Failed to load background sound:', error);
+          console.error('Failed to load background music:', error);
         },
       });
 
@@ -373,4 +373,193 @@ function floatTo16BitPCM(view: DataView, offset: number, input: Float32Array): v
     const s = Math.max(-1, Math.min(1, sample ?? 0));
     view.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7fff, true);
   }
+}
+
+/**
+ * Generate background music with melody, harmony, and rhythm
+ * Creates an upbeat electronic game music loop
+ * @returns Data URL containing the music
+ */
+function generateBackgroundMusic(): string {
+  const AudioContextConstructor = getAudioContext();
+  const audioContext = new AudioContextConstructor();
+  const sampleRate = audioContext.sampleRate;
+  const duration = 8; // 8 second loop for variety
+  const numSamples = Math.floor(sampleRate * duration);
+  
+  const buffer = audioContext.createBuffer(2, numSamples, sampleRate); // Stereo
+  const leftChannel = buffer.getChannelData(0);
+  const rightChannel = buffer.getChannelData(1);
+  
+  const bpm = 140; // Beats per minute - upbeat tempo
+  const beatDuration = 60 / bpm;
+  
+  // Musical scale: A minor pentatonic (A, C, D, E, G) - commonly used in game music
+  const baseFreq = 220; // A3
+  const scale = [
+    baseFreq * 1.0,        // A
+    baseFreq * 1.189,      // C (6/5 ratio)
+    baseFreq * 1.335,      // D (4/3 ratio)
+    baseFreq * 1.5,        // E (3/2 ratio)
+    baseFreq * 1.682,      // G (27/16 ratio)
+    baseFreq * 2.0,        // A octave
+  ];
+  
+  // Melody pattern (note indices in scale)
+  const melodyPattern = [0, 2, 3, 4, 3, 2, 1, 0, 2, 4, 5, 4, 2, 1, 0, -1];
+  
+  // Bass pattern (simpler, lower octave)
+  const bassPattern = [0, 0, 3, 3, 0, 0, 4, 4];
+  
+  // Generate music
+  for (let i = 0; i < numSamples; i++) {
+    const t = i / sampleRate;
+    const beatPos = (t / beatDuration) % 16; // Position in 16-beat loop
+    const beatIndex = Math.floor(beatPos);
+    
+    // Bass line (left channel has more bass)
+    const bassIndex = bassPattern[Math.floor(beatPos / 2) % bassPattern.length];
+    const bassFreq = bassIndex !== undefined ? (scale[bassIndex] ?? baseFreq) / 2 : baseFreq / 2; // One octave down
+    const bass = Math.sin(2 * Math.PI * bassFreq * t) * 0.3;
+    
+    // Add sub-bass for depth
+    const subBass = Math.sin(2 * Math.PI * (bassFreq / 2) * t) * 0.2;
+    
+    // Melody line (eighth notes)
+    const melodyIndex = melodyPattern[beatIndex % melodyPattern.length];
+    let melody = 0;
+    if (melodyIndex !== undefined && melodyIndex >= 0) {
+      const melodyFreq = scale[melodyIndex] ?? baseFreq;
+      // Add envelope to melody notes
+      const notePhase = (beatPos % 1);
+      const envelope = Math.exp(-notePhase * 8); // Quick decay for plucky sound
+      melody = Math.sin(2 * Math.PI * melodyFreq * t) * envelope * 0.25;
+      
+      // Add second harmonic for brightness
+      melody += Math.sin(4 * Math.PI * melodyFreq * t) * envelope * 0.1;
+    }
+    
+    // Pad/harmony (sustained chords)
+    const chordRoot = scale[Math.floor(beatPos / 4) % 4] ?? baseFreq;
+    const pad1 = Math.sin(2 * Math.PI * chordRoot * t) * 0.1;
+    const pad2 = Math.sin(2 * Math.PI * chordRoot * 1.5 * t) * 0.08; // Fifth
+    const pad3 = Math.sin(2 * Math.PI * chordRoot * 2 * t) * 0.06; // Octave
+    
+    // Hi-hat pattern (noise-based percussion)
+    const hihat = (Math.random() - 0.5) * 0.05 * (beatPos % 0.5 < 0.05 ? 1 : 0);
+    
+    // Kick drum (sine wave with quick pitch drop)
+    const kickTime = beatPos % 2; // Every 2 beats
+    let kick = 0;
+    if (kickTime < 0.15) {
+      const kickFreq = 60 * (1 - kickTime / 0.15); // Pitch drops from 60Hz to 0
+      kick = Math.sin(2 * Math.PI * kickFreq * kickTime) * Math.exp(-kickTime * 20) * 0.4;
+    }
+    
+    // Mix everything together
+    const leftMix = bass + subBass * 1.2 + melody * 0.9 + pad1 + pad2 + pad3 + hihat + kick;
+    const rightMix = bass + subBass * 0.8 + melody * 1.1 + pad1 + pad2 + pad3 + hihat + kick;
+    
+    // Apply master volume and ensure no clipping
+    leftChannel[i] = Math.max(-0.9, Math.min(0.9, leftMix * 0.6));
+    rightChannel[i] = Math.max(-0.9, Math.min(0.9, rightMix * 0.6));
+  }
+  
+  // Convert to WAV and return
+  const wav = audioBufferToWav(buffer);
+  const blob = new Blob([wav], { type: "audio/wav" });
+  return URL.createObjectURL(blob);
+}
+
+/**
+ * Generate an ascending arpeggio for combo sound
+ * Creates an exciting, rewarding sound for combos
+ */
+function generateArpeggioSound(): string {
+  const AudioContextConstructor = getAudioContext();
+  const audioContext = new AudioContextConstructor();
+  const sampleRate = audioContext.sampleRate;
+  const duration = 0.3;
+  const numSamples = Math.floor(sampleRate * duration);
+  
+  const buffer = audioContext.createBuffer(1, numSamples, sampleRate);
+  const channelData = buffer.getChannelData(0);
+  
+  // Arpeggio: C5 -> E5 -> G5 -> C6 (major chord)
+  const notes = [523.25, 659.25, 783.99, 1046.5];
+  const noteDuration = duration / notes.length;
+  
+  for (let i = 0; i < numSamples; i++) {
+    const t = i / sampleRate;
+    const noteIndex = Math.min(Math.floor(t / noteDuration), notes.length - 1);
+    const noteTime = t - noteIndex * noteDuration;
+    const freq = notes[noteIndex] ?? 523.25;
+    
+    // Quick envelope for each note
+    const envelope = Math.exp(-noteTime * 12);
+    
+    // Main tone with harmonics
+    const fundamental = Math.sin(2 * Math.PI * freq * t);
+    const harmonic = Math.sin(4 * Math.PI * freq * t) * 0.3;
+    
+    channelData[i] = (fundamental + harmonic) * envelope * 0.8;
+  }
+  
+  const wav = audioBufferToWav(buffer);
+  const blob = new Blob([wav], { type: "audio/wav" });
+  return URL.createObjectURL(blob);
+}
+
+/**
+ * Generate a fanfare for level up sound
+ * Creates a triumphant, celebratory sound
+ */
+function generateLevelUpSound(): string {
+  const AudioContextConstructor = getAudioContext();
+  const audioContext = new AudioContextConstructor();
+  const sampleRate = audioContext.sampleRate;
+  const duration = 0.5;
+  const numSamples = Math.floor(sampleRate * duration);
+  
+  const buffer = audioContext.createBuffer(2, numSamples, sampleRate); // Stereo
+  const leftChannel = buffer.getChannelData(0);
+  const rightChannel = buffer.getChannelData(1);
+  
+  // Triumphant major chord progression: C -> C major chord
+  const root = 523.25; // C5
+  const third = 659.25; // E5
+  const fifth = 783.99; // G5
+  const octave = 1046.5; // C6
+  
+  for (let i = 0; i < numSamples; i++) {
+    const t = i / sampleRate;
+    
+    // Envelope with sustain
+    let envelope;
+    if (t < 0.05) {
+      envelope = t / 0.05;
+    } else if (t < 0.35) {
+      envelope = 1.0;
+    } else {
+      envelope = 1.0 - (t - 0.35) / 0.15;
+    }
+    
+    // All notes play together as a chord
+    const note1 = Math.sin(2 * Math.PI * root * t);
+    const note2 = Math.sin(2 * Math.PI * third * t);
+    const note3 = Math.sin(2 * Math.PI * fifth * t);
+    const note4 = Math.sin(2 * Math.PI * octave * t) * 0.7;
+    
+    // Add brightness with harmonics
+    const bright = Math.sin(2 * Math.PI * octave * 2 * t) * 0.3;
+    
+    const mix = (note1 + note2 + note3 + note4 + bright) * envelope * 0.25;
+    
+    leftChannel[i] = Math.max(-0.95, Math.min(0.95, mix));
+    rightChannel[i] = Math.max(-0.95, Math.min(0.95, mix));
+  }
+  
+  const wav = audioBufferToWav(buffer);
+  const blob = new Blob([wav], { type: "audio/wav" });
+  return URL.createObjectURL(blob);
 }
