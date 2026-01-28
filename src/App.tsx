@@ -23,16 +23,20 @@ const OVERLAY_STYLES = {
 
 const INSTRUCTIONS_STYLES = {
   ...OVERLAY_STYLES,
-  bottom: "80px",
+  bottom: "10px",
   left: "50%",
   transform: "translateX(-50%)",
-  fontSize: "16px",
+  fontSize: "14px",
   textAlign: "center" as const,
+  maxWidth: "90%",
+  whiteSpace: "nowrap" as const,
+  overflow: "hidden",
+  textOverflow: "ellipsis",
 };
 
 const AUDIO_STATUS_STYLES = {
   position: "absolute" as const,
-  bottom: "40px",
+  bottom: "35px",
   left: "50%",
   transform: "translateX(-50%)",
   zIndex: 10,
@@ -40,7 +44,11 @@ const AUDIO_STATUS_STYLES = {
   padding: "6px 12px",
   borderRadius: "8px",
   color: "#00ff88",
-  fontSize: "12px",
+  fontSize: "11px",
+  maxWidth: "90%",
+  whiteSpace: "nowrap" as const,
+  overflow: "hidden",
+  textOverflow: "ellipsis",
 };
 
 const VOLUME_CONTROL_STYLES = {
@@ -522,44 +530,78 @@ function App(): JSX.Element {
 
   return (
     <div className="app-container" data-testid="app-container">
-      <h1 data-testid="app-title">🎯 Target Shooter</h1>
+      <h1 data-testid="app-title" style={{ margin: "5px 0", fontSize: "20px" }}>🎯 Target Shooter</h1>
       
       {/* HUD Overlay for testing - outside canvas */}
-      <div style={{ position: "absolute", top: "60px", left: "20px", zIndex: 10, display: "flex", gap: "20px" }}>
-        <div data-testid="timer-display" style={{ background: "rgba(33, 38, 45, 0.7)", padding: "10px 20px", borderRadius: "8px", backdropFilter: "blur(10px)" }}>
-          <div style={{ color: "#7d8590", fontSize: "10px", marginBottom: "4px" }}>TIME</div>
-          <div style={{ color: gameState.timeLeft <= 10 ? "#ff4444" : "#00ff88", fontSize: "24px", fontWeight: "bold" }}>{gameState.timeLeft}s</div>
+      <div 
+        style={{ 
+          position: "absolute", 
+          top: "60px", 
+          left: "50%",
+          transform: "translateX(-50%)",
+          zIndex: 10, 
+          display: "flex", 
+          gap: "10px",
+          flexWrap: "wrap",
+          justifyContent: "center",
+          maxWidth: "95%",
+          padding: "0 10px"
+        }}
+      >
+        <div data-testid="timer-display" style={{ background: "rgba(33, 38, 45, 0.7)", padding: "8px 12px", borderRadius: "8px", backdropFilter: "blur(10px)", minWidth: "60px" }}>
+          <div style={{ color: "#7d8590", fontSize: "9px", marginBottom: "2px" }}>TIME</div>
+          <div style={{ color: gameState.timeLeft <= 10 ? "#ff4444" : "#00ff88", fontSize: "18px", fontWeight: "bold" }}>{gameState.timeLeft}s</div>
         </div>
         
-        <div data-testid="score-display" style={{ background: "rgba(33, 38, 45, 0.7)", padding: "10px 20px", borderRadius: "8px", backdropFilter: "blur(10px)" }}>
-          <div data-testid="score-label" style={{ color: "#7d8590", fontSize: "10px", marginBottom: "4px" }}>SCORE</div>
-          <div data-testid="score-value" style={{ color: "#00ff88", fontSize: "24px", fontWeight: "bold" }}>{gameState.score}</div>
-          {gameState.combo > 0 && <div style={{ color: "#ffa500", fontSize: "12px" }}>🔥 COMBO x{gameState.combo}</div>}
+        <div data-testid="score-display" style={{ background: "rgba(33, 38, 45, 0.7)", padding: "8px 12px", borderRadius: "8px", backdropFilter: "blur(10px)", minWidth: "70px" }}>
+          <div data-testid="score-label" style={{ color: "#7d8590", fontSize: "9px", marginBottom: "2px" }}>SCORE</div>
+          <div data-testid="score-value" style={{ color: "#00ff88", fontSize: "18px", fontWeight: "bold" }}>{gameState.score}</div>
+          {gameState.combo > 0 && <div style={{ color: "#ffa500", fontSize: "10px" }}>🔥 x{gameState.combo}</div>}
         </div>
         
-        <div data-testid="level-display" style={{ background: "rgba(33, 38, 45, 0.7)", padding: "10px 20px", borderRadius: "8px", backdropFilter: "blur(10px)" }}>
-          <div style={{ color: "#7d8590", fontSize: "10px", marginBottom: "4px" }}>LEVEL</div>
-          <div style={{ color: "#646cff", fontSize: "24px", fontWeight: "bold" }}>{gameState.level}</div>
-          {gameState.highScore > 0 && <div style={{ color: "#ffa500", fontSize: "10px" }}>HIGH: {gameState.highScore}</div>}
+        <div data-testid="level-display" style={{ background: "rgba(33, 38, 45, 0.7)", padding: "8px 12px", borderRadius: "8px", backdropFilter: "blur(10px)", minWidth: "60px" }}>
+          <div style={{ color: "#7d8590", fontSize: "9px", marginBottom: "2px" }}>LEVEL</div>
+          <div style={{ color: "#646cff", fontSize: "18px", fontWeight: "bold" }}>{gameState.level}</div>
+          {gameState.highScore > 0 && <div style={{ color: "#ffa500", fontSize: "9px" }}>HI: {gameState.highScore}</div>}
         </div>
         
-        <div data-testid="accuracy-display" style={{ background: "rgba(33, 38, 45, 0.7)", padding: "10px 20px", borderRadius: "8px", backdropFilter: "blur(10px)" }}>
-          <div style={{ color: "#7d8590", fontSize: "10px", marginBottom: "4px" }}>ACCURACY</div>
-          <div style={{ color: "#00ffff", fontSize: "24px", fontWeight: "bold" }}>
+        <div data-testid="accuracy-display" style={{ background: "rgba(33, 38, 45, 0.7)", padding: "8px 12px", borderRadius: "8px", backdropFilter: "blur(10px)", minWidth: "70px" }}>
+          <div style={{ color: "#7d8590", fontSize: "9px", marginBottom: "2px" }}>ACC</div>
+          <div style={{ color: "#00ffff", fontSize: "18px", fontWeight: "bold" }}>
             {gameState.totalClicks > 0 ? Math.round((gameState.successfulHits / gameState.totalClicks) * 100) : 100}%
           </div>
-          <div style={{ color: "#7d8590", fontSize: "10px" }}>{gameState.successfulHits}/{gameState.totalClicks}</div>
+          <div style={{ color: "#7d8590", fontSize: "9px" }}>{gameState.successfulHits}/{gameState.totalClicks}</div>
         </div>
         
-        <div data-testid="targets-display" style={{ background: "rgba(33, 38, 45, 0.7)", padding: "10px 20px", borderRadius: "8px", backdropFilter: "blur(10px)" }}>
-          <div style={{ color: "#7d8590", fontSize: "10px", marginBottom: "4px" }}>TARGETS</div>
-          <div style={{ color: "#ff66ff", fontSize: "24px", fontWeight: "bold" }}>{gameState.targets.length}</div>
+        <div data-testid="targets-display" style={{ background: "rgba(33, 38, 45, 0.7)", padding: "8px 12px", borderRadius: "8px", backdropFilter: "blur(10px)", minWidth: "60px" }}>
+          <div style={{ color: "#7d8590", fontSize: "9px", marginBottom: "2px" }}>TARGETS</div>
+          <div style={{ color: "#ff66ff", fontSize: "18px", fontWeight: "bold" }}>{gameState.targets.length}</div>
         </div>
       </div>
       
       {/* Game Status and Controls */}
-      <div style={{ position: "absolute", top: "60px", right: "20px", zIndex: 10, display: "flex", gap: "10px", alignItems: "center" }}>
-        <div data-testid="game-status" style={{ background: "rgba(33, 38, 45, 0.7)", padding: "8px 16px", borderRadius: "8px", backdropFilter: "blur(10px)", color: gameState.isPlaying && gameState.timeLeft > 0 ? "#00ff88" : "#ffa500", fontSize: "14px", fontWeight: "bold" }}>
+      <div style={{ 
+        position: "absolute", 
+        top: "5px", 
+        right: "5px", 
+        zIndex: 10, 
+        display: "flex", 
+        gap: "5px", 
+        alignItems: "center",
+        flexWrap: "wrap",
+        justifyContent: "flex-end",
+        maxWidth: "95%"
+      }}>
+        <div data-testid="game-status" style={{ 
+          background: "rgba(33, 38, 45, 0.7)", 
+          padding: "6px 10px", 
+          borderRadius: "8px", 
+          backdropFilter: "blur(10px)", 
+          color: gameState.isPlaying && gameState.timeLeft > 0 ? "#00ff88" : "#ffa500", 
+          fontSize: "12px", 
+          fontWeight: "bold",
+          whiteSpace: "nowrap"
+        }}>
           {gameState.timeLeft <= 0 ? "⏱️ Time's Up!" : gameState.isPlaying ? "🎯 Active" : "⏸️ Paused"}
         </div>
         <button
@@ -570,14 +612,15 @@ function App(): JSX.Element {
             background: gameState.timeLeft <= 0 ? "#666666" : gameState.isPlaying ? "#ff6b35" : "#00c851",
             color: "white",
             border: "none",
-            padding: "8px 16px",
+            padding: "6px 10px",
             borderRadius: "8px",
             cursor: gameState.timeLeft <= 0 ? "not-allowed" : "pointer",
             fontWeight: "bold",
-            fontSize: "14px",
+            fontSize: "12px",
+            whiteSpace: "nowrap"
           }}
         >
-          {gameState.isPlaying ? "⏸️ Pause" : "▶️ Resume"}
+          {gameState.isPlaying ? "⏸️" : "▶️"}
         </button>
         <button
           onClick={resetGame}
@@ -586,14 +629,15 @@ function App(): JSX.Element {
             background: "#7c3aed",
             color: "white",
             border: "none",
-            padding: "8px 16px",
+            padding: "6px 10px",
             borderRadius: "8px",
             cursor: "pointer",
             fontWeight: "bold",
-            fontSize: "14px",
+            fontSize: "12px",
+            whiteSpace: "nowrap"
           }}
         >
-          🔄 Reset
+          🔄
         </button>
         <button
           onClick={handleMuteToggle}
@@ -602,17 +646,21 @@ function App(): JSX.Element {
             background: isMuted ? "#666666" : "#10b981",
             color: "white",
             border: "none",
-            padding: "8px 16px",
+            padding: "6px 10px",
             borderRadius: "8px",
             cursor: "pointer",
             fontWeight: "bold",
-            fontSize: "14px",
+            fontSize: "12px",
+            whiteSpace: "nowrap"
           }}
         >
-          {isMuted ? "🔇 Unmute" : "🔊 Mute"}
+          {isMuted ? "🔇" : "🔊"}
         </button>
-        <div style={VOLUME_CONTROL_STYLES}>
-          <label htmlFor="volume-slider" style={{ color: "white", fontSize: "14px", fontWeight: "bold" }}>
+        <div style={{
+          ...VOLUME_CONTROL_STYLES,
+          padding: "6px 10px",
+        }}>
+          <label htmlFor="volume-slider" style={{ color: "white", fontSize: "12px", fontWeight: "bold" }}>
             🔊
           </label>
           <input
@@ -626,11 +674,11 @@ function App(): JSX.Element {
             onInput={handleVolumeChange}
             data-testid="volume-slider"
             style={{
-              width: "100px",
+              width: "60px",
               cursor: "pointer",
             }}
           />
-          <span style={{ color: "white", fontSize: "12px", minWidth: "35px" }}>
+          <span style={{ color: "white", fontSize: "10px", minWidth: "30px" }}>
             {Math.round(volume * 100)}%
           </span>
         </div>
@@ -676,7 +724,13 @@ function App(): JSX.Element {
       
       <div
         data-testid="threejs-canvas-container"
-        style={{ width: "100%", height: "600px", position: "relative" }}
+        style={{ 
+          width: "100%", 
+          height: "100%", 
+          position: "relative",
+          flex: 1,
+          minHeight: 0
+        }}
       >
         {/* Hidden DOM element for Cypress testing - indicates target sphere exists */}
         {gameState.isPlaying && gameState.timeLeft > 0 && (
@@ -696,7 +750,11 @@ function App(): JSX.Element {
         )}
         <Canvas
           camera={{ position: [0, 2, 8], fov: 50 }}
-          style={{ background: "linear-gradient(135deg, #0d1117 0%, #1a1f2e 100%)" }}
+          style={{ 
+            background: "linear-gradient(135deg, #0d1117 0%, #1a1f2e 100%)",
+            width: "100%",
+            height: "100%"
+          }}
           data-testid="threejs-canvas"
           shadows
         >
@@ -709,7 +767,11 @@ function App(): JSX.Element {
           />
         </Canvas>
       </div>
-      <p className="instructions" data-testid="app-instructions">
+      <p className="instructions" data-testid="app-instructions" style={{ 
+        margin: "5px 0", 
+        fontSize: "12px",
+        display: window.innerHeight < 600 ? "none" : "block"
+      }}>
         An immersive 3D target shooting game with combos, levels, and time pressure!
       </p>
     </div>

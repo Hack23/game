@@ -1,10 +1,4 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
-
+/* Animation for logo effects */
 .logo {
   height: 6em;
   padding: 1.5em;
@@ -41,55 +35,6 @@
   color: #888;
 }
 
-.app-container {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-  width: 100%;
-  height: 100vh;
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  background-color: #0d1117;
-  color: white;
-  overflow: hidden;
-}
-
-.app-container h1 {
-  font-size: 2.5em;
-  line-height: 1.1;
-  margin: 0;
-  color: #646cff;
-  margin: 10px 0;
-  font-size: 24px;
-}
-
-.app-container canvas {
-  border: 2px solid #646cff;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  display: block;
-  width: 100% !important;
-  height: calc(100vh - 100px) !important;
-  max-height: none;
-  max-width: none;
-  border: none;
-}
-
-.instructions {
-  color: #888;
-  font-style: italic;
-  margin: 0;
-  margin: 8px 0;
-  font-size: 14px;
-  color: #8b949e;
-}
-
 /* Ensure fullscreen across different devices */
 html,
 body,
@@ -99,6 +44,7 @@ body,
   margin: 0;
   padding: 0;
   overflow: hidden;
+  position: fixed;
 }
 
 body,
@@ -114,31 +60,36 @@ html {
 .app-container {
   width: 100%;
   height: 100vh;
+  height: 100dvh; /* Use dynamic viewport height for mobile browsers */
   display: flex;
   flex-direction: column;
   align-items: center;
   color: white;
+  position: relative;
+  overflow: hidden;
 }
 
 .app-container h1 {
-  margin: 10px 0;
-  font-size: 24px;
+  margin: 5px 0;
+  font-size: 20px;
   color: #646cff;
+  flex-shrink: 0;
 }
 
 .app-container canvas {
   display: block;
   width: 100% !important;
-  height: calc(100vh - 100px) !important;
+  height: 100% !important;
   max-height: none !important;
   max-width: none !important;
   cursor: crosshair;
 }
 
 .instructions {
-  margin: 8px 0;
-  font-size: 14px;
+  margin: 5px 0;
+  font-size: 12px;
   color: #8b949e;
+  flex-shrink: 0;
 }
 
 /* Animation for pulse effect */
@@ -163,13 +114,46 @@ html {
   }
 }
 
-@media (max-width: 900px) {
-  .app-container {
-    padding: 1rem;
+/* Mobile-specific adjustments */
+@media (max-width: 768px) {
+  .app-container h1 {
+    font-size: 16px;
+    margin: 3px 0;
   }
 
-  .app-container canvas {
-    max-width: 100%;
-    height: auto;
+  .instructions {
+    font-size: 10px;
+    margin: 3px 0;
+  }
+}
+
+/* Portrait mode specific adjustments */
+@media (max-width: 768px) and (orientation: portrait) {
+  .app-container h1 {
+    font-size: 14px;
+    margin: 2px 0;
+  }
+
+  .instructions {
+    display: none; /* Hide instructions in portrait mode to save space */
+  }
+}
+
+/* Landscape mode specific adjustments */
+@media (max-width: 900px) and (orientation: landscape) {
+  .app-container h1 {
+    font-size: 16px;
+  }
+}
+
+/* Very small screens */
+@media (max-height: 600px) {
+  .app-container h1 {
+    font-size: 14px;
+    margin: 2px 0;
+  }
+
+  .instructions {
+    display: none;
   }
 }
