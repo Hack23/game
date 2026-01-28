@@ -181,6 +181,7 @@ All security workflows will protect your game from vulnerabilities while providi
 
 ### 📚 Game Development Documentation
 
+- **[Music Asset System](docs/MUSIC_ASSET_SYSTEM.md)** - Asset-based music with fallback to procedural generation
 - **[Audio System](docs/AUDIO_SYSTEM.md)** - Procedurally-generated music and sound effects system
 - **[MCP Configuration](docs/MCP_CONFIGURATION.md)** - GitHub Copilot MCP server setup
 - **[ISMS Policy Mapping](docs/ISMS_POLICY_MAPPING.md)** - Security policy compliance mapping
