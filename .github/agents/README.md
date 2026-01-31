@@ -2,6 +2,16 @@
 
 This directory contains custom agent configurations for GitHub Copilot coding agent. Each agent is specialized for different aspects of game development and provides expert guidance following the project's standards.
 
+## 🆕 What's New: Agent Skills Support
+
+**December 2025 Update:** This repository now includes **GitHub Copilot Agent Skills** in `.github/skills/`!
+
+**Skills vs Agents:**
+- **Skills** = Reusable patterns and rules (e.g., "How to test Three.js components")
+- **Agents** = Specialized experts (e.g., `game-developer` for Three.js work)
+
+**Learn more:** See [Skills Documentation](../skills/README.md)
+
 ## 🎯 Available Agents
 
 ### 🎯 product-task-agent
@@ -189,6 +199,21 @@ The product-task-agent is your go-to for:
 - Review documentation completeness and assign to documentation-writer
 ```
 
+## 🎓 Agent Skills Integration
+
+All agents now leverage **GitHub Copilot Skills** for consistent patterns:
+
+| Agent | Primary Skills | Description |
+|-------|---------------|-------------|
+| 🎯 product-task-agent | All skills | Comprehensive quality analysis across all domains |
+| 🎮 game-developer | react-threejs-game, performance-optimization | Three.js patterns and 60fps optimization |
+| 🎨 frontend-specialist | documentation-standards, performance-optimization | React UI and performance |
+| 🧪 test-engineer | testing-strategy | Comprehensive testing patterns |
+| 🔒 security-specialist | security-by-design, isms-compliance | Security and compliance |
+| 📝 documentation-writer | documentation-standards, isms-compliance | Clear docs with ISMS alignment |
+
+**See:** [Skills Documentation](../skills/README.md) for complete skill details
+
 ## 🛠️ Agent Tools
 
 Each agent has access to specific tools based on their responsibilities:
@@ -275,7 +300,16 @@ You specialize in:
 
 ## 📚 Resources
 
+### Agent & Skills Documentation
+- [GitHub Copilot Agent Skills](../skills/README.md) - Reusable patterns and rules
 - [GitHub Copilot Custom Agents Documentation](https://docs.github.com/en/copilot/concepts/agents/coding-agent/about-custom-agents)
-- [Repository Custom Instructions](..//copilot-instructions.md)
-- [MCP Configuration Guide](../../docs/MCP_CONFIGURATION.md)
-- [MCP Architecture Overview](../../docs/MCP_ARCHITECTURE.md)
+- [About Agent Skills - GitHub Docs](https://docs.github.com/en/copilot/concepts/agents/about-agent-skills)
+
+### Repository Configuration
+- [Repository Custom Instructions](../copilot-instructions.md)
+- [MCP Configuration](../copilot-mcp.json)
+
+### External Resources
+- [Anthropic Skills Repository](https://github.com/anthropics/skills) - Best practices
+- [GitHub Awesome Copilot](https://github.com/github/awesome-copilot) - Community resources
+- [Hack23 ISMS-PUBLIC](https://github.com/Hack23/ISMS-PUBLIC) - Security policies

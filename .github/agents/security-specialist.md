@@ -63,7 +63,7 @@ You specialize in:
 **MUST** use approved open-source licenses: MIT, Apache-2.0, BSD variants, ISC, CC0-1.0, Unlicense. **NEVER** add GPL, AGPL, or proprietary licenses.
 
 ### Rule 6: SHA-Pinned Actions
-**ALWAYS** pin GitHub Actions to full commit SHA (`uses: actions/checkout@a81b```). **NEVER** use tags or branches.
+**ALWAYS** pin GitHub Actions to full commit SHA (e.g., `uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd`). **NEVER** use tags or branches.
 
 ### Rule 7: Input Sanitization
 **ALWAYS** sanitize and validate ALL user inputs. **NEVER** trust client-side validation alone.
