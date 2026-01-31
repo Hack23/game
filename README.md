@@ -68,7 +68,11 @@ Specialized AI experts for different development tasks:
 - **🔒 [security-specialist](.github/agents/security-specialist.md)** - Security, compliance, and supply chain protection
 - **📝 [documentation-writer](.github/agents/documentation-writer.md)** - Technical documentation and guides
 
-### 🎓 Agent Skills (December 2025 - NEW!)
+**Learn more:** [Custom Agents Documentation](.github/agents/README.md)
+
+---
+
+### 🎓 Agent Skills (December 2025)
 Reusable patterns and best practices that agents automatically apply:
 
 - **🔒 [security-by-design](.github/skills/security-by-design/SKILL.md)** - High-level security principles and enforcement rules
@@ -78,7 +82,7 @@ Reusable patterns and best practices that agents automatically apply:
 - **📝 [documentation-standards](.github/skills/documentation-standards/SKILL.md)** - Clear technical documentation
 - **⚡ [performance-optimization](.github/skills/performance-optimization/SKILL.md)** - React and Three.js optimization
 
-**Learn more:** [Custom Agents Documentation](.github/agents/README.md) | [Agent Skills Guide](.github/skills/README.md) | [Comprehensive Copilot Guide](.github/COPILOT_GUIDE.md)
+**Learn more:** [Agent Skills Guide](.github/skills/README.md) | [Comprehensive Copilot Guide](.github/COPILOT_GUIDE.md)
 
 ## 🚀 Using This Template
 

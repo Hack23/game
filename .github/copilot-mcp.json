@@ -3,7 +3,7 @@
   "mcpServers": {
     "filesystem": {
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/workspaces/game"],
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/home/runner/work/game/game"],
       "description": "Provides secure filesystem access for reading and editing project files",
       "disabled": false
     },
@@ -38,7 +38,7 @@
     },
     "git": {
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-git", "--repository", "/workspaces/game"],
+      "args": ["-y", "@modelcontextprotocol/server-git", "--repository", "/home/runner/work/game/game"],
       "description": "Provides Git operations and repository history context",
       "disabled": false
     },
