@@ -78,7 +78,7 @@ Reusable patterns and best practices that agents automatically apply:
 - **📝 [documentation-standards](.github/skills/documentation-standards/SKILL.md)** - Clear technical documentation
 - **⚡ [performance-optimization](.github/skills/performance-optimization/SKILL.md)** - React and Three.js optimization
 
-**Learn more:** [Custom Agents Documentation](.github/agents/README.md) | [Agent Skills Guide](.github/skills/README.md)
+**Learn more:** [Custom Agents Documentation](.github/agents/README.md) | [Agent Skills Guide](.github/skills/README.md) | [Comprehensive Copilot Guide](.github/COPILOT_GUIDE.md)
 
 ## 🚀 Using This Template
 
