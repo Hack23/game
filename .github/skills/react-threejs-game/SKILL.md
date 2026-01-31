@@ -4,7 +4,7 @@ description: Three.js game development with React using @react-three/fiber and @
 license: MIT
 ---
 
-# React Three.js Game Development Skill
+# react-threejs-game Skill
 
 ## Context
 This skill applies when:
@@ -318,11 +318,13 @@ function BadComponent({ position, speed }: any) {
 ### ❌ Bad Pattern: useState in High-Frequency Updates
 
 ```typescript
-// Bad: Using useState for position causes re-renders every frame
+// Bad: Using useState for per-frame position updates
 function BadPlayer() {
-  const [position, setPosition] = useState([0, 0, 0]); // Re-renders 60 times/sec!
+  const [position, setPosition] = useState([0, 0, 0]); // Schedules React updates every frame
   
   useFrame((state, delta) => {
+    // Triggers high-frequency state updates: inefficient and conceptually wrong for game loops
+    // where you should mutate Three.js objects directly via refs instead of React state
     setPosition(prev => [prev[0] + delta, prev[1], prev[2]]); // Performance killer!
   });
   

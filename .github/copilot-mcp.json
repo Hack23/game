@@ -18,13 +18,13 @@
         "*"
       ],
       "env": {
-        "GITHUB_TOKEN": "${{ secrets.COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN }}",
-        "GITHUB_PERSONAL_ACCESS_TOKEN": "${{ secrets.COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN }}",
+        "GITHUB_TOKEN": "${COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN}",
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN}",
         "GITHUB_OWNER": "Hack23",
         "GITHUB_REPO": "game",
         "GITHUB_API_URL": "https://api.githubcopilot.com/mcp/insiders"
       },
-      "description": "GitHub MCP with Insiders features: repository data, issues, PRs, workflows, and Copilot coding agent tools (assign_copilot_to_issue, create_pull_request_with_copilot)",
+      "description": "GitHub MCP with Insiders features: repository data, issues, PRs, workflows, and Copilot coding agent tools (assign_copilot_to_issue, create_pull_request_with_copilot). Note: Insiders API URL may require special access; verify endpoint availability in your environment.",
       "disabled": false
     },
     "sequential-thinking": {

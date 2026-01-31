@@ -195,7 +195,7 @@ Create a skill when you have:
 ## 📚 Resources
 
 ### Official Documentation
-- [GitHub Copilot Agent Skills](https://github.blog/changelog/2025-12-18-github-copilot-now-supports-agent-skills/)
+- GitHub Copilot Agent Skills (upcoming GitHub Blog changelog entry; link TBD)
 - [About Agent Skills - GitHub Docs](https://docs.github.com/en/copilot/concepts/agents/about-agent-skills)
 
 ### Best Practices Collections

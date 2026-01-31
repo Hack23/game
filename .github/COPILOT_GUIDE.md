@@ -426,15 +426,17 @@ for OWASP Top 10 vulnerabilities and ISMS compliance.
 
 ### Before vs After
 
-| Metric | Before | After | Growth |
-|--------|--------|-------|--------|
+| Metric | Before | After | Growth / Status |
+|--------|--------|-------|-----------------|
 | **Custom Agents** | 1,040 lines | 3,530 lines | +239% |
 | **Agent Skills** | 0 | 2,469 lines | NEW! |
-| **Total Lines** | 1,040 | 5,999 lines | +477% |
+| **Total Lines** | 1,040 | 5,999 lines | Informational only* |
 | **Rules per Agent** | ~3 | ~10 | +233% |
 | **Examples per Agent** | ~2 | ~8 | +300% |
 | **Checklists** | 0 | 6 | NEW! |
 | **Decision Frameworks** | 0 | 24 | NEW! |
+
+\* Total lines of configuration are tracked for context only and are not used as a quality metric. Prefer outcome metrics such as reduced clarifying questions or increased autonomous task completion.
 
 ### Quality Improvements
 

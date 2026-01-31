@@ -179,6 +179,10 @@ Match issues to specialized agents based on domain expertise:
 
 ### Method 1: Basic Copilot Assignment
 
+> **Important:** The `gh copilot` subcommands are **not part of the standard GitHub CLI**.  
+> They may require a private beta feature, an MCP-specific integration, or a custom `gh` extension configured for this repository.  
+> If `gh copilot` is not available in your environment, coordinate with the repository maintainers or use the standard GitHub UI / workflows to manage assignments instead.
+
 **Use Case:** Simple, self-contained issues with clear scope
 
 ```bash

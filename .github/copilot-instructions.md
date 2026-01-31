@@ -343,10 +343,10 @@ export function Player({
 ### NEVER Do
 
 1. **NEVER** commit secrets, API keys, or credentials
-2. **NEVER** create new markdown files unless explicitly asked
+2. **NEVER** create new markdown files in the repository root or `docs/` directory without explicit approval
 3. **NEVER** use `any` type in TypeScript (use `unknown` if needed)
 4. **NEVER** skip running linter and tests before committing
-5. **NEVER** update state inside `useFrame` (causes performance issues)
+5. **NEVER** update state inside `useFrame` callback (causes 60 re-renders/sec and ties game logic to React)
 6. **NEVER** add dependencies without checking `npm audit` and `npm run test:licenses`
 7. **NEVER** expose stack traces or internal errors to users
 8. **NEVER** trust user input without validation

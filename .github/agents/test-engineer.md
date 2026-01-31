@@ -564,7 +564,7 @@ npm run test:e2e:ci # Run Cypress in headless mode
 - ✅ Follow decision frameworks instead of asking questions
 
 **NEVER:**
-- ❌ Allow coverage <80% (or <95% for security code)
+- ❌ Allow coverage <80% (or <95% for security code: authentication, authorization, input validation, encryption, access control)
 - ❌ Use real timers, dates, or random values in tests
 - ❌ Test implementation details (internal state, private methods)
 - ❌ Skip Required Context Files at session start
