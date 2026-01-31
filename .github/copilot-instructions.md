@@ -2,6 +2,27 @@
 
 This file provides guidance for GitHub Copilot coding agent when working on this repository.
 
+## 📋 Required Context Files
+
+**ALWAYS read these files at the start of your session:**
+- `.github/workflows/copilot-setup-steps.yml` - Environment setup and permissions
+- `.github/copilot-mcp.json` - MCP server configuration and available tools
+- `README.md` - Repository overview and project context
+- `.github/agents/README.md` - Available custom agents
+- `.github/skills/README.md` - Agent skills catalog
+
+## 🎯 Agent Skills Catalog
+
+This repository includes 6 comprehensive skills that provide reusable patterns:
+- **security-by-design** - Defense-in-depth, OWASP, secure coding
+- **isms-compliance** - ISO 27001, NIST CSF 2.0, CIS Controls alignment
+- **react-threejs-game** - Three.js patterns, 60fps optimization
+- **testing-strategy** - 80%+ coverage, deterministic tests
+- **documentation-standards** - JSDoc, Mermaid, ISMS documentation
+- **performance-optimization** - React/Three.js performance
+
+Reference these skills when working on related tasks.
+
 ## Project Overview
 
 This is a game template built with React, TypeScript, Three.js, and Vite with a strong focus on security and code quality.
@@ -303,3 +324,197 @@ export function Player({
 - **Use instancing**: For many similar objects, use `InstancedMesh`
 - **Optimize geometry**: Use lower polygon counts for better performance
 - **Dispose resources**: Clean up geometries, materials, and textures when components unmount
+
+## 🔒 Strict Rules for Development
+
+### ALWAYS Do
+
+1. **ALWAYS** use TypeScript strict mode with explicit types (never use `any`)
+2. **ALWAYS** run `npm run lint` before committing code
+3. **ALWAYS** run `npm run test` before committing code
+4. **ALWAYS** aim for 80%+ test coverage (95% for security-critical code)
+5. **ALWAYS** validate user input and sanitize output
+6. **ALWAYS** reference ISMS policies for security-related code
+7. **ALWAYS** use existing patterns from the codebase (check similar files first)
+8. **ALWAYS** dispose Three.js resources in cleanup functions
+9. **ALWAYS** target 60fps performance for game code
+10. **ALWAYS** use `useFrame` with delta time for animations
+
+### NEVER Do
+
+1. **NEVER** commit secrets, API keys, or credentials
+2. **NEVER** create new markdown files in the repository root or `docs/` directory without explicit approval
+3. **NEVER** use `any` type in TypeScript (use `unknown` if needed)
+4. **NEVER** skip running linter and tests before committing
+5. **NEVER** update state inside `useFrame` callback (causes 60 re-renders/sec and ties game logic to React)
+6. **NEVER** add dependencies without checking `npm audit` and `npm run test:licenses`
+7. **NEVER** expose stack traces or internal errors to users
+8. **NEVER** trust user input without validation
+9. **NEVER** use GPL or AGPL licensed dependencies
+10. **NEVER** commit without verifying the changes are minimal and focused
+
+### Pre-Commit Validation Checklist
+
+Before committing any code, verify:
+
+- [ ] Code passes `npm run lint` with no errors
+- [ ] All tests pass with `npm run test`
+- [ ] Test coverage is 80%+ for new code
+- [ ] No `any` types in TypeScript
+- [ ] No secrets or credentials in code
+- [ ] Changes are minimal and focused on the task
+- [ ] Documentation is updated if public APIs changed
+- [ ] ISMS policies are referenced for security changes
+- [ ] Performance is acceptable (60fps for game code)
+- [ ] All Three.js resources are disposed properly
+
+### Decision Framework: Ask vs Complete
+
+**Complete without asking when:**
+- The pattern exists in the codebase (follow existing examples)
+- The requirements are clear and unambiguous
+- The change is small and focused
+- Standard practices apply (linting, testing, typing)
+- Security patterns are well-established
+
+**Ask before proceeding when:**
+- Multiple valid approaches exist with significant tradeoffs
+- Security implications are unclear
+- Breaking changes to public APIs
+- New external dependencies are needed
+- Architecture changes are required
+
+## 🎨 Code Style Patterns
+
+### Component Structure (React)
+```typescript
+// ALWAYS: Use this structure
+interface ComponentProps {
+  // Props with explicit types
+  value: string;
+  onChange: (value: string) => void;
+}
+
+export function Component({ value, onChange }: ComponentProps): JSX.Element {
+  // Hooks first
+  const [state, setState] = useState<string>('');
+  const ref = useRef<HTMLDivElement>(null);
+  
+  // Callbacks with useCallback
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    onChange(e.target.value);
+  }, [onChange]);
+  
+  // Effects
+  useEffect(() => {
+    // Cleanup if needed
+    return () => {};
+  }, []);
+  
+  // Render
+  return <div ref={ref}>Content</div>;
+}
+```
+
+### Three.js Game Objects
+```typescript
+// ALWAYS: Use this pattern for game objects
+interface GameObjectProps {
+  position: [number, number, number];
+  onInteract?: () => void;
+}
+
+export function GameObject({ position, onInteract }: GameObjectProps): JSX.Element {
+  const meshRef = useRef<THREE.Mesh>(null);
+  
+  // Animation with delta time
+  useFrame((state, delta) => {
+    if (meshRef.current) {
+      // Use delta for frame-rate independent animation
+      meshRef.current.rotation.y += delta;
+    }
+  });
+  
+  return (
+    <mesh ref={meshRef} position={position} onClick={onInteract}>
+      <boxGeometry />
+      <meshStandardMaterial />
+    </mesh>
+  );
+}
+```
+
+### Test Structure
+```typescript
+// ALWAYS: Use this test pattern
+import { render, screen } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
+
+describe('ComponentName', () => {
+  it('should render with correct props', () => {
+    // Arrange
+    const props = { value: 'test' };
+    
+    // Act
+    render(<ComponentName {...props} />);
+    
+    // Assert
+    expect(screen.getByText('test')).toBeInTheDocument();
+  });
+  
+  it('should handle interactions', async () => {
+    // Test user interactions
+    const handleClick = vi.fn();
+    render(<ComponentName onClick={handleClick} />);
+    
+    await userEvent.click(screen.getByRole('button'));
+    
+    expect(handleClick).toHaveBeenCalledOnce();
+  });
+});
+```
+
+## 🔍 Codebase Patterns to Follow
+
+### File Organization
+- React components: `src/components/ComponentName.tsx`
+- Hooks: `src/hooks/useHookName.ts`
+- Types: `src/types/TypeName.ts`
+- Tests: Colocated with source files (`ComponentName.test.tsx`)
+- Game objects: `src/game/objects/ObjectName.tsx`
+
+### Naming Conventions
+- Components: PascalCase (`PlayerCharacter`)
+- Hooks: camelCase with `use` prefix (`useAudioManager`)
+- Types/Interfaces: PascalCase (`PlayerProps`, `GameState`)
+- Constants: UPPER_SNAKE_CASE (`MAX_HEALTH`)
+- Functions: camelCase (`handleClick`, `updatePosition`)
+
+### Import Order
+```typescript
+// 1. React and external libraries
+import { useState, useEffect } from 'react';
+import { Canvas } from '@react-three/fiber';
+
+// 2. Internal components
+import { Player } from '@/components/Player';
+
+// 3. Hooks
+import { useAudioManager } from '@/hooks/useAudioManager';
+
+// 4. Types
+import type { GameState } from '@/types/GameState';
+
+// 5. Styles (if any)
+import './Component.css';
+```
+
+## 🎯 Remember
+
+- **Ask less, complete more** - Follow existing patterns in the codebase
+- **Security first** - Apply security-by-design principles from skills catalog
+- **Performance matters** - Target 60fps for game code, minimize re-renders
+- **Test thoroughly** - 80%+ coverage, test edge cases
+- **Document clearly** - JSDoc for complex functions, update README when needed
+- **Check before commit** - Run linter and tests, verify changes are minimal
+- **Reference skills** - Use the skills catalog for guidance on patterns and best practices

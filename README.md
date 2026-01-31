@@ -54,9 +54,12 @@ For complete security policy mapping and detailed compliance information, see:
 - 🛠️ **@react-three/drei** - Useful helpers for react-three-fiber
 - 🎵 **Howler.js** - Audio library for games
 
-## 🤖 GitHub Copilot Custom Agents
+## 🤖 GitHub Copilot Custom Agents & Skills
 
-This repository includes specialized AI agents that enhance GitHub Copilot's capabilities for game development. These custom agents provide expert guidance in specific domains:
+This repository leverages GitHub Copilot's latest features for AI-assisted development:
+
+### 🎯 Custom Agents (January 2026)
+Specialized AI experts for different development tasks:
 
 - **🎯 [product-task-agent](.github/agents/product-task-agent.md)** - Product analysis, quality improvement, and GitHub issue creation
 - **🎮 [game-developer](.github/agents/game-developer.md)** - Three.js game development with @react-three/fiber and @react-three/drei
@@ -65,7 +68,21 @@ This repository includes specialized AI agents that enhance GitHub Copilot's cap
 - **🔒 [security-specialist](.github/agents/security-specialist.md)** - Security, compliance, and supply chain protection
 - **📝 [documentation-writer](.github/agents/documentation-writer.md)** - Technical documentation and guides
 
-The **product-task-agent** can analyze your product, identify improvements, and create well-structured GitHub issues assigned to the appropriate specialized agents. When using GitHub Copilot, you can request help from specific agents by mentioning them in your prompts. Learn more in the **[Custom Agents Documentation](.github/agents/README.md)**.
+**Learn more:** [Custom Agents Documentation](.github/agents/README.md)
+
+---
+
+### 🎓 Agent Skills (December 2025)
+Reusable patterns and best practices that agents automatically apply:
+
+- **🔒 [security-by-design](.github/skills/security-by-design/SKILL.md)** - High-level security principles and enforcement rules
+- **📋 [isms-compliance](.github/skills/isms-compliance/SKILL.md)** - ISMS policy alignment verification
+- **🎮 [react-threejs-game](.github/skills/react-threejs-game/SKILL.md)** - Three.js game development patterns
+- **🧪 [testing-strategy](.github/skills/testing-strategy/SKILL.md)** - Comprehensive testing patterns
+- **📝 [documentation-standards](.github/skills/documentation-standards/SKILL.md)** - Clear technical documentation
+- **⚡ [performance-optimization](.github/skills/performance-optimization/SKILL.md)** - React and Three.js optimization
+
+**Learn more:** [Agent Skills Guide](.github/skills/README.md) | [Comprehensive Copilot Guide](.github/COPILOT_GUIDE.md)
 
 ## 🚀 Using This Template
 
