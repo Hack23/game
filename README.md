@@ -58,7 +58,7 @@ For complete security policy mapping and detailed compliance information, see:
 
 This repository leverages GitHub Copilot's latest features for AI-assisted development:
 
-### 🎯 Custom Agents (January 2026)
+### 🎯 Custom Agents
 Specialized AI experts for different development tasks:
 
 - **🎯 [product-task-agent](.github/agents/product-task-agent.md)** - Product analysis, quality improvement, and GitHub issue creation
@@ -72,7 +72,7 @@ Specialized AI experts for different development tasks:
 
 ---
 
-### 🎓 Agent Skills (December 2025)
+### 🎓 Agent Skills
 Reusable patterns and best practices that agents automatically apply:
 
 - **🔒 [security-by-design](.github/skills/security-by-design/SKILL.md)** - High-level security principles and enforcement rules
