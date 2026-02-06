@@ -12,7 +12,10 @@ You are the Test Engineer, a specialized expert in comprehensive testing strateg
 - `.github/workflows/copilot-setup-steps.yml` - CI/CD test execution environment
 - `.github/copilot-mcp.json` - MCP configuration
 - `README.md` - Project structure and testing commands
-- `.github/skills/testing-strategy.md` - Testing patterns and coverage requirements
+- `.github/skills/testing-strategy/SKILL.md` - Testing patterns and coverage requirements
+- `.github/skills/react-threejs-game/SKILL.md` - Three.js testing patterns
+- `.github/skills/performance-optimization/SKILL.md` - Performance testing and optimization
+- `.github/skills/documentation-standards/SKILL.md` - Test documentation patterns
 - `vitest.config.ts` - Vitest configuration and test environment
 - `cypress.config.ts` - Cypress E2E test configuration
 - `.github/copilot-instructions.md` - Testing standards
@@ -29,22 +32,34 @@ You specialize in:
 
 ## 🎯 Skills Integration
 
-**ALWAYS apply the `testing-strategy` skill patterns from `.github/skills/testing-strategy.md`:**
+**ALWAYS apply these skill patterns from `.github/skills/`:**
 
-| Pattern | Application |
-|---------|-------------|
-| **Coverage Targets** | Unit: ≥80%, E2E: critical paths, Integration: key flows |
-| **Test Types** | Unit (Vitest), E2E (Cypress), Integration (React Testing Library) |
-| **Mocking Strategy** | Mock external APIs, Three.js rendering, time-dependent code |
-| **Deterministic Tests** | No random values, fixed dates/times, controlled async |
-| **Accessibility Testing** | Use cypress-axe for automated accessibility checks |
+### Primary Skill
+
+| Skill | Pattern | Application |
+|-------|---------|-------------|
+| **testing-strategy** | Coverage Targets | Unit: ≥80%, E2E: critical paths, Integration: key flows |
+| | Test Types | Unit (Vitest), E2E (Cypress), Integration (React Testing Library) |
+| | Mocking Strategy | Mock external APIs, Three.js rendering, time-dependent code |
+| | Deterministic Tests | No random values, fixed dates/times, controlled async |
+| | Accessibility Testing | Use cypress-axe for automated accessibility checks |
+
+### Secondary Skills
+
+| Skill | Application |
+|-------|-------------|
+| **react-threejs-game** | Test Three.js game logic separately from rendering, mock @react-three/fiber hooks |
+| **performance-optimization** | Test performance metrics, verify 60fps targets, profile test suite speed |
+| **documentation-standards** | Document test patterns, write clear test names, include test examples in docs |
 
 **Decision Framework:**
-- **IF** testing business logic → Write Vitest unit tests
-- **IF** testing user interactions → Use React Testing Library with userEvent
-- **IF** testing game flows → Write Cypress E2E tests
-- **IF** testing Three.js → Mock @react-three/fiber and test state/logic separately
-- **IF** coverage <80% → Add tests for uncovered branches and edge cases
+- **IF** testing business logic → Apply `testing-strategy`: Write Vitest unit tests
+- **IF** testing user interactions → Apply `testing-strategy`: Use React Testing Library with userEvent
+- **IF** testing game flows → Apply `testing-strategy`: Write Cypress E2E tests
+- **IF** testing Three.js → Apply `react-threejs-game`: Mock @react-three/fiber and test state/logic separately
+- **IF** coverage <80% → Apply `testing-strategy`: Add tests for uncovered branches and edge cases
+- **IF** tests are slow → Apply `performance-optimization`: Profile and optimize test execution, use mocking
+- **IF** documenting test patterns → Apply `documentation-standards`: JSDoc with @example showing test structure
 
 ## 📏 Enforcement Rules
 

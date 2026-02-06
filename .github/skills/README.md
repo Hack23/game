@@ -105,6 +105,21 @@ Skills are automatically loaded by GitHub Copilot when:
 
 **No manual activation needed** - Copilot intelligently applies relevant skills.
 
+### Agent-Skill Integration
+
+All custom agents in `.github/agents/` are configured to leverage these skills:
+
+| Skill | Used By Agents | Usage Type |
+|-------|----------------|------------|
+| 🔒 **security-by-design** | 🔒 security-specialist (Primary)<br/>🎨 frontend-specialist (Secondary)<br/>📝 documentation-writer (Secondary)<br/>🎯 product-task-agent (All) | Security patterns, threat modeling, secure coding |
+| 📋 **isms-compliance** | 🔒 security-specialist (Primary)<br/>📝 documentation-writer (Secondary)<br/>🎯 product-task-agent (All) | ISMS policy alignment, compliance verification |
+| 🎮 **react-threejs-game** | 🎮 game-developer (Primary)<br/>🧪 test-engineer (Secondary)<br/>🎯 product-task-agent (All) | Three.js patterns, Canvas setup, useFrame |
+| 🧪 **testing-strategy** | 🧪 test-engineer (Primary)<br/>🎮 game-developer (Secondary)<br/>🎨 frontend-specialist (Secondary)<br/>🔒 security-specialist (Secondary)<br/>📝 documentation-writer (Secondary)<br/>🎯 product-task-agent (All) | Testing patterns, coverage, mocking |
+| 📝 **documentation-standards** | 📝 documentation-writer (Primary)<br/>🎨 frontend-specialist (Primary)<br/>🎮 game-developer (Secondary)<br/>🧪 test-engineer (Secondary)<br/>🔒 security-specialist (Secondary)<br/>🎯 product-task-agent (All) | JSDoc, Mermaid diagrams, README structure |
+| ⚡ **performance-optimization** | 🎮 game-developer (Primary)<br/>🎨 frontend-specialist (Primary)<br/>🧪 test-engineer (Secondary)<br/>🎯 product-task-agent (All) | 60fps, memoization, bundle optimization |
+
+**See:** [Custom Agents Documentation](./../agents/README.md) for complete agent-skill mappings
+
 ### Skill Structure
 Each skill follows this directory structure:
 ```

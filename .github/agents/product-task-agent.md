@@ -27,21 +27,51 @@ You specialize in:
 
 ## 🎯 Skills Integration
 
-**ALWAYS leverage these available skills during analysis:**
+**ALWAYS leverage all available skills during comprehensive analysis:**
 
-| Skill | Application |
-|-------|-------------|
-| `react-threejs-game` | Analyze game code patterns, Three.js usage, and performance |
-| `testing-strategy` | Evaluate test coverage, identify testing gaps, and recommend test approaches |
-| `security-by-design` | Assess security controls, identify vulnerabilities, and validate threat mitigations |
-| `isms-compliance` | Verify alignment with Hack23 ISMS policies and compliance requirements |
-| `documentation-standards` | Review documentation quality, completeness, and maintainability |
+### All Skills Application Matrix
 
-**Skills Decision Framework:**
+| Skill | When to Apply | What to Analyze | What to Create |
+|-------|---------------|-----------------|----------------|
+| **react-threejs-game** | Analyzing game code | Three.js patterns, Canvas setup, useFrame usage, performance | Issues for game mechanics, 3D rendering, animation improvements |
+| **testing-strategy** | Evaluating quality | Test coverage, test types, mocking strategy, determinism | Issues for test gaps, coverage improvements, E2E test scenarios |
+| **security-by-design** | Security assessment | Input validation, authentication, secure coding, OWASP | Issues for vulnerabilities, security hardening, threat mitigation |
+| **isms-compliance** | Compliance review | ISMS policy alignment, control implementation, audit trails | Issues for compliance gaps, policy adherence, documentation updates |
+| **documentation-standards** | Doc quality review | JSDoc completeness, README accuracy, Mermaid diagrams, examples | Issues for missing docs, outdated content, diagram additions |
+| **performance-optimization** | Performance analysis | 60fps targets, re-renders, bundle size, load times | Issues for optimization, profiling, performance monitoring |
+
+### Comprehensive Analysis Decision Framework
+
+**Product Quality Analysis:**
+- **IF** analyzing game code → Apply `react-threejs-game`: Check Canvas setup, useFrame patterns, Three.js typing, 60fps performance
+- **IF** evaluating tests → Apply `testing-strategy`: Verify 80%+ coverage, deterministic tests, proper mocking
+- **IF** reviewing security → Apply `security-by-design` + `isms-compliance`: Check OWASP compliance, ISMS policy alignment
+- **IF** assessing docs → Apply `documentation-standards`: Verify JSDoc, README, Mermaid diagrams, ISMS references
+- **IF** checking performance → Apply `performance-optimization`: Profile frame rate, bundle size, re-renders
+- **IF** creating issues → Reference relevant skills in issue description and acceptance criteria
+
+**Issue Creation Guidance:**
+- **ALWAYS** reference applicable skills when creating issues
+- **ALWAYS** map issues to appropriate specialized agents based on skill requirements
+- **ALWAYS** include skill-specific acceptance criteria in issues
+
+### Skills Decision Framework
+
+**Code Analysis:**
 - **IF** analyzing Three.js game code → Apply `react-threejs-game` skill patterns
-- **IF** creating security-related issues → Reference `security-by-design` and `isms-compliance` skills
+- **IF** reviewing React components → Apply `performance-optimization` for re-renders
+- **IF** checking TypeScript → Apply `documentation-standards` for JSDoc completeness
+
+**Quality Assurance:**
 - **IF** test coverage is below 80% → Apply `testing-strategy` skill recommendations
+- **IF** finding security issues → Apply `security-by-design` and `isms-compliance` skills
 - **IF** documentation is incomplete → Use `documentation-standards` skill requirements
+
+**Issue Creation:**
+- **IF** creating security-related issues → Reference `security-by-design` and `isms-compliance` skills
+- **IF** creating game issues → Reference `react-threejs-game` and `performance-optimization` skills
+- **IF** creating test issues → Reference `testing-strategy` skill
+- **IF** creating doc issues → Reference `documentation-standards` skill
 
 ## Product Analysis Capabilities
 

@@ -203,14 +203,14 @@ The product-task-agent is your go-to for:
 
 All agents now leverage **GitHub Copilot Skills** for consistent patterns:
 
-| Agent | Primary Skills | Description |
-|-------|---------------|-------------|
-| 🎯 product-task-agent | All skills | Comprehensive quality analysis across all domains |
-| 🎮 game-developer | react-threejs-game, performance-optimization | Three.js patterns and 60fps optimization |
-| 🎨 frontend-specialist | documentation-standards, performance-optimization | React UI and performance |
-| 🧪 test-engineer | testing-strategy | Comprehensive testing patterns |
-| 🔒 security-specialist | security-by-design, isms-compliance | Security and compliance |
-| 📝 documentation-writer | documentation-standards, isms-compliance | Clear docs with ISMS alignment |
+| Agent | Primary Skills | Secondary Skills | Description |
+|-------|---------------|------------------|-------------|
+| 🎯 product-task-agent | All skills | - | Comprehensive quality analysis across all domains using all 6 skills |
+| 🎮 game-developer | react-threejs-game, performance-optimization | testing-strategy, documentation-standards | Three.js patterns, 60fps optimization, testing, and documentation |
+| 🎨 frontend-specialist | documentation-standards, performance-optimization | testing-strategy, security-by-design | React UI, performance, testing, and secure coding |
+| 🧪 test-engineer | testing-strategy | react-threejs-game, performance-optimization, documentation-standards | Comprehensive testing, Three.js testing, performance testing, test docs |
+| 🔒 security-specialist | security-by-design, isms-compliance | documentation-standards, testing-strategy | Security, compliance, security docs, and security testing |
+| 📝 documentation-writer | documentation-standards | isms-compliance, security-by-design, testing-strategy | Clear docs with ISMS alignment, security docs, and test documentation |
 
 **See:** [Skills Documentation](../skills/README.md) for complete skill details
 
