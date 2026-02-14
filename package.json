@@ -21,7 +21,7 @@
     "howler": "^2.2.4",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
-    "react-error-boundary": "^6.1.0",
+    "react-error-boundary": "^6.1.1",
     "three": "^0.182.0"
   },
   "devDependencies": {
