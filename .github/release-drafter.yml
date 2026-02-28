@@ -93,8 +93,8 @@ template: |
   - ⚡ **Vite** - Fast build tool and dev server
   - ⚛️ **React 19** - Modern React with hooks  
   - 🔷 **TypeScript** - Strict typing with latest standards
-  - 🎮 **PixiJS 8.x** - High-performance WebGL renderer
-  - 🎵 **Howler.js** - Audio library for games
+  - 🎮 **Three.js** - High-performance 3D WebGL renderer
+  - 🎵 **@react-three/fiber** - React renderer for Three.js
   - 🧪 **Vitest** - Fast unit testing with coverage
   - 🌲 **Cypress** - Reliable E2E testing
 
