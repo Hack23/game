@@ -122,10 +122,10 @@ If CI fails after the upgrade to Node.js 27:
 | Target | Expected Date | Action Required |
 |--------|--------------|----------------|
 | Node.js 26 Active LTS | October 2026 | Already on 26; no action needed |
-| Node.js 27 release | October 2026 | Update primary workflow to 27 |
-| Node.js 28 LTS | April 2027 | Next LTS — update `test-and-report-latest-node.yml` to 28 nightly |
-| Node.js 26 EOL | April 2029 | Migrate to 28 before this date |
+| Node.js 27 release | October 2026 | Update `test-and-report-latest-node.yml` to 27.0.0-nightly; primary workflow stays on Node.js 26 LTS |
+| Node.js 28 LTS | April 2027 | Next LTS — update primary workflow to 28; update `test-and-report-latest-node.yml` to 28 nightly |
 | Node.js 27 EOL | June 2027 | Move forward to 28 before this date |
+| Node.js 26 EOL | April 2029 | Migrate to 28 before this date |
 
 ---
 
@@ -133,13 +133,13 @@ If CI fails after the upgrade to Node.js 27:
 
 ### Current State
 
-TypeScript **6.0.2** is in use. The `@typescript-eslint 8.58.0` peer dependency constraint is `typescript >=4.8.4 <6.1.0`.
+TypeScript **6.0.3** is in use. The `@typescript-eslint 8.59.2` peer dependency constraint is `typescript >=4.8.4 <6.1.0`.
 
 ### TypeScript 6.1 Upgrade (Expected ~June 2026)
 
 When TypeScript 6.1 is released:
 
-1. **Check `@typescript-eslint` compatibility** — version 8.58.0 requires `<6.1.0`; a newer release will be needed
+1. **Check `@typescript-eslint` compatibility** — version 8.59.2 requires `<6.1.0`; a newer release will be needed
 2. **Update `@typescript-eslint`** to a version supporting TS 6.1
 3. **Update `package.json`** — change `typescript` to the new version
 4. **Run full validation** — `npm run build`, `npm run lint`, `npm run test`

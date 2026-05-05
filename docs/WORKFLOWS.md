@@ -5,7 +5,7 @@
 This document describes all GitHub Actions workflows in the **game** project. All workflows follow the security-first principles defined in the [Hack23 ISMS Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC) and use hardened runners via `step-security/harden-runner`.
 
 **Current Node.js version: 26**
-**Current TypeScript version: 6.0.2**
+**Current TypeScript version: 6.0.3**
 
 ---
 
@@ -54,7 +54,7 @@ Sets up the environment shared by downstream jobs.
 |------|--------|
 | Harden runner | `step-security/harden-runner` (egress-policy: audit) |
 | Checkout | `actions/checkout@v6.0.2` |
-| Setup Node.js 26 | `actions/setup-node@v6.3.0` with `cache: npm` |
+| Setup Node.js 26 | `actions/setup-node@v6.4.0` with `cache: npm` |
 | Cache apt packages | `actions/cache@v5.0.3` ⚠️ |
 | Install system deps | xvfb, libgtk, Chrome dependencies |
 | Install dependencies | `npm install` |
@@ -150,7 +150,7 @@ Validates the full application (tests + E2E) before building a release.
 |------|--------|
 | Get version | Extracts from tag or input |
 | Install system deps | xvfb, Chrome, D-Bus |
-| Setup Node.js 26 | `actions/setup-node@v6.3.0` |
+| Setup Node.js 26 | `actions/setup-node@v6.4.0` |
 | Install + build + test | `npm ci`, `npm run build`, E2E, coverage |
 | Set version | `npm version` (workflow_dispatch only) |
 | Auto-commit | `stefanzweifel/git-auto-commit-action@v7.1.0` |
@@ -162,7 +162,7 @@ Creates the release artifact with SBOM and attestations.
 
 | Step | Action |
 |------|--------|
-| Setup Node.js 26 | `actions/setup-node@v6.3.0` |
+| Setup Node.js 26 | `actions/setup-node@v6.4.0` |
 | Build | `npm run build` |
 | Create ZIP | `game-{version}.zip` |
 | Generate SBOM | `anchore/sbom-action@v0.23.1` (SPDX-JSON) |
@@ -254,6 +254,6 @@ Reference workflow that documents and validates the full Copilot development env
 ## References
 
 - [End-of-Life-Strategy.md](./End-of-Life-Strategy.md) — Node.js version lifecycle management
-- [FUTURE_WORKFLOWS.md](./FUTURE_WORKFLOWS.md) — Node.js 26 upgrade (completed)
+- [FUTURE_WORKFLOWS.md](./FUTURE_WORKFLOWS.md) — Node.js 27 upgrade plan (Node.js 26 upgrade completed)
 - [Node.js Release Schedule](https://nodejs.org/en/about/previous-releases)
 - [Hack23 ISMS Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC)
