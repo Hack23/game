@@ -17,7 +17,7 @@
     "docs:api": "typedoc"
   },
   "engines": {
-    "node": ">=25"
+    "node": ">=26"
   },
   "files": [
     "src/**/*.ts",

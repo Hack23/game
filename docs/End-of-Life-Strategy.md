@@ -6,28 +6,28 @@ This document defines the strategy for managing Node.js runtime and TypeScript c
 
 ---
 
-## Current Status (March 2026)
+## Current Status (May 2026)
 
 ### Node.js
 
 | Node.js | Release Date | Status | Bug Fixes Until | Security Fixes Until |
 |---------|-------------|--------|-----------------|----------------------|
-| **25 (Current)** | Oct 15, 2025 | ✅ **Active — in use** | Apr 1, 2026 | Jun 1, 2026 |
+| **26 (Current)** | Apr 22, 2026 | ✅ **Active — in use** | Oct 2027 | Apr 2029 |
+| 25 | Oct 15, 2025 | ⚠️ Security-only | N/A | Jun 1, 2026 |
 | 24 (LTS – Krypton) | May 2025 | Active LTS | Oct 2026 | Apr 28, 2028 |
 | 22 (LTS – Jod) | Apr 2024 | Maintenance | Oct 2025 | Apr 30, 2027 |
-| 20 (LTS – Iron) | Apr 2023 | Maintenance | Oct 2024 | Apr 30, 2026 |
 
-> **Note:** Node.js 25 is an odd-numbered "Current" release, meaning it does **not** receive LTS status. It is supported for approximately 6 months before reaching end-of-life. We use it to validate readiness for Node.js 26.
+> **Note:** Node.js 26 is an even-numbered release that will graduate to **Active LTS in October 2026**. It was released on April 22, 2026. The forward-compatibility workflow (`test-and-report-latest-node.yml`) currently uses `26.0.0-nightly` to validate upcoming Node.js 26 patch releases. It will be updated to `27.0.0-nightly` once Node.js 27 nightly builds are published (expected October 2026).
 
 ### TypeScript
 
 | TypeScript | Release Date | Status | Support Until |
 |-----------|-------------|--------|---------------|
-| **6.0.2** | Mar 2026 | ✅ **Active — in use** | Until 7.0 release (~12 months) |
+| **6.0.3** | Mar 2026 | ✅ **Active — in use** | Until 7.0 release (~12 months) |
 | 5.9.x | Feb 2026 | Previous stable | Limited — security patches only |
 | 5.8.x | Dec 2025 | End of life | ❌ No support |
 
-> **Note:** TypeScript 6.0 is a major release with breaking changes including stricter module resolution with `moduleResolution: "bundler"`, removal of implicit `global` namespace, and stricter `NodeJS` namespace handling. The project uses `@typescript-eslint 8.58.0` which supports `typescript >=4.8.4 <6.1.0`.
+> **Note:** TypeScript 6.0 is a major release with breaking changes including stricter module resolution with `moduleResolution: "bundler"`, removal of implicit `global` namespace, and stricter `NodeJS` namespace handling. The project uses `@typescript-eslint 8.59.2` which supports `typescript >=4.8.4 <6.1.0`.
 
 ---
 
@@ -111,28 +111,24 @@ TS 7.0   | ~2027     | Future         | Requires @typescript-eslint update
 
 ## Upcoming Milestones
 
-### ⚠️ Immediate — Node.js 25 End of Bug Fixes: April 1, 2026
+### ✅ Completed — Upgraded to Node.js 26: May 2026
 
-Node.js 25 receives its final bug-fix release around **April 1, 2026**. Security-only patches continue until **June 1, 2026**.
+All CI/CD workflows, devcontainer configuration, and `package.json` have been updated to Node.js 26. The forward-compatibility workflow (`test-and-report-latest-node.yml`) currently uses `26.0.0-nightly` — it will switch to `27.0.0-nightly` once Node.js 27 nightly builds are published (expected October 2026).
 
-Action required: Upgrade all CI/CD workflows to Node.js 26 immediately after its release in April 2026. See [FUTURE_WORKFLOWS.md](./FUTURE_WORKFLOWS.md) for the detailed upgrade plan.
+### ⚠️ Upcoming — Node.js 25 Security EOL: June 1, 2026
 
-### 🔜 Upcoming — Node.js 26 Release: April 2026
-
-Node.js 26 is expected in **April 2026**. It will:
-
-- Enter "Current" status immediately upon release
-- Graduate to **Active LTS in October 2026**
-- Be maintained (Active + Maintenance) until **April 2029**
-
-**Planned upgrade:** Within **2 weeks** of the Node.js 26 release. See [FUTURE_WORKFLOWS.md](./FUTURE_WORKFLOWS.md).
+Node.js 25 reaches full end-of-life on **June 1, 2026**. This project has already migrated to Node.js 26 — no action required.
 
 ### 📅 Future — Node.js 26 Active LTS: October 2026
 
 When Node.js 26 enters Active LTS, it becomes the recommended production runtime. At this point:
 
 - Node.js 24 transitions from Active LTS to Maintenance LTS
-- The primary workflow (`test-and-report.yml`) should target Node.js 26
+- Update `test-and-report-latest-node.yml` to `27.0.0-nightly` (once available) or `28.0.0-nightly`
+
+### 📅 Future — Node.js 27 Release: October 2026
+
+Node.js 27 will be released in **October 2026** as an odd-numbered "Current" release (no LTS). When Node.js 27 nightly builds are published, update `test-and-report-latest-node.yml` from `26.0.0-nightly` to `27.0.0-nightly`. Primary workflows remain on Node.js 26 LTS.
 
 ### 📅 Future — Node.js 24 EOL: April 2028
 
@@ -148,8 +144,8 @@ The project maintains two parallel test workflows and tracks toolchain versions:
 
 | Workflow | Purpose | Current Node Version |
 |----------|---------|----------------------|
-| `test-and-report.yml` | Primary CI — stable, production-ready | **25** |
-| `test-and-report-latest-node.yml` | Forward-compat — tests next version | **25** (will become 26) |
+| `test-and-report.yml` | Primary CI — stable, production-ready | **26** |
+| `test-and-report-latest-node.yml` | Forward-compat — tests next version | **26 nightly** (`26.0.0-nightly`) |
 
 When a new Node.js version is released:
 1. Update `test-and-report-latest-node.yml` to the new version first
@@ -159,9 +155,9 @@ When a new Node.js version is released:
 ### TypeScript & Toolchain
 
 | Tool | Current Version | Peer Constraint | Upgrade Path |
-|------|----------------|-----------------|--------------|
-| TypeScript | **6.0.2** | — | Follow quarterly releases |
-| @typescript-eslint | **8.58.0** | `typescript >=4.8.4 <6.1.0` | Must update before TS 6.1 |
+|------|----------------|-----------------|-------------|
+| TypeScript | **6.0.3** | — | Follow quarterly releases |
+| @typescript-eslint | **8.59.2** | `typescript >=4.8.4 <6.1.0` | Must update before TS 6.1 |
 | Vite | **8.0.3** | — | Follow major releases |
 | Vitest | **4.1.2** | — | Keep aligned with Vite |
 
@@ -190,4 +186,4 @@ When a new Node.js version is released:
 - [@typescript-eslint Supported TypeScript Versions](https://typescript-eslint.io/users/dependency-versions/)
 - [Hack23 ISMS Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC)
 - [WORKFLOWS.md](./WORKFLOWS.md) — Current CI/CD workflow documentation
-- [FUTURE_WORKFLOWS.md](./FUTURE_WORKFLOWS.md) — Planned Node.js 26 upgrade
+- [FUTURE_WORKFLOWS.md](./FUTURE_WORKFLOWS.md) — Node.js 26 upgrade (completed)

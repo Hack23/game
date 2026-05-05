@@ -1,90 +1,82 @@
-# Future Workflows: Node.js 26 Upgrade Plan
+# Future Workflows: Node.js 27 Upgrade Plan
 
 ## Overview
 
-This document describes the planned upgrade of all CI/CD workflows, devcontainer configuration, and documentation from **Node.js 25** to **Node.js 26**.
+This document describes the plan to track **Node.js 27** in the forward-compatibility workflow (`test-and-report-latest-node.yml`) as a canary for the eventual **Node.js 28 LTS** upgrade.
 
-Node.js 26 is expected in **April 2026**. This upgrade plan is designed to be executed immediately after the official Node.js 26 release.
+Node.js 27 is expected in **October 2026**. Because Node.js 27 is an **odd-numbered non-LTS release**, the primary CI, devcontainer, and `package.json` will **remain on Node.js 26 LTS** throughout. Only `test-and-report-latest-node.yml` will advance to `27.0.0-nightly` once those builds are published.
+
+> **✅ Node.js 26 upgrade completed May 2026.** All workflows, devcontainer, and `package.json` have been updated. The forward-compatibility workflow (`test-and-report-latest-node.yml`) currently uses `26.0.0-nightly` (Node.js 27 nightly builds do not yet exist; they will be published once Node.js 27 development starts, expected October 2026). Update the forward-compat workflow to `27.0.0-nightly` once those builds are available.
 
 ---
 
-## Node.js 26 Release Facts
+## Node.js 27 Release Facts
 
 | Attribute | Detail |
 |-----------|--------|
-| **Expected release** | April 2026 |
-| **Initial status** | Current |
-| **LTS graduation** | October 2026 |
-| **Active LTS until** | October 2027 |
-| **End of Maintenance** | April 2029 |
-| **Why upgrade** | Node.js 25 bug fixes end April 1, 2026; security fixes end June 1, 2026 |
+| **Expected release** | October 2026 |
+| **Initial status** | Current (odd-numbered — no LTS) |
+| **EOL** | ~June 2027 |
+| **Why upgrade** | Forward-compatibility testing; next primary target is Node.js 28 LTS (April 2027) |
 
-Node.js 26 is an even-numbered release and will become **Long-Term Support (LTS)** in October 2026. Adopting it early gives us:
-
-- Forward compatibility validation before broad ecosystem adoption
-- Alignment with the upcoming LTS baseline
-- Coverage of the ~6-month "Current" phase before LTS promotion
+Node.js 27 is an **odd-numbered** release and will **not** become LTS. We use it in the forward-compatibility workflow (`test-and-report-latest-node.yml`) to validate readiness for Node.js 28.
 
 ---
 
 ## Upgrade Checklist
 
-When Node.js 26 is officially released, execute the following steps in a single PR:
+### Phase 1 — Forward-Compat Workflow (when Node.js 27 nightly builds are published)
 
-### Phase 1 — Core Configuration (Day 1)
+> **Prerequisite:** Confirm `27.0.0-nightly` builds are available on [nodejs.org/download/nightly](https://nodejs.org/download/nightly/) before running these changes.
 
-- [ ] **`package.json`** — Update `engines.node` from `>=25` to `>=26`
-- [ ] **`.devcontainer/devcontainer.json`** — Update image from `javascript-node:25-trixie` to `javascript-node:26-trixie`, and node feature version from `"25"` to `"26"`
+- [ ] **`.github/workflows/test-and-report-latest-node.yml`** — 4 occurrences: change `node-version: "26.0.0-nightly"` → `node-version: "27.0.0-nightly"` (prepare, build-validation, unit-tests, e2e-tests)
 
-### Phase 2 — GitHub Actions Workflows (Day 1)
+> **Note:** Primary workflows (`test-and-report.yml`, `release.yml`, `codeql.yml`, Copilot setup), `package.json` engines, and the devcontainer **remain on Node.js 26 LTS** for this phase. The full migration to Node.js 27 does not apply — Node.js 27 is odd-numbered and non-LTS. The next primary-workflow upgrade will happen when **Node.js 28 LTS** is released (April 2027).
 
-Update `node-version` from `"25"` to `"26"` in each of the following files:
+### Phase 2 — Documentation (same PR as Phase 1)
 
-- [ ] **`.github/workflows/test-and-report.yml`** — 4 occurrences (prepare, build-validation, unit-tests, e2e-tests)
-- [ ] **`.github/workflows/release.yml`** — 2 occurrences (prepare, build)
-- [ ] **`.github/workflows/codeql.yml`** — 1 occurrence (analyze)
-- [ ] **`.github/workflows/copilot-setup-steps.yml`** — 1 occurrence
-- [ ] **`.github/workflows/copilot-setup.yml`** — 1 occurrence in `node-version`, 1 occurrence in setup report text (`Node.js 25` → `Node.js 26`)
-- [ ] **`.github/workflows/test-and-report-latest-node.yml`** — 4 occurrences (update to next version beyond 26, e.g., `"27"` once it exists, or keep at `"26"` until 27 ships)
+- [ ] **`docs/End-of-Life-Strategy.md`** — Update version matrix forward-compat row to "27 nightly (`27.0.0-nightly`)", update note text
+- [ ] **`docs/WORKFLOWS.md`** — Update forward-compat Node.js version to "27 nightly"
+- [ ] **`docs/FUTURE_WORKFLOWS.md`** (this file) — Update to reflect Node.js 28 LTS as the next planned primary upgrade
 
-### Phase 3 — Documentation (Day 1–2)
+### Phase 3 — Validation (same PR)
 
-- [ ] **`docs/End-of-Life-Strategy.md`** — Update "Current Status" table, highlight Node.js 26 as active
-- [ ] **`docs/WORKFLOWS.md`** — Update "Current Node.js version" and all version references
-- [ ] **`docs/FUTURE_WORKFLOWS.md`** (this file) — Update to reflect Node.js 27 as the next planned upgrade
-- [ ] **`README.md`** — Update any Node.js version badges or requirements section if present
-
-### Phase 4 — Validation (Day 2)
-
-- [ ] Verify all CI jobs pass on the PR before merging
-- [ ] Confirm `test-and-report-latest-node.yml` passes
-- [ ] Confirm `release.yml` dry-run succeeds (workflow_dispatch with a pre-release tag)
-- [ ] Confirm devcontainer builds successfully with Node.js 26
-- [ ] Run `npm audit` to check for any dependency advisories under Node.js 26
-- [ ] Check `npm run test:licenses` passes
+- [ ] Verify `test-and-report-latest-node.yml` passes on the PR
+- [ ] Confirm all other CI jobs continue to pass (they all remain on Node.js 26)
+- [ ] Run `npm audit` to check for any dependency advisories
 
 ---
 
 ## Sed Commands for Automation
 
-The following commands can be run to perform the bulk of the Node.js 25 → 26 migration:
+The following command updates the forward-compat workflow to Node.js 27 nightly. Run only after confirming `27.0.0-nightly` builds are available on [nodejs.org/download/nightly](https://nodejs.org/download/nightly/):
 
 ```bash
+# Update the forward-compat nightly workflow from 26.0.0-nightly to 27.0.0-nightly
+sed -i 's/node-version: "26.0.0-nightly"/node-version: "27.0.0-nightly"/g' .github/workflows/test-and-report-latest-node.yml
+```
+
+> **Note:** The commands below are for the **future Node.js 28 LTS upgrade** (April 2027), not for Node.js 27. Primary workflows, `package.json`, and the devcontainer stay on Node.js 26 until Node.js 28 LTS.
+
+```bash
+# === Node.js 28 LTS upgrade (April 2027) — DO NOT run for Node.js 27 ===
+
 # Update all workflow node-version references (double-quoted)
-find .github/workflows -name "*.yml" -exec sed -i 's/node-version: "25"/node-version: "26"/g' {} +
+find .github/workflows -name "*.yml" -exec sed -i 's/node-version: "26"/node-version: "28"/g' {} +
+
+# Update the forward-compat nightly to 28.0.0-nightly (once available)
+sed -i 's/node-version: "27.0.0-nightly"/node-version: "28.0.0-nightly"/g' .github/workflows/test-and-report-latest-node.yml
 
 # Update copilot-setup.yml (single-quoted)
-sed -i "s/node-version: '25'/node-version: '26'/g" .github/workflows/copilot-setup.yml
-
-# Update text references
-sed -i 's/Node\.js 25/Node.js 26/g' .github/workflows/copilot-setup.yml
+sed -i "s/node-version: '26'/node-version: '28'/g" .github/workflows/copilot-setup.yml
+sed -i 's/Node\.js 26/Node.js 28/g' .github/workflows/copilot-setup.yml
 
 # Update package.json engines field
-sed -i 's/"node": ">=25"/"node": ">=26"/' package.json
+sed -i 's/"node": ">=26"/"node": ">=28"/' package.json
 
 # Update devcontainer image
-sed -i 's/javascript-node:25-trixie/javascript-node:26-trixie/' .devcontainer/devcontainer.json
-sed -i 's/"version": "25"/"version": "26"/' .devcontainer/devcontainer.json
+sed -i 's/javascript-node:26-trixie/javascript-node:28-trixie/' .devcontainer/devcontainer.json
+sed -i 's/"version": "26"/"version": "28"/' .devcontainer/devcontainer.json
 ```
 
 ---
@@ -95,50 +87,40 @@ sed -i 's/"version": "25"/"version": "26"/' .devcontainer/devcontainer.json
 
 | Package | Concern | Action |
 |---------|---------|--------|
-| `vite` | May ship Node.js 26 support update | Check release notes |
+| `vite` | May ship Node.js 27 support update | Check release notes |
 | `cypress` | Historically supports new Node quickly | Verify with `npx cypress verify` |
 | `vitest` | Tracks Vite compatibility | Validate test suite passes |
-| `typescript` | Currently 6.0.2; generally Node-agnostic | No action expected |
-| `@typescript-eslint` | Currently supports `typescript <6.1.0` | Must update before TS 6.1 |
+| `typescript` | Generally Node-agnostic | No action expected |
+| `@typescript-eslint` | Monitor peer dependency ranges | No action expected unless TS 6.1 ships |
 
-### V8 Engine Changes (Node.js 26)
+### V8 Engine Changes (Node.js 27)
 
-Node.js 26 will ship with a new V8 engine version. This may affect:
+Node.js 27 will ship with a new V8 engine version. This may affect:
 - WebAssembly performance
 - JavaScript language features (new syntax, built-ins)
 - Three.js WebGL rendering path (test via `test-and-report-latest-node.yml` first)
-
-### Breaking API Changes
-
-Review the Node.js 26 migration guide at [nodejs.org/en/blog](https://nodejs.org/en/blog) for:
-- Deprecated APIs removed
-- Stream and buffer API changes
-- Permission model updates
-- `node:` prefix enforcement
 
 ---
 
 ## Rollback Plan
 
-If CI fails after the upgrade to Node.js 26:
+If CI fails after the upgrade to Node.js 27:
 
 1. Revert the PR
-2. Re-pin `test-and-report-latest-node.yml` to Node.js 26 and investigate failures
+2. Re-pin `test-and-report-latest-node.yml` to Node.js 27 nightly and investigate failures
 3. File issues against specific failing packages
 4. Once all failures are resolved, re-open the upgrade PR
 
-The project can safely remain on Node.js 25 until **June 1, 2026** (security EOL), providing a 2-month window to resolve compatibility issues.
-
 ---
 
-## Future Roadmap Beyond Node.js 26
+## Future Roadmap
 
 | Target | Expected Date | Action Required |
-|--------|--------------|-----------------|
-| Node.js 26 Active LTS | October 2026 | Update primary workflow from 25 to 26 (already planned) |
-| Node.js 27 release | October 2026 | Update `test-and-report-latest-node.yml` to 27 |
-| Node.js 25 security EOL | June 2026 | Must be on 26 by this date |
-| Node.js 28 LTS | April 2027 | Next LTS evaluation |
+|--------|--------------|----------------|
+| Node.js 26 Active LTS | October 2026 | Already on 26; no action needed |
+| Node.js 27 release | October 2026 | Update `test-and-report-latest-node.yml` from `26.0.0-nightly` to `27.0.0-nightly` once builds exist; primary workflow stays on Node.js 26 LTS |
+| Node.js 28 LTS | April 2027 | Next LTS — update primary workflow to 28; update `test-and-report-latest-node.yml` to 28 nightly |
+| Node.js 27 EOL | June 2027 | Move forward to 28 before this date |
 | Node.js 26 EOL | April 2029 | Migrate to 28 before this date |
 
 ---
@@ -147,13 +129,13 @@ The project can safely remain on Node.js 25 until **June 1, 2026** (security EOL
 
 ### Current State
 
-TypeScript **6.0.2** is in use. The `@typescript-eslint 8.58.0` peer dependency constraint is `typescript >=4.8.4 <6.1.0`.
+TypeScript **6.0.3** is in use. The `@typescript-eslint 8.59.2` peer dependency constraint is `typescript >=4.8.4 <6.1.0`.
 
 ### TypeScript 6.1 Upgrade (Expected ~June 2026)
 
 When TypeScript 6.1 is released:
 
-1. **Check `@typescript-eslint` compatibility** — version 8.58.0 requires `<6.1.0`; a newer release will be needed
+1. **Check `@typescript-eslint` compatibility** — version 8.59.2 requires `<6.1.0`; a newer release will be needed
 2. **Update `@typescript-eslint`** to a version supporting TS 6.1
 3. **Update `package.json`** — change `typescript` to the new version
 4. **Run full validation** — `npm run build`, `npm run lint`, `npm run test`
