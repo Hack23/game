@@ -1,11 +1,11 @@
 {
   "name": "React Three.js Game Template Dev Container",
-  "image": "mcr.microsoft.com/devcontainers/javascript-node:24-trixie",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:26-trixie",
   "features": {
     "ghcr.io/devcontainers/features/github-cli:1": {},
     "ghcr.io/devcontainers/features/node:1": {
       "nodeGypDependencies": true,
-      "version": "25"
+      "version": "26"
     }
   },
   // MCP Servers: See .github/copilot-mcp.json for Model Context Protocol configuration
