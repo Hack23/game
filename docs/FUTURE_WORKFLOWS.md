@@ -6,7 +6,7 @@ This document describes the planned upgrade of all CI/CD workflows, devcontainer
 
 Node.js 27 is expected in **October 2026**. This upgrade plan is designed to be executed immediately after the official Node.js 27 release.
 
-> **✅ Node.js 26 upgrade completed May 2026.** All workflows, devcontainer, and `package.json` have been updated. The forward-compatibility workflow (`test-and-report-latest-node.yml`) now tracks Node.js 27 nightly builds.
+> **✅ Node.js 26 upgrade completed May 2026.** All workflows, devcontainer, and `package.json` have been updated. The forward-compatibility workflow (`test-and-report-latest-node.yml`) currently uses `26.0.0-nightly` (Node.js 27 nightly builds do not yet exist; they will be published once Node.js 27 development starts, expected October 2026). Update the forward-compat workflow to `27.0.0-nightly` once those builds are available.
 
 ---
 
@@ -41,7 +41,7 @@ Update `node-version` from `"26"` to `"27"` in each of the following files:
 - [ ] **`.github/workflows/codeql.yml`** — 1 occurrence (analyze)
 - [ ] **`.github/workflows/copilot-setup-steps.yml`** — 1 occurrence
 - [ ] **`.github/workflows/copilot-setup.yml`** — 1 occurrence in `node-version`, 1 occurrence in setup report text (`Node.js 26` → `Node.js 27`)
-- [ ] **`.github/workflows/test-and-report-latest-node.yml`** — 4 occurrences (update to `"28-nightly"` once it exists)
+- [ ] **`.github/workflows/test-and-report-latest-node.yml`** — 4 occurrences (update from `"26.0.0-nightly"` to `"27.0.0-nightly"` once Node.js 27 nightly builds are published; then advance to `"28.0.0-nightly"` once Node.js 28 nightly builds exist)
 
 ### Phase 3 — Documentation (Day 1–2)
 
@@ -68,6 +68,10 @@ The following commands can be run to perform the bulk of the Node.js 26 → 27 m
 ```bash
 # Update all workflow node-version references (double-quoted)
 find .github/workflows -name "*.yml" -exec sed -i 's/node-version: "26"/node-version: "27"/g' {} +
+
+# Update the forward-compat nightly workflow from 26.0.0-nightly to 27.0.0-nightly
+# (run only after Node.js 27 nightly builds are confirmed available on nodejs.org/download/nightly)
+sed -i 's/node-version: "26.0.0-nightly"/node-version: "27.0.0-nightly"/g' .github/workflows/test-and-report-latest-node.yml
 
 # Update copilot-setup.yml (single-quoted)
 sed -i "s/node-version: '26'/node-version: '27'/g" .github/workflows/copilot-setup.yml
@@ -122,7 +126,7 @@ If CI fails after the upgrade to Node.js 27:
 | Target | Expected Date | Action Required |
 |--------|--------------|----------------|
 | Node.js 26 Active LTS | October 2026 | Already on 26; no action needed |
-| Node.js 27 release | October 2026 | Update `test-and-report-latest-node.yml` to 27.0.0-nightly; primary workflow stays on Node.js 26 LTS |
+| Node.js 27 release | October 2026 | Update `test-and-report-latest-node.yml` from `26.0.0-nightly` to `27.0.0-nightly` once builds exist; primary workflow stays on Node.js 26 LTS |
 | Node.js 28 LTS | April 2027 | Next LTS — update primary workflow to 28; update `test-and-report-latest-node.yml` to 28 nightly |
 | Node.js 27 EOL | June 2027 | Move forward to 28 before this date |
 | Node.js 26 EOL | April 2029 | Migrate to 28 before this date |

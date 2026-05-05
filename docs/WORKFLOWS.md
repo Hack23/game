@@ -14,7 +14,7 @@ This document describes all GitHub Actions workflows in the **game** project. Al
 | Workflow File | Trigger | Purpose | Node.js |
 |---------------|---------|---------|----------|
 | `test-and-report.yml` | push/PR to `main` | Primary CI — build, test, E2E | **26** |
-| `test-and-report-latest-node.yml` | push/PR to `main` | Forward-compat CI on latest Node | **27 nightly** |
+| `test-and-report-latest-node.yml` | push/PR to `main` | Forward-compat CI on latest Node | **26 nightly** |
 | `release.yml` | tag push / workflow_dispatch | Build, attest, and release | **26** |
 | `codeql.yml` | push/PR/schedule | Static code analysis | **26** |
 | `copilot-setup-steps.yml` | push/PR/workflow_dispatch | Copilot environment setup | **26** |
@@ -117,7 +117,7 @@ Aggregates all test artifacts.
 
 **Trigger:** Push to `main`, Pull Request to `main`
 
-**Node.js:** 27 nightly (updated to each new major nightly release as it ships)
+**Node.js:** 26 nightly (`26.0.0-nightly`) — will advance to `27.0.0-nightly` once Node.js 27 nightly builds are published (expected October 2026)
 
 **Purpose:** Tests the application against the latest Node.js release to detect breaking changes before they affect the primary workflow. Uses the same job structure as `test-and-report.yml`.
 
