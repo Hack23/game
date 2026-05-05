@@ -4,7 +4,7 @@
 
 This document describes all GitHub Actions workflows in the **game** project. All workflows follow the security-first principles defined in the [Hack23 ISMS Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC) and use hardened runners via `step-security/harden-runner`.
 
-**Current Node.js version: 25**
+**Current Node.js version: 26**
 **Current TypeScript version: 6.0.2**
 
 ---
@@ -12,13 +12,13 @@ This document describes all GitHub Actions workflows in the **game** project. Al
 ## Workflow Inventory
 
 | Workflow File | Trigger | Purpose | Node.js |
-|---------------|---------|---------|---------|
-| `test-and-report.yml` | push/PR to `main` | Primary CI — build, test, E2E | **25** |
-| `test-and-report-latest-node.yml` | push/PR to `main` | Forward-compat CI on latest Node | **25** |
-| `release.yml` | tag push / workflow_dispatch | Build, attest, and release | **25** |
-| `codeql.yml` | push/PR/schedule | Static code analysis | **25** |
-| `copilot-setup-steps.yml` | push/PR/workflow_dispatch | Copilot environment setup | **25** |
-| `copilot-setup.yml` | workflow_dispatch | Copilot environment guide | **25** |
+|---------------|---------|---------|----------|
+| `test-and-report.yml` | push/PR to `main` | Primary CI — build, test, E2E | **26** |
+| `test-and-report-latest-node.yml` | push/PR to `main` | Forward-compat CI on latest Node | **27 nightly** |
+| `release.yml` | tag push / workflow_dispatch | Build, attest, and release | **26** |
+| `codeql.yml` | push/PR/schedule | Static code analysis | **26** |
+| `copilot-setup-steps.yml` | push/PR/workflow_dispatch | Copilot environment setup | **26** |
+| `copilot-setup.yml` | workflow_dispatch | Copilot environment guide | **26** |
 | `dependency-review.yml` | PR to `main` | Dependency vulnerability scan | N/A |
 | `scorecards.yml` | push/schedule | OpenSSF Scorecard | N/A |
 | `zap-scan.yml` | schedule/workflow_dispatch | OWASP ZAP DAST scan | N/A |
@@ -32,7 +32,7 @@ This document describes all GitHub Actions workflows in the **game** project. Al
 
 **Trigger:** Push to `main`, Pull Request to `main`
 
-**Node.js:** 25
+**Node.js:** 26
 
 **Job Graph:**
 
@@ -54,7 +54,7 @@ Sets up the environment shared by downstream jobs.
 |------|--------|
 | Harden runner | `step-security/harden-runner` (egress-policy: audit) |
 | Checkout | `actions/checkout@v6.0.2` |
-| Setup Node.js 25 | `actions/setup-node@v6.3.0` with `cache: npm` |
+| Setup Node.js 26 | `actions/setup-node@v6.3.0` with `cache: npm` |
 | Cache apt packages | `actions/cache@v5.0.3` ⚠️ |
 | Install system deps | xvfb, libgtk, Chrome dependencies |
 | Install dependencies | `npm install` |
@@ -117,7 +117,7 @@ Aggregates all test artifacts.
 
 **Trigger:** Push to `main`, Pull Request to `main`
 
-**Node.js:** 25 (updated to each new major release as it ships)
+**Node.js:** 27 nightly (updated to each new major nightly release as it ships)
 
 **Purpose:** Tests the application against the latest Node.js release to detect breaking changes before they affect the primary workflow. Uses the same job structure as `test-and-report.yml`.
 
@@ -131,7 +131,7 @@ This workflow serves as the **canary** for Node.js upgrades. When a new version 
 
 **Trigger:** Push to tags matching `v*`, or `workflow_dispatch`
 
-**Node.js:** 25
+**Node.js:** 26
 
 **Job Graph:**
 
@@ -150,7 +150,7 @@ Validates the full application (tests + E2E) before building a release.
 |------|--------|
 | Get version | Extracts from tag or input |
 | Install system deps | xvfb, Chrome, D-Bus |
-| Setup Node.js 25 | `actions/setup-node@v6.3.0` |
+| Setup Node.js 26 | `actions/setup-node@v6.3.0` |
 | Install + build + test | `npm ci`, `npm run build`, E2E, coverage |
 | Set version | `npm version` (workflow_dispatch only) |
 | Auto-commit | `stefanzweifel/git-auto-commit-action@v7.1.0` |
@@ -162,7 +162,7 @@ Creates the release artifact with SBOM and attestations.
 
 | Step | Action |
 |------|--------|
-| Setup Node.js 25 | `actions/setup-node@v6.3.0` |
+| Setup Node.js 26 | `actions/setup-node@v6.3.0` |
 | Build | `npm run build` |
 | Create ZIP | `game-{version}.zip` |
 | Generate SBOM | `anchore/sbom-action@v0.23.1` (SPDX-JSON) |
@@ -190,7 +190,7 @@ Publishes the GitHub Release and deploys to GitHub Pages.
 
 **Trigger:** Push/PR to `main`, weekly schedule (Monday 00:00 UTC)
 
-**Node.js:** 25
+**Node.js:** 26
 
 **Languages:** `javascript`, `typescript`
 
@@ -228,16 +228,16 @@ Measures and reports Core Web Vitals and performance budgets.
 
 Pre-installs all tools and MCP servers required by GitHub Copilot coding agent:
 - Chrome + Xvfb for Playwright/Three.js rendering
-- Node.js 25 with npm cache
+- Node.js 26 with npm cache
 - Global MCP server packages (`@modelcontextprotocol/server-*`, `@playwright/mcp`)
 
-**Node.js:** 25
+**Node.js:** 26
 
 ### `copilot-setup.yml`
 
 Reference workflow that documents and validates the full Copilot development environment. Runs on workflow_dispatch only.
 
-**Node.js:** 25
+**Node.js:** 26
 
 ---
 
@@ -254,6 +254,6 @@ Reference workflow that documents and validates the full Copilot development env
 ## References
 
 - [End-of-Life-Strategy.md](./End-of-Life-Strategy.md) — Node.js version lifecycle management
-- [FUTURE_WORKFLOWS.md](./FUTURE_WORKFLOWS.md) — Planned Node.js 26 upgrade
+- [FUTURE_WORKFLOWS.md](./FUTURE_WORKFLOWS.md) — Node.js 26 upgrade (completed)
 - [Node.js Release Schedule](https://nodejs.org/en/about/previous-releases)
 - [Hack23 ISMS Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC)
