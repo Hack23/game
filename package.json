@@ -58,8 +58,8 @@
     "@typescript-eslint/eslint-plugin": "8.59.2",
     "@typescript-eslint/parser": "8.59.2",
     "@vitejs/plugin-react": "6.0.1",
-    "@vitest/coverage-v8": "4.1.5",
-    "@vitest/ui": "4.1.5",
+    "@vitest/coverage-v8": "4.1.6",
+    "@vitest/ui": "4.1.6",
     "cypress": "15.14.2",
     "cypress-junit-reporter": "1.3.1",
     "cypress-multi-reporters": "2.0.5",
@@ -73,7 +73,7 @@
     "typescript": "6.0.3",
     "typescript-eslint": "8.59.2",
     "vite": "8.0.12",
-    "vitest": "4.1.5"
+    "vitest": "4.1.6"
   },
   "overrides": {
     "diff": "8.0.4",
