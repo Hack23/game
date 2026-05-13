@@ -60,7 +60,10 @@ describe("Game Visual Documentation", () => {
       win.dispatchEvent(new CustomEvent('test:targetClick'));
       win.dispatchEvent(new CustomEvent('test:targetClick'));
     });
-    
+
+    // Wait for React to process the state updates (consistent with gameplay.cy.ts pattern)
+    cy.wait(100);
+
     // Verify score updated
     cy.get("[data-testid=score-value]").should("not.contain", "0");
     
