@@ -1,5 +1,5 @@
 import { Canvas } from "@react-three/fiber";
-import { useRef, useState, useCallback, useEffect } from "react";
+import { useRef, useState, useCallback, useEffect, useLayoutEffect } from "react";
 import type { JSX } from "react";
 import { useGameState } from "./hooks/useGameState";
 import { useAudioManager } from "./hooks/useAudioManager";
@@ -96,7 +96,10 @@ function App(): JSX.Element {
   const gameStateRef = useRef(gameState);
   gameStateRef.current = gameState;
 
-  useEffect(() => {
+  // useLayoutEffect (not useEffect) ensures the listener is registered synchronously
+  // before the browser paints, preventing a race where Cypress finds the target-sphere
+  // in the DOM before the test event listener is ready to receive events.
+  useLayoutEffect(() => {
     const handleTestTargetClick = (): void => {
       const gs = gameStateRef.current;
       if (gs.isPlaying && gs.timeLeft > 0 && gs.targets.length > 0) {
