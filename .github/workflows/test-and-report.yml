@@ -46,12 +46,17 @@ jobs:
         run: npm install
 
       - name: Cache Cypress binary
+        id: cypress-cache
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: ~/.cache/Cypress
           key: cypress-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             cypress-${{ runner.os }}-
+
+      - name: Install Cypress binary on cache miss
+        if: steps.cypress-cache.outputs.cache-hit != 'true'
+        run: npx cypress install
 
       - name: Verify Cypress
         run: npx cypress verify
