@@ -68,7 +68,7 @@
     "globals": "17.6.0",
     "jsdom": "29.1.1",
     "license-compliance": "3.0.1",
-    "start-server-and-test": "3.0.5",
+    "start-server-and-test": "3.0.6",
     "typedoc": "0.28.19",
     "typescript": "6.0.3",
     "typescript-eslint": "8.60.1",
