@@ -42,18 +42,29 @@ For complete security policy mapping and detailed compliance information, see:
 
 ## Features
 
-- ⚡ **Vite** - Fast build tool and dev server
-- ⚛️ **React 19** - Modern React with hooks
-- 🔷 **TypeScript 6** - Strict typing with ES2025 target
-- 🧪 **Vitest** - Fast unit testing with coverage
-- 🌲 **Cypress** - Reliable E2E testing
-- 📦 **ESLint** - Code linting with TypeScript rules
+- ⚡ **Vite 8** - Fast build tool and dev server
+- ⚛️ **React 19.2.x** - Modern React with hooks
+- 🔷 **TypeScript 7 RC + TypeScript 6 compatibility** - Side-by-side compiler setup using the `typescript-7` alias and `@typescript/typescript6`
+- 🧪 **Vitest 4** - Fast unit testing with coverage
+- 🌲 **Cypress 15** - Reliable E2E testing
+- 📦 **ESLint 10** - Code linting with TypeScript rules
 - 🔄 **GitHub Actions** - Automated testing and reporting
-- 🎮 **Three.js** - High-performance 3D WebGL renderer
-- 🎨 **@react-three/fiber** - React renderer for Three.js
-- 🛠️ **@react-three/drei** - Useful helpers for react-three-fiber
-- 🎵 **Howler.js** - Audio library for games
+- 🎮 **Three.js 0.185.x** - High-performance 3D WebGL renderer
+- 🎨 **@react-three/fiber 9.6.x** - React renderer for Three.js
+- 🛠️ **@react-three/drei 10.7.x** - Useful helpers for react-three-fiber
+- 🎵 **Howler.js 2.2.x** - Audio library for games
 - 📖 **TypeDoc** - API documentation generation with ISMS references
+
+## Current Stack
+
+The template is currently aligned with the following versions:
+
+- **Vite** 8.1.3
+- **React** 19.2.7 and **React DOM** 19.2.7
+- **TypeScript 7 RC** with **TypeScript 6.0.2** compatibility via `@typescript/typescript6`
+- **Three.js** 0.185.1
+- **Vitest** 4.1.10 and **Cypress** 15.18.1
+- **Howler.js** 2.2.4
 
 ## 🤖 GitHub Copilot Custom Agents & Skills
 
