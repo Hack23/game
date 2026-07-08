@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host --open",
-    "build": "tsc -b && vite build",
+    "build": "node ./node_modules/typescript-7/bin/tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "test:licenses": "license-compliance --direct --allow 'MIT;ISC;0BSD;BSD-2-Clause;BSD-3-Clause;Apache-2.0;Unlicense;CC0-1.0'",
