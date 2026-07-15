@@ -4,6 +4,9 @@ updates:
     directory: /
     schedule:
       interval: daily
+    cooldown:
+      default-days: 1
+      exclude: ["*"]
     groups:
       github-actions:
         patterns:
@@ -16,6 +19,9 @@ updates:
     directory: /
     schedule:
       interval: daily
+    cooldown:
+      default-days: 1
+      exclude: ["*"]
     groups:
       vite:
         patterns:
