@@ -1,1 +1,1 @@
-Version v1.2.105 deployed at Wed Jul 29 11:26:36 UTC 2026
+Version v1.2.106 deployed at Fri Jul 31 19:04:39 UTC 2026
