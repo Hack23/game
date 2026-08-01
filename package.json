@@ -68,7 +68,7 @@
     "globals": "17.8.0",
     "jsdom": "30.0.1",
     "license-compliance": "4.0.0",
-    "start-server-and-test": "3.0.11",
+    "start-server-and-test": "3.0.12",
     "typedoc": "0.28.20",
     "typescript": "npm:@typescript/typescript6@6.0.2",
     "typescript-7": "npm:typescript@7.0.1-rc",
