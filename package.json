@@ -65,7 +65,7 @@
     "cypress-multi-reporters": "2.0.5",
     "eslint": "10.8.1",
     "eslint-plugin-react-refresh": "0.5.4",
-    "globals": "17.10.0",
+    "globals": "17.11.0",
     "jsdom": "30.0.1",
     "license-compliance": "4.0.0",
     "start-server-and-test": "3.0.12",
