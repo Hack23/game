@@ -13,7 +13,6 @@ const REPORTS = {
 export default defineConfig({
   screenshotsFolder: REPORTS.screenshots,
   videosFolder: REPORTS.videos,
-  experimentalMemoryManagement: true,
   video: true,
   screenshotOnRunFailure: true,
   trashAssetsBeforeRuns: true,
