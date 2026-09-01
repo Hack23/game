@@ -12,8 +12,8 @@
     "test": "vitest",
     "coverage": "vitest run --coverage --coverage.reportOnFailure",
     "test:ci": "vitest run --coverage --reporter=junit --outputFile=coverage/junit.xml",
-    "test:e2e": "mkdir -p cypress/results && start-server-and-test dev http://localhost:5173 'cypress run --reporter cypress-multi-reporters --reporter-options configFile=cypress.config.reporter.json'",
-    "test:e2e:ci": "mkdir -p cypress/results && start-server-and-test dev http://localhost:5173 'cypress run --headless --reporter cypress-multi-reporters --reporter-options configFile=cypress.config.reporter.json'",
+    "test:e2e": "mkdir -p cypress/results && start-server-and-test dev http://localhost:5173 'cypress run --browser chrome --reporter cypress-multi-reporters --reporter-options configFile=cypress.config.reporter.json'",
+    "test:e2e:ci": "mkdir -p cypress/results && start-server-and-test dev http://localhost:5173 'cypress run --headless --browser chrome --reporter cypress-multi-reporters --reporter-options configFile=cypress.config.reporter.json'",
     "docs:api": "typedoc"
   },
   "engines": {
@@ -60,7 +60,7 @@
     "@vitejs/plugin-react": "6.1.1",
     "@vitest/coverage-v8": "4.1.11",
     "@vitest/ui": "4.1.11",
-    "cypress": "15.21.1",
+    "cypress": "16.0.0",
     "cypress-junit-reporter": "1.3.1",
     "cypress-multi-reporters": "2.0.5",
     "eslint": "10.9.1",
