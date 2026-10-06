@@ -57,7 +57,7 @@
     "@types/three": "0.186.0",
     "@typescript-eslint/eslint-plugin": "8.71.1",
     "@typescript-eslint/parser": "8.71.1",
-    "@vitejs/plugin-react": "6.1.1",
+    "@vitejs/plugin-react": "6.1.2",
     "@vitest/coverage-v8": "5.0.3",
     "@vitest/ui": "5.0.3",
     "cypress": "16.1.1",
@@ -73,7 +73,7 @@
     "typescript": "npm:@typescript/typescript6@6.0.2",
     "typescript-7": "npm:typescript@7.0.1-rc",
     "typescript-eslint": "8.71.1",
-    "vite": "8.3.2",
+    "vite": "8.3.3",
     "vitest": "5.0.3"
   },
   "overrides": {
